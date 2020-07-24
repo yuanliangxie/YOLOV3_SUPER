@@ -1,9 +1,8 @@
 # YOLOV3-SUPER
 ---
-# Introduction<br>
-This is a YOLOV3 baseline written in pytorch. The eval dataset used is PASCAL VOC(not use difficulty). The eval tool is the [cocoAPI](https://github.com/wenmengzhou/cocoapi/tree/add_analyze_func). The mAP gains the score as same as the oringin paper.
-Subsequently, we will continue to update the code with adding some new and efficient methods to make it more concise, lighter, faster in vehicle detection.
----
+# Introduction
+This is a YOLOV3 baseline written in PyTorch. The eval dataset used is PASCAL VOC(not use difficulty). The eval tool is the [cocoAPI](https://github.com/wenmengzhou/cocoapi/tree/add_analyze_func). The mAP gains the score as same as the original paper.
+Subsequently, we will continue to update the code by adding some new and efficient methods to make it more concise, lighter, faster in vehicle detection.
 ## Results
 
 
@@ -31,7 +30,7 @@ Subsequently, we will continue to update the code with adding some new and effic
 ---
 ## Environment
 `Note`: This is just a reference, the environment doesn’t have to be exactly the same.
-* Nvida GeForce RTX 1080 Ti
+* Nvidia GeForce RTX 1080 Ti
 * CUDA10.1
 * CUDNN7.6.0
 * ubuntu 18.04
