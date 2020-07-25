@@ -64,15 +64,12 @@ def remove_file(file_path):
         os.remove(file_path)
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('--weight_path', type=str, default='weight/best.pt', help='weight file path')
-    # parser.add_argument('--visiual', type=str, default='./data/test', help='data augment flag')
-    # parser.add_argument('--eval', action='store_true', default=True, help='data augment flag')
-    # parser.add_argument('--gpu_id', type=int, default=0, help='gpu id')
-    # opt = parser.parse_args()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--gpu_id', type=int, default=0, help='gpu id')
+    parser.add_argument('--visiual', type=bool, default=True, help="get det image in ./data/results")
+    opt = parser.parse_args()
     pre_process('./data')
     remove_file('./pred_result.json')
-    gpu_id = 0
-    visiual = True
-    COCOAPI_evaler(gpu_id=gpu_id,
-            visiual=visiual).eval_voc()
+    COCOAPI_evaler(gpu_id=opt.gpu_id,
+            visiual=opt.visiual).eval_voc()

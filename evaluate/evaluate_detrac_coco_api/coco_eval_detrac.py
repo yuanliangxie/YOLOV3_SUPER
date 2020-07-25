@@ -45,17 +45,17 @@ class COCOAPI_evaler(object):
         print("loading weight file is done")
 
 
-    def eval_voc(self):
+    def eval_voc(self, Analyze = False):
 
         print('*' * 20 + "Validate" + '*' * 20)
 
         with torch.no_grad():
-            coco_evaluater(self.__model, config, visiual=self.__visiual).eval()
+            coco_evaluater(self.__model, config, visiual=self.__visiual).eval(Analyze=Analyze)
 
     @staticmethod
-    def eval_data_with_result_file():
+    def eval_data_with_result_file(Analyze = False):
         print('*' * 20 + "直接通过已生成的预测结果文件进行Validate" + '*' * 20)
-        coco_evaluater.eval()
+        coco_evaluater.eval(Analyze=Analyze)
 
 def pre_process(data_dir_path):
     if not os.path.isdir(data_dir_path):
@@ -69,20 +69,18 @@ def remove_file(file_path):
         os.remove(file_path)
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('--weight_path', type=str, default='weight/best.pt', help='weight file path')
-    # parser.add_argument('--visiual', type=str, default='./data/test', help='data augment flag')
-    # parser.add_argument('--eval', action='store_true', default=True, help='data augment flag')
-    # parser.add_argument('--gpu_id', type=int, default=0, help='gpu id')
-    # opt = parser.parse_args()
-    scrach_run_flag = True
-    if scrach_run_flag == False:
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--gpu_id', type=int, default=0, help='gpu id')
+    parser.add_argument('--visiual', type=int, default=1, help="get det image in ./data/results")
+    parser.add_argument('--scratch_run_flag', type=int, default=1, help="是否重新用模型测评或直接对比json文件得出结果")
+    parser.add_argument('--Analyze', type=int, default=0, help="是否在./analyze_figure生成分析图")
+    opt = parser.parse_args()
+    if opt.scratch_run_flag == False:
         assert os.path.isfile('pred_result.json'), "找不到pred_result.json文件，请将scrach_run_flag设置为True"
-        COCOAPI_evaler.eval_data_with_result_file()
+        COCOAPI_evaler.eval_data_with_result_file(Analyze=opt.Analyze)
     else:
         pre_process('data')
         remove_file('pred_result.json')
-        gpu_id = 0
-        visiual = True
-        COCOAPI_evaler(gpu_id=gpu_id,
-                visiual=visiual).eval_voc()
+        COCOAPI_evaler(gpu_id=opt.gpu_id,
+                visiual=opt.visiual).eval_voc(Analyze=opt.Analyze)

@@ -2,6 +2,8 @@ import os
 import json
 import xml.etree.ElementTree as ET
 import numpy as np
+import sys
+sys.path.append("../../../YOLO_SUPER")
 from train.Detrac_data_preprocess.Detrac_data_process import txt_data
 
 START_BOUNDING_BOX_ID = 1
@@ -199,9 +201,12 @@ if __name__ == '__main__':
     #     print('3 auguments are need.')
     #     print('Usage: %s XML_LIST.txt XML_DIR OUTPU_JSON.json'%(sys.argv[0]))
     #     exit(1)
-
-    xml_dir = "/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/UA-DETRAC/DETRAC-Test-Annotations-XML"
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--xml_dir', type=str, default='/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/UA-DETRAC/DETRAC-Test-Annotations-XML', help='xml_file to detrac')
+    opt = parser.parse_args()
+    #xml_dir = "/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/UA-DETRAC/DETRAC-Test-Annotations-XML"
     #test_image_dir ="/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/UA-DETRAC/DETRAC-test-data"
     xml_list_txt = "Detrac_xml_list.txt"
-    get_xml_list(xml_dir, xml_list_txt)
-    convert(xml_list_txt, xml_dir, "Detrac_test.json")
+    get_xml_list(opt.xml_dir, xml_list_txt)
+    convert(xml_list_txt, opt.xml_dir, "Detrac_test.json")

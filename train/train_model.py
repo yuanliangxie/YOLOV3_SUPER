@@ -200,8 +200,11 @@ class trainer():
 
 if __name__ == "__main__":
 	#在跑程序前需要清空../evaluate/data或者../evaluate_coco/data或者evaluate_detrac_coco_api方法中的文件
-	config_name = "VOC"
-	device_id = 0
-	config_model_name = "yolov3"
-	trainer_voc = trainer.set_config(config_name, device_id, config_model_name)
+	import argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--config_name', type=str, default='VOC', help='VOC or U-DETRAC')
+	parser.add_argument('--device_id', type=int, default=0, help="choose the device_id")
+	parser.add_argument('--config_model_name', type=str, default='yolov3', help='you can cd ./models/model/model_factory to find model name')
+	opt = parser.parse_args()
+	trainer_voc = trainer.set_config(opt.config_name, opt.device_id, opt.config_model_name)
 	trainer_voc.start_train()

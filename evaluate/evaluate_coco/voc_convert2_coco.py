@@ -126,8 +126,11 @@ if __name__ == '__main__':
     #     print('3 auguments are need.')
     #     print('Usage: %s XML_LIST.txt XML_DIR OUTPU_JSON.json'%(sys.argv[0]))
     #     exit(1)
-
-    xml_dir = "/home/xyl/Pycharmproject/YOLOv3/voc_data/VOCtest-2007/VOCdevkit/VOC2007/Annotations"
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--xml_dir', type=str, default='/home/xyl/Pycharmproject/YOLOv3/voc_data/VOCtest-2007/VOCdevkit/VOC2007/Annotations', help='xml_dir_path')
+    opt = parser.parse_args()
+    #xml_dir = "/home/xyl/Pycharmproject/YOLOv3/voc_data/VOCtest-2007/VOCdevkit/VOC2007/Annotations"
     xml_list_txt = "xml_list.txt"
-    get_xml_list(xml_dir, xml_list_txt)
-    convert(xml_list_txt, xml_dir, "voc2007_test.json")
+    get_xml_list(opt.xml_dir, xml_list_txt)
+    convert(xml_list_txt, opt.xml_dir, "voc2007_test.json")
