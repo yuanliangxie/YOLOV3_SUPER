@@ -1,37 +1,37 @@
 # YOLOV3_SUPER
 
 #### 介绍
-此仓库包含有YOLOV3baseline以及改进版本
+此仓库包含有YOLOV3－baseline以及改进版本
 
 #### 软件架构
 本程序采用python编写，采用的深度学习框架是pytorch
 
+#### 安装需要的包：
+* tqdm
+* imgaug
+* cython
+* numpy == 1.17
+* [pycocotools]()
 
-#### 安装教程
+#### 安装中出现的问题
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1. 安装pycocotools时需要保证已经安装cython
+2. 安装pycocotools需要从这里给定的链接进行安装
+```angular2
+cd PythonAPI/
+make
+python setup.py build_ext install
+```
+即在本地环境中注册了pycocotools的包
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+本程序由几大模块构成：
+* dataset模块
+* model 模块
+* coco_evaluater 模块用来进行构建训练时的测评器
+* config模块对训练模型以及参数进行设置
 
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+如果想要在`./train/train_model`中输入额外的参数配置，则需要在里面的`trainer.set_config()`函数中引入参数
 
 
-#### 码云特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5.  码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
