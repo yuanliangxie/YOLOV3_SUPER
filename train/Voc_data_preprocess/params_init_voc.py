@@ -37,8 +37,8 @@ TRAINING_PARAMS = \
     "Multi-scale training": True, #要增加多尺度训练！
     "img_h": 416,
     "img_w": 416,
-    "parallels": [0],                         #  config GPU device
-    "working_dir": "/home/xyl/桌面/YOLO_SUPER",              #  replace with your working dir
+    "parallels": [0, 1],                         #  config GPU device
+    "working_dir": "/home/xyl/桌面/YOLOV3_SUPER",              #  replace with your working dir
     "pretrain_snapshot": "",
     #/home/xyl/桌面/YOLO_SUPER/darknet53/Multi-scale_try0/20200723120846/model.pth
     #/home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
@@ -49,7 +49,7 @@ TRAINING_PARAMS = \
 
 Eval = {
         "DATA_PATH": "/home/xyl/Pycharmproject/YOLOv3/voc_data",     #voc数据集所放地址
-        "PROJECT_PATH": "/home/xyl/桌面/YOLO_SUPER", #即本项目的地址
+        "PROJECT_PATH": "/home/xyl/桌面/YOLOV3_SUPER", #即本项目的地址
         "TEST_IMG_SIZE":544,
         "BATCH_SIZE":32,
         "NUMBER_WORKERS":0,

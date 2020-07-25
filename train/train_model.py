@@ -56,7 +56,7 @@ class trainer():
 		config_train["config_name"] = config_name
 		config_train["model_name"] = config_model_name
 		config_train["device_id"] = device_id#TODO:这个是自己加的，可以在解析parase的时候进行加载
-		config_train["batch_size"] *= len(config_train["parallels"])
+		#config_train["batch_size"] *= len(config_train["parallels"])
 
 		# Create sub_working_dir
 		config_train = create_sub_workdir(config_train)
