@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append("../../YOLO_SUPER")
+sys.path.append("../../YOLOV3_SUPER")
 import time
 import torch
 from utils.timer import Timer
