@@ -1,6 +1,9 @@
 # coding=utf-8
 # k-means ++ for YOLOv2 anchors
 # 通过k-means ++ 算法获取YOLOv2需要的anchors的尺寸
+import codecs
+import sys
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 import numpy as np
 import os
 from tqdm import tqdm

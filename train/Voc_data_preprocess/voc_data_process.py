@@ -81,8 +81,8 @@
 #用类重构的生成数据地址和标签的程序
 import sys
 import os
-# MY_DIRNAME = os.path.dirname(os.path.abspath(__file__))
-# sys.path.insert(0, os.path.join(MY_DIRNAME, '..'))
+import codecs
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 sys.path.append("../../../YOLOV3_SUPER")
 import train.Voc_data_preprocess.params_init_voc as params_init
 import xml.etree.ElementTree as ET

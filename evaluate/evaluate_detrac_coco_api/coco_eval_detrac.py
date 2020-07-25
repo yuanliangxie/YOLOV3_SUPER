@@ -1,7 +1,7 @@
 import sys
 import os
-# MY_DIRNAME = os.path.dirname(os.path.abspath(__file__))
-# sys.path.insert(0, os.path.join(MY_DIRNAME, '..'))
+import codecs
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 sys.path.append("../../../YOLOV3_SUPER")
 from models.model.model_yolov3_baseline import yolov3
 from evaluate.evaluate_detrac_coco_api.coco_evaluater import coco_evaluater
