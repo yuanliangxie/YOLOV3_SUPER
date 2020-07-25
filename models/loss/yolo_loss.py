@@ -61,21 +61,19 @@ class YOLOLoss(nn.Module):
         conf = torch.sigmoid(prediction[..., 4])  # Conf
         pred_cls = torch.sigmoid(prediction[..., 5:])  # Cls pred.
 
-        FloatTensor = torch.cuda.FloatTensor if x.is_cuda else torch.FloatTensor
-        LongTensor = torch.cuda.LongTensor if x.is_cuda else torch.LongTensor
         # Calculate offsets for each grid
         grid_x = torch.linspace(0, in_w - 1, in_w).repeat(in_w, 1).repeat(
-            bs * self.num_anchors, 1, 1).view(x.shape).type(FloatTensor)
+            bs * self.num_anchors, 1, 1).view(x.shape).to(self.device)
         grid_y = torch.linspace(0, in_h - 1, in_h).repeat(in_h, 1).t().repeat(
-            bs * self.num_anchors, 1, 1).view(y.shape).type(FloatTensor)
+            bs * self.num_anchors, 1, 1).view(y.shape).to(self.device)
         # Calculate anchor w, h
-        anchor_w = FloatTensor(scaled_anchors).index_select(1, LongTensor([0]))
-        anchor_h = FloatTensor(scaled_anchors).index_select(1, LongTensor([1]))
+        anchor_w = torch.FloatTensor(scaled_anchors).index_select(1, torch.LongTensor([0])).to(self.device)
+        anchor_h = torch.FloatTensor(scaled_anchors).index_select(1, torch.LongTensor([1])).to(self.device)
         anchor_w = anchor_w.repeat(bs, 1).repeat(1, 1, in_h * in_w).view(w.shape)
         anchor_h = anchor_h.repeat(bs, 1).repeat(1, 1, in_h * in_w).view(h.shape)
 
         # Add offset and scale with anchors
-        pred_boxes = FloatTensor(prediction[..., :4].shape)
+        pred_boxes = torch.FloatTensor(prediction[..., :4].shape).to(self.device)
         pred_boxes[..., 0] = x.data + grid_x
         pred_boxes[..., 1] = y.data + grid_y
         pred_boxes[..., 2] = torch.exp(w.data) * anchor_w
@@ -126,7 +124,7 @@ class YOLOLoss(nn.Module):
         else:
 
             # Results
-            _scale = torch.Tensor([stride_w, stride_h] * 2).type(FloatTensor)
+            _scale = torch.FloatTensor([stride_w, stride_h] * 2).to(self.device)
             output = torch.cat((pred_boxes.view(bs, -1, 4) * _scale,
                                 conf.view(bs, -1, 1), pred_cls.view(bs, -1, self.num_classes)), -1)
             return output.data
