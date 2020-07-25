@@ -83,7 +83,7 @@ import sys
 import os
 # MY_DIRNAME = os.path.dirname(os.path.abspath(__file__))
 # sys.path.insert(0, os.path.join(MY_DIRNAME, '..'))
-sys.path.append("../../../YOLO_SUPER")
+sys.path.append("../../../YOLOV3_SUPER")
 import train.Voc_data_preprocess.params_init_voc as params_init
 import xml.etree.ElementTree as ET
 import shutil

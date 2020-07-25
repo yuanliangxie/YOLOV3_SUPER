@@ -2,7 +2,7 @@ import sys
 import os
 # MY_DIRNAME = os.path.dirname(os.path.abspath(__file__))
 # sys.path.insert(0, os.path.join(MY_DIRNAME, '..'))
-sys.path.append("../../../YOLO_SUPER")
+sys.path.append("../../../YOLOV3_SUPER")
 from models.model.model_yolov3_baseline import yolov3
 from evaluate.evaluate_coco.coco_evaluater import coco_evaluater
 from evaluate.evaluate_coco.yolov3_config_voc_test import TEST as config

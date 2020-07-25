@@ -3,7 +3,7 @@ import json
 import xml.etree.ElementTree as ET
 import numpy as np
 import sys
-sys.path.append("../../../YOLO_SUPER")
+sys.path.append("../../../YOLOV3_SUPER")
 from train.Detrac_data_preprocess.Detrac_data_process import txt_data
 
 START_BOUNDING_BOX_ID = 1
