@@ -11,7 +11,7 @@
 * imgaug
 * cython
 * numpy == 1.17
-* [pycocotools]()
+* [pycocotools](git@gitee.com:yuanliangxie/cocoapi.git)
 
 #### 安装中出现的问题
 
