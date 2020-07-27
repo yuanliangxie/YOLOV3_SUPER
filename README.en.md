@@ -1,7 +1,7 @@
 # YOLOV3-SUPER
 ---
 # Introduction
-This is a YOLOV3 baseline written in PyTorch. The eval dataset used is PASCAL VOC(not use difficulty). The eval tool is the [cocoAPI](https://github.com/wenmengzhou/cocoapi/tree/add_analyze_func). The mAP gains the score as same as the original paper.
+This is a YOLOV3 baseline written in PyTorch. The eval dataset used is PASCAL VOC(not use difficulty). The eval tool is the [cocoAPI](git@gitee.com:yuanliangxie/cocoapi.git). The mAP gains the score as same as the original paper.
 Subsequently, we will continue to update the code by adding some new and efficient methods to make it more concise, lighter, faster in vehicle detection.
 ## Results
 
@@ -100,6 +100,17 @@ cd train/Voc_data_preprocess
 python voc_data_process.py
 ```
 then the dataset is ready
+* third<br>
+```Bash
+cd evaluate/evaluate_coco
+python voc_convert2_coco.py --xml_dir ~~~
+```
+or
+```Bash
+cd evaluate/evaluate_detrac_coco_api
+python Detrac_convert2_coco.py
+```
+then the evaluation's gt_json for evaluate is ready
 
 
 ### 3、Download weight file
@@ -116,8 +127,7 @@ Run the following command to start training and see the details in the `darknet5
 ```Bash
 
 cd train/
-CUDA_VISIBLE_DEVICES=0 python train_model.py
-
+python train_model.py --config_name "VOC" --device_id 0 --config_model_name "yolov3"
 
 ```
 
