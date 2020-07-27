@@ -14,7 +14,8 @@
 * [pycocotools](git@gitee.com:yuanliangxie/cocoapi.git)
 
 #### 安装中出现的问题
-
+#####项目介绍与安装详见`./README.en.md`
+下面是一些补充：
 1. 安装pycocotools时需要保证已经安装cython
 2. 安装pycocotools需要从这里给定的链接进行安装
 ```angular2
