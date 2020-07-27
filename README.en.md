@@ -1,7 +1,7 @@
 # YOLOV3-SUPER
 ---
 # Introduction
-This is a YOLOV3 baseline written in PyTorch. The eval dataset used is PASCAL VOC(not use difficulty). The eval tool is the [cocoAPI](git@gitee.com:yuanliangxie/cocoapi.git). The mAP gains the score as same as the original paper.
+This is a YOLOV3 baseline written in PyTorch. The eval dataset used is PASCAL VOC(not use difficulty). The eval tool is the [cocoAPI](https://gitee.com/yuanliangxie/cocoapi). The mAP gains the score as same as the original paper.
 Subsequently, we will continue to update the code by adding some new and efficient methods to make it more concise, lighter, faster in vehicle detection.
 ## Results
 
