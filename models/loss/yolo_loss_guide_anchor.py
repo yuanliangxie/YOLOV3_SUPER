@@ -187,7 +187,7 @@ class YOLOLoss(nn.Module):
         tcls = torch.zeros(bs, self.free_anchors, in_h, in_w, self.num_classes, requires_grad=False)  # self.num_classes
         gussian_weight = torch.zeros(bs, self.free_anchors, in_h, in_w, requires_grad=False)
         for b in range(bs):
-            pred_box = pred_boxs[b].view(-1,4)
+            pred_box = pred_boxs[b].view(-1, 4)
             for t in range(target.shape[1]):
                 if target[b, t].sum() == 0:
                     continue

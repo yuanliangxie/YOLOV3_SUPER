@@ -143,7 +143,7 @@ class trainer():
 				losses = []
 				for _ in range(len(losses_name)):
 					losses.append([])
-				for i in range(3):
+				for i in range(len(outputs)):
 					for j, l in enumerate(outputs[i]):
 						losses[j].append(l)
 				losses = [sum(l) for l in losses]#TODO:这里用sum会进行反向传播吗？经过简单的实验验证是可以反向传播的！
@@ -156,7 +156,7 @@ class trainer():
 
 					save_checkpoint(self.net.state_dict(), self.config_train, map=None, optimizer=self.optimizer, epoch=epoch, logger=self.logger)#TODO：记录最佳的map与正常的模型，存储模型时加入epoch和step信息，便于重新加载训练！
 
-					if epoch >= 0 and epoch % 5 == 0:
+					if epoch > 20 and epoch % 5 == 0:
 						images.cpu()
 						del samples
 						self.net.train(False)  # 进入eval模式
@@ -202,9 +202,9 @@ if __name__ == "__main__":
 	#在跑程序前需要清空../evaluate/data或者../evaluate_coco/data或者evaluate_detrac_coco_api方法中的文件
 	import argparse
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--config_name', type=str, default='VOC', help='VOC or U-DETRAC')
+	parser.add_argument('--config_name', type=str, default='VOC_poly_yolo', help='VOC or U-DETRAC or VOC_poly_yolo')
 	parser.add_argument('--device_id', type=int, default=0, help="choose the device_id")
-	parser.add_argument('--config_model_name', type=str, default='yolov3', help='you can cd ./models/model/model_factory to find model name')
+	parser.add_argument('--config_model_name', type=str, default='poly_yolo', help='you can cd ./models/model/model_factory to find model name')
 	opt = parser.parse_args()
 	trainer_voc = trainer.set_config(opt.config_name, opt.device_id, opt.config_model_name)
 	trainer_voc.start_train()

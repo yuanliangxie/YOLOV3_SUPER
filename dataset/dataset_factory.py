@@ -9,7 +9,7 @@ _dataset_factory = {
 
 
 def load_dataset(config_train, image_size_train):
-	if config_train["config_name"] == "VOC":
+	if config_train["config_name"][0:3] == "VOC":
 		Dataset = _dataset_factory["VOC"]
 		dataset = Dataset(list_path= config_train["train_path"], labels_path= config_train["train_labels_path"],
 						  img_size= image_size_train, is_training=True, batch_size=config_train["batch_size"])
