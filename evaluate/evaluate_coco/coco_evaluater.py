@@ -36,7 +36,7 @@ class coco_evaluater(Evaluator):
         cocoEval.evaluate()
         cocoEval.accumulate()
         state = cocoEval.summarize()
-        #cocoEval.analyze('./analyze_figure')
+        #cocoEval.analyze('./analyze_figure_poly_yolo')
         return state
 
 

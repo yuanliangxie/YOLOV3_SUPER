@@ -4,6 +4,7 @@ import numpy as np
 import math
 from utils.utils_old import bbox_ious as bbox_iou
 from utils.utils_select_device import select_device
+from models.bricks.tricks import label_smooth
 
 
 
@@ -107,6 +108,9 @@ class YOLOLoss(nn.Module):
             if tcls[mask == 1].shape[0] == 0:
                 loss_cls = torch.tensor(0).to(self.device)
             else:
+                #加入lable_smooth
+                #ls = label_smooth(theta=0.1, classes=self.num_classes)
+                #tcls = ls.smooth(tcls, mask)
                 loss_cls = self.bce_loss(pred_cls[mask == 1], tcls[mask == 1]).sum()/n_obj
 
             #  total loss = losses * weight

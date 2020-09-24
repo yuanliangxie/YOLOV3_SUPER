@@ -63,9 +63,9 @@ class YOLOLoss(nn.Module):
 		pred_cls = torch.sigmoid(prediction[..., 5:])  # Cls pred.
 
 		# Calculate offsets for each grid
-		grid_x = torch.linspace(0, in_w - 1, in_w).repeat(in_w, 1).repeat(
+		grid_x = torch.linspace(0, in_w - 1, in_w).repeat(in_h, 1).repeat(
 			bs * self.num_anchors, 1, 1).view(x.shape).to(self.device)
-		grid_y = torch.linspace(0, in_h - 1, in_h).repeat(in_h, 1).t().repeat(
+		grid_y = torch.linspace(0, in_h - 1, in_h).repeat(in_w, 1).t().repeat(
 			bs * self.num_anchors, 1, 1).view(y.shape).to(self.device)
 		# Calculate anchor w, h
 		anchor_w = torch.FloatTensor(scaled_anchors).index_select(1, torch.LongTensor([0])).to(self.device)
@@ -98,7 +98,7 @@ class YOLOLoss(nn.Module):
 			false_loss = 0.5 * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0).sum()/n_obj
 			# loss_conf = (self.bce_loss(conf * mask, mask).sum()/n_obj + \
 			# 			 0.5 * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0).sum()/n_obj)
-			loss_conf = positive_loss + 0.1 * false_loss
+			loss_conf = positive_loss + false_loss
 
 			if tcls[mask == 1].shape[0] == 0:
 				loss_cls = torch.tensor(0).to(self.device)

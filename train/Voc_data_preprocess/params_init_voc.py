@@ -43,7 +43,7 @@ TRAINING_PARAMS = \
     #/home/xyl/桌面/YOLO_SUPER/darknet53/Multi-scale_try0/20200723120846/model.pth
     #/home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
     #../darknet53/Multi-scale_try0/20200522220233/model_map_0.812.pth
-    "try": 0,
+    "try": '+mix_up',
     "scheduler_way": "Cosdecay"
 }
 

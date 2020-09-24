@@ -37,7 +37,7 @@ TRAINING_PARAMS = \
 		"img_w": 608,
 		"parallels": [0, 1],                         #  config GPU device
 		"working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
-		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try0/20200910230526/model.pth",
+		"pretrain_snapshot": "",
 		#/home/xyl/桌面/YOLO_SUPER/darknet53/Multi-scale_try0/20200723120846/model.pth
 		#/home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
 		#../darknet53/Multi-scale_try0/20200522220233/model_map_0.812.pth
