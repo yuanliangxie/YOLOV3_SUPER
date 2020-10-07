@@ -130,17 +130,23 @@ if __name__ == "__main__":
     sys.path.insert(0, os.path.join(MY_DIRNAME, '..'))
     import train.Voc_data_preprocess.params_init_voc as params_init
     classes_category = params_init.TRAINING_PARAMS["yolo"]["classes_category"]
-    vocdataset = VOCDataset("../data/voc/trainval.txt",#vehecal/vehecal_train.txt",
-                            (544, 544), True, is_debug=True, batch_size=8)
+    vocdataset = VOCDataset("../data/voc/test.txt", "../data/voc/labels_test",
+                            None, True, is_debug=False, batch_size=8)
     index_2_classes = vocdataset.index_2_classes(classes_category)
     dataloader = torch.utils.data.DataLoader(vocdataset,
                                              batch_size=8,
                                              shuffle=False, num_workers=0, pin_memory=False, collate_fn=vocdataset.collate_fn)
     print(len(vocdataset))
+    from models.bricks.tricks import mix_up
+    mix_up_method = mix_up(1)
     for step, sample in enumerate(dataloader):
         #print(step)
-        for i, (image, label) in enumerate(zip(sample['image'], sample['label'])):
-            image = image.numpy()
+        images, labels = sample['image'], sample['label']
+        images, labels = mix_up_method.mixup(images, labels)
+        for i, (image, label) in enumerate(zip(images, labels)):
+            image = image.numpy()*255
+            image = image.astype(np.uint8)
+            image = np.transpose(image, (1, 2, 0))
             label = label.numpy()
             h, w = image.shape[:2]
             for l in label:
@@ -154,8 +160,9 @@ if __name__ == "__main__":
                 # y1 = int(l[2] * h)
                 # x2 = int(l[3] * w)
                 # y2 = int(l[4] * h)
-                cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 255), thickness=2)
-                cv2.putText(image, index_2_classes[l[0]], (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
+                image = np.ascontiguousarray(image)
+                image = cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 255), thickness=2)
+                image = cv2.putText(image, index_2_classes[l[0]], (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
 
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             #cv2.imwrite("step{}_{}.jpg".format(step, i), image)

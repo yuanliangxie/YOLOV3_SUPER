@@ -10,8 +10,9 @@ from models.bricks.tricks import label_smooth
 
 
 class YOLOLoss(nn.Module):
-    def __init__(self, anchors, num_classes, stride, config_anchor, device_id):#([],80,(w,h))
+    def __init__(self, anchors, num_classes, stride, config, device_id):#([],80,(w,h))
         super(YOLOLoss, self).__init__()
+        config_anchor = config["yolo"]["anchors"]
         self.anchors = anchors
         self.total_anchors = self.get_total_anchors(config_anchor)
         self.anchors_mask = self.get_anchors_mask()
@@ -26,7 +27,9 @@ class YOLOLoss(nn.Module):
         self.lambda_cls = 1
         self.bce_loss = nn.BCELoss(reduction='none')#交叉熵
         self.smooth_l1 = nn.SmoothL1Loss(reduction='none')
+        self.ce_loss = nn.CrossEntropyLoss(reduction='none')
         self.device = select_device(device_id)
+        self.config = config
 
     def get_anchors_mask(self):
         mask = []
@@ -60,7 +63,15 @@ class YOLOLoss(nn.Module):
         w = prediction[..., 2]  # Width
         h = prediction[..., 3]  # Height
         conf = torch.sigmoid(prediction[..., 4])  # Conf
-        pred_cls = torch.sigmoid(prediction[..., 5:])  # Cls pred.
+        pure_cls = prediction[..., 5:]
+
+        #bce多标签多分类
+        if self.config['bce']:
+            pred_cls = torch.sigmoid(prediction[..., 5:])  # Cls pred.
+
+        #ce单标签多分类
+        if self.config['ce']:
+            pred_cls = torch.softmax(prediction[..., 5:], dim=-1)
 
         # Calculate offsets for each grid
         grid_x = torch.linspace(0, in_w - 1, in_w).repeat(in_w, 1).repeat(
@@ -111,7 +122,14 @@ class YOLOLoss(nn.Module):
                 #加入lable_smooth
                 #ls = label_smooth(theta=0.1, classes=self.num_classes)
                 #tcls = ls.smooth(tcls, mask)
-                loss_cls = self.bce_loss(pred_cls[mask == 1], tcls[mask == 1]).sum()/n_obj
+                if self.config['bce']:
+                    loss_cls = self.bce_loss(pred_cls[mask == 1], tcls[mask == 1]).sum()/n_obj
+                #使用多分类交叉熵损失函数
+                if self.config['ce']:
+                    targets_label = tcls[mask==1]
+                    label_rc = torch.where(targets_label==1)
+                    #targets_label[label_rc[0], label_rc[1]] = label_rc[1].float()
+                    loss_cls = self.ce_loss(pure_cls[mask==1], label_rc[1]).sum()/n_obj
 
             #  total loss = losses * weight
             loss = loss_x * self.lambda_xy + loss_y * self.lambda_xy + \
@@ -145,7 +163,7 @@ class YOLOLoss(nn.Module):
         th = torch.zeros(bs, self.num_anchors, in_h, in_w, requires_grad=False)
         tconf = torch.zeros(bs, self.num_anchors, in_h, in_w, requires_grad=False)
         tcls = torch.zeros(bs, self.num_anchors, in_h, in_w, self.num_classes, requires_grad=False)  # self.num_classes
-
+        match_max_IOU = torch.zeros(bs, self.num_anchors, in_h, in_w, requires_grad=False)
 
         # anchor_box_prior = torch.zeros()#TODO
         # anchor_box_prior = FloatTensor(prediction[..., :4].shape)
@@ -205,8 +223,15 @@ class YOLOLoss(nn.Module):
                     # one_hot[int(target[b,t,0])] = 1
                     # one_hot_smooth = LabelSmooth()(one_hot, self.num_classes)
                     # tcls[b, anchor_index, gj, gi] = one_hot_smooth
-                    tcls[b, anchor_index, gj, gi, int(
-                        target[b, t, 0])] = 1  # 这里的target就表明label的类别标签是要从0开始的#int(target([b,t,0])
+
+                    #这里进行了条件的选择，如果match_iou > 记录的maxiou，则进行更新，但是如果<=且记录的maxiou不为零时，则不进行更新，直接pass,这里的作用是只选取与
+                    #anchor交并比匹配最大的真实标注框即gtbox
+                    if anchor_match_ious[0][best_n] <= match_max_IOU[b, anchor_index, gj, gi] and match_max_IOU[b, anchor_index, gj, gi] != 0:
+                        pass
+                    else:
+                        tcls[b, anchor_index, gj, gi] = torch.zeros(self.num_classes, requires_grad=False)
+                        tcls[b, anchor_index, gj, gi, int(
+                            target[b, t, 0])] = 1  # 这里的target就表明label的类别标签是要从0开始的#int(target([b,t,0])
 
         return n_obj, mask, noobj_mask, tx, ty, tw, th, tconf, tcls, scales
 

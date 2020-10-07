@@ -20,7 +20,7 @@ class mix_up(object):
 
 	def mixup(self, images, targets):
 		index = torch.randperm(images.size(0))
-		lam = np.random.beta(self.alpha, self.alpha)
+		lam = 0.5#np.random.beta(self.alpha, self.alpha)
 		output_images = lam * images + (1- lam) * images[index, :]
 		targets = torch.cat((targets, targets[index, :]), 1)
 		return output_images, targets

@@ -138,9 +138,12 @@ class trainer():
 				#images, labels = samples["image"].to(self.device), samples["label"]
 
 				#加入mixup
-				images, labels = samples['image'], samples['label']
-				images, labels = self.mix_up.mixup(images, labels)
-				images = images.to(self.device)
+				if self.config_train['mix_up'] == True:
+					images, labels = samples['image'], samples['label']
+					images, labels = self.mix_up.mixup(images, labels)
+					images = images.to(self.device)
+				else:
+					images, labels = samples["image"].to(self.device), samples["label"]
 
 
 				start_time = time.time()
@@ -166,7 +169,7 @@ class trainer():
 
 					save_checkpoint(self.net.state_dict(), self.config_train, map=None, optimizer=self.optimizer, epoch=epoch, logger=self.logger)#TODO：记录最佳的map与正常的模型，存储模型时加入epoch和step信息，便于重新加载训练！
 
-					if epoch > 20 and epoch % 5 == 0:
+					if epoch > 10 and epoch % 5 == 0:
 						images.cpu()
 						del samples
 						self.net.train(False)  # 进入eval模式

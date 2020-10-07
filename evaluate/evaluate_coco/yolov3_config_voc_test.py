@@ -12,7 +12,7 @@ TEST = {
                    'motorbike', 'person', 'pottedplant', 'sheep', 'sofa',
                    'train', 'tvmonitor'],
                 "NUM":20},
-        "TEST_IMG_SIZE":416,
+        "TEST_IMG_SIZE":544,
         "BATCH_SIZE":32,
         "NUMBER_WORKERS":0,
         "CONF_THRESH":0.01,
@@ -25,6 +25,11 @@ TEST = {
                             [[10, 13], [16, 30], [33, 23]]],
                 "classes": 20,
                 },
-        "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try0/20200909221333/model_map_0.830.pth"
+        "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try0/20200909221333/model.pth",
+        "ce": False,
+        "bce": True,
+        "generate_analyze_figure": False,
+        "generate_analyze_figure_dir_name":"analyze_ce_loss_yolo"
         }
+
 

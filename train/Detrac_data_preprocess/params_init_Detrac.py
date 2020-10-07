@@ -40,7 +40,8 @@ TRAINING_PARAMS = \
     "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLO_superX/darknet53/Multi-scale_trydetrac_baseline_train/20200625231341/model.pth",
     #../darknet53/Multi-scale_trydetrac_baseline_train/20200624231208/model.pth
     "try": "detrac_baseline_train",
-    "scheduler_way": "Cosdecay"
+    "scheduler_way": "Cosdecay",
+    "mix_up": True
 }
 
 Eval = {

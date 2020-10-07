@@ -42,7 +42,8 @@ TRAINING_PARAMS = \
 		#/home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
 		#../darknet53/Multi-scale_try0/20200522220233/model_map_0.812.pth
 		"try": 0,
-		"scheduler_way": "Cosdecay"
+		"scheduler_way": "Cosdecay",
+		"mix_up": True
 	}
 
 Eval = {

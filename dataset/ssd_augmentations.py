@@ -537,6 +537,13 @@ class ImageBaseAug(object):
         image = self.seq(image=image)
         return image, boxes, labels
 
+# class Mixup(object):
+#     def __init__(self, alpha):
+#         self.alpha = alpha
+#
+#     def __call__(self, image, boxes, labels):
+
+
 
 class SSDAugmentation(object):
     def __init__(self, mean=(104, 117, 123)):
