@@ -86,12 +86,15 @@ class YOLOLoss(nn.Module):
         anchor_w = anchor_w.repeat(bs, 1).repeat(1, 1, in_h * in_w).view(w.shape)
         anchor_h = anchor_h.repeat(bs, 1).repeat(1, 1, in_h * in_w).view(h.shape)
 
-        # Add offset and scale with anchors
-        pred_boxes = torch.FloatTensor(prediction[..., :4].shape).to(self.device)
-        pred_boxes[..., 0] = x.data + grid_x
-        pred_boxes[..., 1] = y.data + grid_y
-        pred_boxes[..., 2] = torch.exp(w.data) * anchor_w
-        pred_boxes[..., 3] = torch.exp(h.data) * anchor_h
+        # # Add offset and scale with anchors
+        # pred_boxes = torch.FloatTensor(prediction[..., :4].shape).to(self.device)
+        # #后面计算giou需要用到pred_boxes进行梯度反传！
+        # pred_boxes[..., 0] = x + grid_x
+        # pred_boxes[..., 1] = y + grid_y
+        # pred_boxes[..., 2] = torch.exp(w) * anchor_w
+        # pred_boxes[..., 3] = torch.exp(h) * anchor_h
+
+        pred_boxes = torch.stack([x + grid_x, y + grid_y, torch.exp(w) * anchor_w, torch.exp(h) * anchor_h], dim=-1)
 
         #assign anchor to the feature_map
         # anchor_prior = FloatTensor(prediction[..., :4].shape[1:])
@@ -103,7 +106,7 @@ class YOLOLoss(nn.Module):
 
         if targets is not None:
             n_obj, mask, noobj_mask, tx, ty, tw, th, tconf, tcls, coord_scale, giou_gt_box= self.get_target(targets, scaled_anchors,
-                                                                                                in_w, in_h, pred_boxes
+                                                                                                in_w, in_h, pred_boxes.detach()
                                                                                                 , scaled_total_anchors
                                                                                                 )
 
@@ -164,7 +167,7 @@ class YOLOLoss(nn.Module):
 
             # Results
             _scale = torch.FloatTensor([stride_w, stride_h] * 2).to(self.device)
-            output = torch.cat((pred_boxes.view(bs, -1, 4) * _scale,
+            output = torch.cat((pred_boxes.detach().view(bs, -1, 4) * _scale,
                                 conf.view(bs, -1, 1), pred_cls.view(bs, -1, self.num_classes)), -1)
             return output.data
 

@@ -171,7 +171,7 @@ class trainer():
 					for j, l in enumerate(outputs[i]):
 						losses[j].append(l)
 				losses = [sum(l) for l in losses]#TODO:这里用sum会进行反向传播吗？经过简单的实验验证是可以反向传播的！
-				loss = losses[0]  # 求的是total_loss
+				loss = losses[0]/self.config_train["accumulate"]  # 求的是total_loss
 				loss.backward()
 
 				#每累加到一定次数才清零
