@@ -46,6 +46,7 @@ class trainer():
 		self.mix_up = mix_up(1)
 
 
+
 	@classmethod
 	def set_config(cls, config_name, device_id, config_model_name):
 		"""
@@ -121,8 +122,16 @@ class trainer():
 			#加载最新的保存有
 			load_checkpoint = torch.load(self.config_train["pretrain_snapshot"])
 			state_dict = load_checkpoint["state_dict"]
-			self.epoch_init = load_checkpoint["epoch"]
-			self.config_train["global_step"] = load_checkpoint['global_step']
+
+			#加入了继续训练的功能,其中还可以在config文件中自行设置在哪个epoch继续训练,如果为空或者None,则默认从记录的开始加载步数
+
+			if self.config_train["resume_start_epoch"]:
+				self.epoch_init = self.config_train["resume_start_epoch"]
+				self.config_train["global_step"] = self.epoch_init * len(self.dataloader)
+			else:
+				self.epoch_init = load_checkpoint["epoch"]
+				self.config_train["global_step"] = load_checkpoint['global_step']
+
 			self.net.load_state_dict(state_dict)
 			self.optimizer.load_state_dict(load_checkpoint['optimizer'])
 			self.lr_scheduler.step(self.config_train["global_step"])#通过得到已经走过的步数信息，更新lr
@@ -148,11 +157,13 @@ class trainer():
 
 				start_time = time.time()
 
-
 				# Forward and backward
-				self.optimizer.zero_grad()
 				outputs = self.net(images, target=labels)
-				losses_name = ["total_loss", "x", "y", "w", "h", "conf", "cls"]
+				if self.config_train["GIOU"]:
+					losses_name = ["total_loss", "giou", "conf", "cls"]
+				else:
+					losses_name = ["total_loss", "x", "y", "w", "h", "conf", "cls"]
+
 				losses = []
 				for _ in range(len(losses_name)):
 					losses.append([])
@@ -162,7 +173,11 @@ class trainer():
 				losses = [sum(l) for l in losses]#TODO:这里用sum会进行反向传播吗？经过简单的实验验证是可以反向传播的！
 				loss = losses[0]  # 求的是total_loss
 				loss.backward()
-				self.optimizer.step()
+
+				#每累加到一定次数才清零
+				if step % self.config_train["accumulate"] == 0:
+					self.optimizer.step()
+					self.optimizer.zero_grad()
 				self.lr_scheduler.step(self.config_train["global_step"])#这里两个Ir_scheduler合并一致了
 
 				if step >0 and step % int(len(self.dataloader)-1) == 0:#TODO:设置定时放map，此时是一个epoch来记录一下模型

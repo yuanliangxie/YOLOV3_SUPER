@@ -33,21 +33,31 @@ TRAINING_PARAMS = \
     "batch_size": 8,
     "train_path": "../data/voc/trainval.txt",#../data/coco/vehecal/vehecal_train.txt",
     "train_labels_path": "../data/voc/labels",
-    "epochs": 80,
+    "epochs": 81,
     "Multi-scale training": True, #要增加多尺度训练！
     "img_h": 416, #只有在单尺度下，这个尺寸才会生效！
     "img_w": 416,
     "parallels": [0, 1],                         #  config GPU device
     "working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
-    "pretrain_snapshot": "",
+
+    #restore_model_weight:
+    "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try+ce_loss+giou+accumulate:2/20201008225418/model.pth",
+    #/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try+ce_loss/20201006121114/model.pth
     #/home/xyl/桌面/YOLO_SUPER/darknet53/Multi-scale_try0/20200723120846/model.pth
     #/home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
     #../darknet53/Multi-scale_try0/20200522220233/model_map_0.812.pth
-    "try": '+ce_loss',
+    "resume_start_epoch": None,
+
+
+    #tricks
+    "try": '+ce_loss+giou+accumulate:2',
     "scheduler_way": "Cosdecay",
+    "label_smooth": False, #label_smooth还有一些问题要跟ce适应
+    "GIOU": True,
     "mix_up": False,
     "ce": True,
-    "bce": False
+    "bce": False,
+    "accumulate":2
 }
 
 Eval = {
@@ -62,4 +72,7 @@ Eval = {
         "FLIP_TEST":False,
         "test_path": "../data/voc/test.txt",
         "test_labels_path": "../data/voc/labels_test",
+        #不产生结果分析图
+        "generate_analyze_figure":False,
+
         }
