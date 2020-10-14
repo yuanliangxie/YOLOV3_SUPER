@@ -111,8 +111,8 @@ class trainer():
 		coco_evaluater = load_coco_evaluater(self.config_train["config_name"])
 		return coco_evaluater
 
-	def restore_model(self, self_train_weight=True):
-		if self.config_train["pretrain_snapshot"].strip() and self_train_weight:
+	def restore_model(self):
+		if self.config_train["pretrain_snapshot"].strip() and self.config_train["self_train_weight"]:
 			self.logger.append("Load pretrained weights from {}".format(self.config_train["pretrain_snapshot"]))
 			#print("Load pretrained weights from {}".format(config["pretrain_snapshot"]))
 			if self.config_train["pretrain_snapshot"].split('/')[-1].strip(" ") == "model.pth":
@@ -137,11 +137,11 @@ class trainer():
 			self.lr_scheduler.step(self.config_train["global_step"])#通过得到已经走过的步数信息，更新lr
 			self.config_train["global_step"] += 1
 	#如果是调用不是自己训练的权重，那么进行额外的解析！
-		elif self.config_train["pretrain_snapshot"].strip() and not self_train_weight:
+		elif self.config_train["pretrain_snapshot"].strip() and not self.config_train["self_train_weight"]:
 			self.logger.append("Load pretrained weights from {}".format(self.config_train["pretrain_snapshot"]))
 			state_dict = torch.load(self.config_train["pretrain_snapshot"])
-			if self.config_train["resume_start_epoch"]:
-				self.epoch_init = self.config_train["resume_start_epoch"]
+			if self.config_train["resume_start_epoch"] >= 0:
+				self.epoch_init = int(self.config_train["resume_start_epoch"]) #防止将resume_start_epoch设置为浮点数
 				self.config_train["global_step"] = self.epoch_init * len(self.dataloader)
 			else:
 				self.epoch_init = 0
