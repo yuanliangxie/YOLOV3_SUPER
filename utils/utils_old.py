@@ -218,19 +218,32 @@ class focal_loss_gaussian_weight(object):
         self.beta = beta
         self.weight_pos = 1
         self.weight_neg = torch.pow(1 - gaussian_weight, 4)
+        #self.gaussian_weight = gaussian_weight
 
-    def __call__(self, conf, mask):
+    def __call__(self, pred_conf_cls, mask):
 
-        pt = mask * conf + (1 - mask) * (1 - conf)
-        ce_loss = F.binary_cross_entropy(conf, mask, reduction='none')
+        pt = mask * pred_conf_cls + (1 - mask) * (1 - pred_conf_cls)
         if self.weight_pos > 0:
             weight = mask * self.weight_pos + (1 - mask) * self.weight_neg
-            # loss = -1 * weight * (1-pt)**self.gamma * torch.log(pt)
-            loss = weight * (1 - pt) ** self.gamma * ce_loss
+            loss = -1 * weight * (1-pt)**self.gamma * torch.log(pt)
         else:
-            loss = (1 - pt) ** self.gamma * ce_loss
+            loss = (1 - pt) ** self.gamma * torch.log(pt)
         return loss
 
+from torch import nn
+
+class HeatmapLoss(nn.Module):
+    def __init__(self,  weight=None, alpha=2, beta=4, reduction='mean'):
+        super(HeatmapLoss, self).__init__()
+        self.alpha = alpha
+        self.beta = beta
+    def forward(self, inputs, targets):
+        #inputs = torch.sigmoid(inputs)
+        center_id = (targets == 1.0).float()
+        other_id = (targets != 1.0).float()
+        center_loss = -center_id * (1.0 - inputs) ** self.alpha * torch.log(inputs + 1e-14)
+        other_loss = -other_id * (1 - targets) ** self.beta * (inputs) ** self.alpha * torch.log(1.0 - inputs + 1e-14)
+        return center_loss + other_loss
 if __name__ == '__main__':
     seed =2
     np.random.seed(seed)

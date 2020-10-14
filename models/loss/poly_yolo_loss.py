@@ -95,10 +95,10 @@ class YOLOLoss(nn.Module):
 			loss_w = (coord_scale* self.smooth_l1(w * mask , tw )).sum()/n_obj
 			loss_h = (coord_scale* self.smooth_l1(h * mask , th )).sum()/n_obj
 			positive_loss = self.bce_loss(conf * mask, mask).sum()/n_obj
-			false_loss = 0.5 * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0).sum()/n_obj
-			# loss_conf = (self.bce_loss(conf * mask, mask).sum()/n_obj + \
-			# 			 0.5 * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0).sum()/n_obj)
-			loss_conf = positive_loss + false_loss
+			#false_loss = 0.5 * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0).sum()/n_obj
+			loss_conf = (self.bce_loss(conf * mask, mask).sum()/n_obj + \
+						 0.5 * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0).sum()/n_obj)
+			#loss_conf = positive_loss + false_loss
 
 			if tcls[mask == 1].shape[0] == 0:
 				loss_cls = torch.tensor(0).to(self.device)

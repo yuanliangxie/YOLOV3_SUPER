@@ -5,7 +5,9 @@ _coco_evaluater_factory = {
 	"VOC":voc_evaluater,
 	"VOC_poly_yolo": voc_evaluater,
 	"U-DETRAC":detrac_evaluater,
+	"VOC_centernet":voc_evaluater
 }
 
 def load_coco_evaluater(config_name):
+	assert config_name in _coco_evaluater_factory, "并没有所用模型的测评类，需要添加！"
 	return _coco_evaluater_factory[config_name]

@@ -111,8 +111,8 @@ class trainer():
 		coco_evaluater = load_coco_evaluater(self.config_train["config_name"])
 		return coco_evaluater
 
-	def restore_model(self):
-		if self.config_train["pretrain_snapshot"].strip():
+	def restore_model(self, self_train_weight=True):
+		if self.config_train["pretrain_snapshot"].strip() and self_train_weight:
 			self.logger.append("Load pretrained weights from {}".format(self.config_train["pretrain_snapshot"]))
 			#print("Load pretrained weights from {}".format(config["pretrain_snapshot"]))
 			if self.config_train["pretrain_snapshot"].split('/')[-1].strip(" ") == "model.pth":
@@ -134,6 +134,19 @@ class trainer():
 
 			self.net.load_state_dict(state_dict)
 			self.optimizer.load_state_dict(load_checkpoint['optimizer'])
+			self.lr_scheduler.step(self.config_train["global_step"])#通过得到已经走过的步数信息，更新lr
+			self.config_train["global_step"] += 1
+	#如果是调用不是自己训练的权重，那么进行额外的解析！
+		elif self.config_train["pretrain_snapshot"].strip() and not self_train_weight:
+			self.logger.append("Load pretrained weights from {}".format(self.config_train["pretrain_snapshot"]))
+			state_dict = torch.load(self.config_train["pretrain_snapshot"])
+			if self.config_train["resume_start_epoch"]:
+				self.epoch_init = self.config_train["resume_start_epoch"]
+				self.config_train["global_step"] = self.epoch_init * len(self.dataloader)
+			else:
+				self.epoch_init = 0
+				self.config_train["global_step"] = 0
+			self.net.load_state_dict(state_dict)
 			self.lr_scheduler.step(self.config_train["global_step"])#通过得到已经走过的步数信息，更新lr
 			self.config_train["global_step"] += 1
 
@@ -180,7 +193,7 @@ class trainer():
 					self.optimizer.zero_grad()
 				self.lr_scheduler.step(self.config_train["global_step"])#这里两个Ir_scheduler合并一致了
 
-				if step >0 and step % int(len(self.dataloader)-1) == 0:#TODO:设置定时放map，此时是一个epoch来记录一下模型
+				if step > 0 and step % int(len(self.dataloader)-1) == 0:#TODO:设置定时放map，此时是一个epoch来记录一下模型
 
 					save_checkpoint(self.net.state_dict(), self.config_train, map=None, optimizer=self.optimizer, epoch=epoch, logger=self.logger)#TODO：记录最佳的map与正常的模型，存储模型时加入epoch和step信息，便于重新加载训练！
 
@@ -230,9 +243,9 @@ if __name__ == "__main__":
 	#在跑程序前需要清空../evaluate/data或者../evaluate_coco/data或者evaluate_detrac_coco_api方法中的文件
 	import argparse
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--config_name', type=str, default='VOC', help='VOC or U-DETRAC or VOC_poly_yolo')
+	parser.add_argument('--config_name', type=str, default='VOC_centernet', help='VOC or U-DETRAC or VOC_poly_yolo')
 	parser.add_argument('--device_id', type=int, default=0, help="choose the device_id")
-	parser.add_argument('--config_model_name', type=str, default='yolov3', help='you can cd ./models/model/model_factory to find model name')
+	parser.add_argument('--config_model_name', type=str, default='centernet_18', help='you can cd ./models/model/model_factory to find model name')
 	opt = parser.parse_args()
 	trainer_voc = trainer.set_config(opt.config_name, opt.device_id, opt.config_model_name)
 	trainer_voc.start_train()

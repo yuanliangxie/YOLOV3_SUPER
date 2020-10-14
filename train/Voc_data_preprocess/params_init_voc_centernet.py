@@ -2,10 +2,9 @@ TRAINING_PARAMS = \
 	{
 		"model_params": {
 			"backbone_name": "darknet53",
-			"backbone_weight": "../weights/darknet53.conv.74",
+			"backbone_weight": "",
 		},
 		"yolo": {
-			"anchors": [[62, 45]],
 			"classes": 20,
 			"classes_category": ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus',
 								 'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse',
@@ -28,7 +27,7 @@ TRAINING_PARAMS = \
 			"weight_decay": 5e-04,
 		},
 		"data_path":"/home/xyl/Pycharmproject/YOLOv3/voc_data",
-		"batch_size": 8,
+		"batch_size": 16,
 		"train_path": "../data/voc/trainval.txt",#../data/coco/vehecal/vehecal_train.txt",
 		"train_labels_path": "../data/voc/labels",
 		"epochs": 80,
@@ -39,16 +38,16 @@ TRAINING_PARAMS = \
 		"working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
 		# restore_model_weight:
-		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_poly_yolo_test/20201010230036/model_map_0.002.pth",
+		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_centernet_test/20201013103547_self_radius/model.pth",
 		# /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try+ce_loss/20201006121114/model.pth
 		# /home/xyl/桌面/YOLO_SUPER/darknet53/Multi-scale_try0/20200723120846/model.pth
 		# /home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
 		# ../darknet53/Multi-scale_try0/20200522220233/model_map_0.812.pth
-		"resume_start_epoch": None,
+		"resume_start_epoch": 1,
 
 
 		#tricks
-		"try": '_poly_yolo_test',
+		"try": '_centernet_test',
 		"scheduler_way": "Cosdecay",
 		"GIOU": False,
 		"mix_up": False,
@@ -69,5 +68,5 @@ Eval = {
 	"test_labels_path": "../data/voc/labels_test",
 
 	#不产生结果分析图
-    "generate_analyze_figure":False,
+	"generate_analyze_figure":False,
 }
