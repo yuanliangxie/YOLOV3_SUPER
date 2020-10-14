@@ -84,7 +84,7 @@ class trainer():
 	def init_params(self):
 		self.config_train["global_step"] = self.config_train.get("start_step", 0)
 		self.max_map = 0
-		self.epoch_init=-1
+		self.epoch_init= 0
 		if self.config_train["Multi-scale training"]:
 			self.image_size_train = None
 		else:
@@ -140,7 +140,7 @@ class trainer():
 		elif self.config_train["pretrain_snapshot"].strip() and not self.config_train["self_train_weight"]:
 			self.logger.append("Load pretrained weights from {}".format(self.config_train["pretrain_snapshot"]))
 			state_dict = torch.load(self.config_train["pretrain_snapshot"])
-			if self.config_train["resume_start_epoch"] >= 0:
+			if self.config_train["resume_start_epoch"] != None and self.config_train["resume_start_epoch"] >= 0:
 				self.epoch_init = int(self.config_train["resume_start_epoch"]) #防止将resume_start_epoch设置为浮点数
 				self.config_train["global_step"] = self.epoch_init * len(self.dataloader)
 			else:
@@ -154,7 +154,7 @@ class trainer():
 		# Start the training loop
 		self.logger.append("Start training.")
 		#print("Start training.")
-		for epoch in range(self.epoch_init+1, self.config_train["epochs"]):
+		for epoch in range(self.epoch_init, self.config_train["epochs"]):
 			for step, samples in enumerate(self.dataloader):
 
 				#images, labels = samples["image"].to(self.device), samples["label"]

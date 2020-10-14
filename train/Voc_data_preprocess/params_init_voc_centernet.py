@@ -38,12 +38,12 @@ TRAINING_PARAMS = \
 		"working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
 		# restore_model_weight:
-		"pretrain_snapshot": "",
+		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/weights/centernet_150.pth",
 		# /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try+ce_loss/20201006121114/model.pth
 		# /home/xyl/桌面/YOLO_SUPER/darknet53/Multi-scale_try0/20200723120846/model.pth
 		# /home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
 		# ../darknet53/Multi-scale_try0/20200522220233/model_map_0.812.pth
-		"self_train_weight": True,
+		"self_train_weight": False,
 		"resume_start_epoch": 1,
 
 
