@@ -208,5 +208,5 @@ if __name__ == '__main__':
     #xml_dir = "/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/UA-DETRAC/DETRAC-Test-Annotations-XML"
     #test_image_dir ="/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/UA-DETRAC/DETRAC-test-data"
     xml_list_txt = "Detrac_xml_list.txt"
-    get_xml_list(opt.xml_dir, xml_list_txt)
+    #get_xml_list(opt.xml_dir, xml_list_txt)
     convert(xml_list_txt, opt.xml_dir, "Detrac_test.json")

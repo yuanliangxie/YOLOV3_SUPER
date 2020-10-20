@@ -41,13 +41,20 @@ TRAINING_PARAMS = \
     "working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
     #restore_model_weight:
-    "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try+ce_loss+giou+accumulate:2/20201009225248/model.pth",
+    "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/20201010182038/model.pth",
     #/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try+ce_loss/20201006121114/model.pth
     #/home/xyl/桌面/YOLO_SUPER/darknet53/Multi-scale_try0/20200723120846/model.pth
     #/home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
     #../darknet53/Multi-scale_try0/20200522220233/model_map_0.812.pth
     "self_train_weight": True, #加载由此框架训练得到的权重则设置为True,否则设置为False
     "resume_start_epoch": None,
+
+    # train_eval:
+    "start_eval": 10,
+    "interval_epoch_eval": 5, #每隔多少个epoch进行验证
+    "epoch_eval_times": 1, #每个epoch验证多少次
+    #train_eval参数的含义为：从"start_eval"第１０个epoch开始进行验证，此时第１０个epoch总共
+    # 会验证"epoch_eval_times"１次，然后间隔"interval_epoch_eval"５个epoch会再次进行验证
 
 
     #tricks
@@ -75,5 +82,4 @@ Eval = {
         "test_labels_path": "../data/voc/labels_test",
         #不产生结果分析图
         "generate_analyze_figure":False,
-
         }

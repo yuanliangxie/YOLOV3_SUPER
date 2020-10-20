@@ -4,8 +4,10 @@ from evaluate.evaluate_coco.coco_evaluater import coco_evaluater as voc_evaluate
 _coco_evaluater_factory = {
 	"VOC":voc_evaluater,
 	"VOC_poly_yolo": voc_evaluater,
-	"U-DETRAC":detrac_evaluater,
-	"VOC_centernet":voc_evaluater
+	"VOC_centernet":voc_evaluater,
+
+	"U-DETRAC": detrac_evaluater,
+	"U-DETRAC_centernet": detrac_evaluater,
 }
 
 def load_coco_evaluater(config_name):

@@ -23,10 +23,10 @@ TEST = {
 		"anchors": [[62, 45]],
 		"classes": 20,
 	},
-	"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_poly_yolo_test/20201010230036/model_map_0.002.pth",
+	"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_poly_yolo_test/20201014161130/model.pth",
 	"ce": False,
 	"bce": True,
-	"generate_analyze_figure": True,
+	"generate_analyze_figure": False,
 	"generate_analyze_figure_dir_name":"analyze_loss_poly_yolo"
 }
 

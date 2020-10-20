@@ -14,6 +14,7 @@ from dataset.dataset_factory import load_dataset
 from evaluate.coco_evaluater_factory import load_coco_evaluater
 from train.train_eval import train_evaler
 from models.bricks.tricks import mix_up
+#from memory_profiler import profile
 
 class trainer():
 	def __init__(self, config_train, config_eval, logger):
@@ -40,7 +41,7 @@ class trainer():
 		self.lr_scheduler = get_lr_scheduler(self.config_train, self.optimizer, len(self.dataloader))
 		self.restore_model()
 		self.coco_evaluater = self.get_coco_evaluater()
-		self.train_evaler = train_evaler(model=self.net, logger=self.logger,
+		self.train_evaler = train_evaler(model=None, logger=self.logger,
 					 config_eval=self.config_eval, coco_evaluater=self.coco_evaluater)
 
 		self.mix_up = mix_up(1)
@@ -150,6 +151,7 @@ class trainer():
 			self.lr_scheduler.step(self.config_train["global_step"])#通过得到已经走过的步数信息，更新lr
 			self.config_train["global_step"] += 1
 
+	#@profile(precision=4, stream=open('./memory_profiler_start_train.log', 'w+'))
 	def start_train(self):
 		# Start the training loop
 		self.logger.append("Start training.")
@@ -193,16 +195,18 @@ class trainer():
 					self.optimizer.zero_grad()
 				self.lr_scheduler.step(self.config_train["global_step"])#这里两个Ir_scheduler合并一致了
 
-				if step > 0 and step % int(len(self.dataloader)-1) == 0:#TODO:设置定时放map，此时是一个epoch来记录一下模型
+				if step > 0 and step % (int(len(self.dataloader)-1)//self.config_train["epoch_eval_times"]) == 0:#TODO:设置定时放map，此时是一个epoch来记录一下模型
 
 					save_checkpoint(self.net.state_dict(), self.config_train, map=None, optimizer=self.optimizer, epoch=epoch, logger=self.logger)#TODO：记录最佳的map与正常的模型，存储模型时加入epoch和step信息，便于重新加载训练！
 
-					if epoch > 10 and epoch % 5 == 0:
+					if epoch >= self.config_train["start_eval"] and epoch % self.config_train["interval_epoch_eval"] == 0:
 						images.cpu()
+						del images
 						del samples
 						self.net.train(False)  # 进入eval模式
 						self.train_evaler.model = self.net
 						map = self.train_evaler.eval_voc()
+						self.train_evaler.model = None
 						self.net.train(True)  # 再次开启训练模式
 						if map > self.max_map:
 							if os.path.exists(os.path.join(self.config_train["sub_working_dir"], "model_map_%.3f.pth" % self.max_map)):
@@ -243,7 +247,7 @@ if __name__ == "__main__":
 	#在跑程序前需要清空../evaluate/data或者../evaluate_coco/data或者evaluate_detrac_coco_api方法中的文件
 	import argparse
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--config_name', type=str, default='VOC_centernet', help='VOC or U-DETRAC or VOC_poly_yolo')
+	parser.add_argument('--config_name', type=str, default='U-DETRAC_centernet', help='VOC or U-DETRAC or VOC_poly_yolo')
 	parser.add_argument('--device_id', type=int, default=0, help="choose the device_id")
 	parser.add_argument('--config_model_name', type=str, default='centernet_18', help='you can cd ./models/model/model_factory to find model name')
 	opt = parser.parse_args()

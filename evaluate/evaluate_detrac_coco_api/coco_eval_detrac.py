@@ -15,7 +15,7 @@ class COCOAPI_evaler(object):
     def __init__(self,
                  gpu_id=0,
                  img_size=config['TEST_IMG_SIZE'],
-                 visiual = False,
+                 visiual = True,
                  ):
         self.img_size = img_size
         self.__num_class = config['DATA']["NUM"]
@@ -45,17 +45,17 @@ class COCOAPI_evaler(object):
         print("loading weight file is done")
 
 
-    def eval_voc(self, Analyze = False):
+    def eval_voc(self):
 
         print('*' * 20 + "Validate" + '*' * 20)
 
         with torch.no_grad():
-            coco_evaluater(self.__model, config, visiual=self.__visiual).eval(Analyze=Analyze)
+            coco_evaluater(self.__model, config, visiual=self.__visiual).eval()
 
     @staticmethod
-    def eval_data_with_result_file(Analyze = False):
+    def eval_data_with_result_file():
         print('*' * 20 + "直接通过已生成的预测结果文件进行Validate" + '*' * 20)
-        coco_evaluater.eval(Analyze=Analyze)
+        coco_evaluater.eval_result(config)
 
 def pre_process(data_dir_path):
     if not os.path.isdir(data_dir_path):
@@ -78,9 +78,9 @@ if __name__ == "__main__":
     opt = parser.parse_args()
     if opt.scratch_run_flag == False:
         assert os.path.isfile('pred_result.json'), "找不到pred_result.json文件，请将scrach_run_flag设置为True"
-        COCOAPI_evaler.eval_data_with_result_file(Analyze=opt.Analyze)
+        COCOAPI_evaler.eval_data_with_result_file()
     else:
         pre_process('data')
         remove_file('pred_result.json')
         COCOAPI_evaler(gpu_id=opt.gpu_id,
-                visiual=opt.visiual).eval_voc(Analyze=opt.Analyze)
+                visiual=opt.visiual).eval_voc()

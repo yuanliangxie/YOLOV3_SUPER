@@ -26,4 +26,9 @@ class neck(nn.Module):
 		output = torch.cat([middle, self.upsample_1(large)], 1)
 		output = torch.cat([small, self.upsample_2(output)], 1)
 		output = torch.cat([tiny, self.upsample_3(output)], 1)
+
+		# output = middle + self.upsample_1(large)
+		# output = small + self.upsample_2(output)
+		# output = tiny + self.upsample_3(output)
+
 		return output

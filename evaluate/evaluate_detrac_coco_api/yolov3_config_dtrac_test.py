@@ -2,7 +2,7 @@
 # project
 # test
 TEST = {
-        "device_id":0,
+        "device_id": 0,
         "PROJECT_PATH": "/home/xyl/桌面/YOLO_SUPER",
         "test_path": "../../data/detrac/test.txt",
         "test_ignore_region": "../../data/detrac/test_ignore_region.txt",
@@ -22,6 +22,9 @@ TEST = {
                             [[10, 13], [16, 30], [33, 23]]],
                 "classes": 4,
                 },
-        "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLO_superX/darknet53/Multi-scale_trydetrac_baseline_train/20200625231341/model.pth"
+        "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLO_superX/darknet53/Multi-scale_trydetrac_baseline_train/20200625231341/model.pth",
+
+        "generate_analyze_figure": False,
+        "generate_analyze_figure_dir_name":"analyze_loss_yolov3"
         }
 

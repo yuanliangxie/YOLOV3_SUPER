@@ -38,14 +38,21 @@ TRAINING_PARAMS = \
 		"working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
 		# restore_model_weight:
-		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/weights/centernet_150.pth",
+		"pretrain_snapshot": "",
 		# /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try+ce_loss/20201006121114/model.pth
 		# /home/xyl/桌面/YOLO_SUPER/darknet53/Multi-scale_try0/20200723120846/model.pth
 		# /home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
 		# ../darknet53/Multi-scale_try0/20200522220233/model_map_0.812.pth
-		"self_train_weight": False,
+		"self_train_weight": True,
 		"resume_start_epoch": 1,
 
+
+		# train_eval:
+		"start_eval": 0,
+		"interval_epoch_eval": 5, #每隔多少个epoch进行验证
+		"epoch_eval_times": 20, #每个epoch验证多少次
+		#train_eval参数的含义为：从"start_eval"第１０个epoch开始进行验证，此时第１０个epoch总共
+		# 会验证"epoch_eval_times"１次，然后间隔"interval_epoch_eval"５个epoch会再次进行验证
 
 		#tricks
 		"try": '_centernet_test',

@@ -5,7 +5,7 @@ TRAINING_PARAMS = \
 			"backbone_weight": "../weights/darknet53.conv.74",
 		},
 		"yolo": {
-			"anchors": [[62, 45]],
+			"anchors": [[62, 45]],#已经被抛弃
 			"classes": 20,
 			"classes_category": ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus',
 								 'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse',
@@ -14,10 +14,10 @@ TRAINING_PARAMS = \
 			# "classes_category": ["car"]
 		},
 		"lr": {
-			"backbone_lr": 1e-3,
-			"other_lr": 1e-3,
-			"LR_INIT": 1e-3,
-			"LR_END": 1e-5,
+			"backbone_lr": 1e-4,
+			"other_lr": 1e-4,
+			"LR_INIT": 1e-4,
+			"LR_END": 1e-6,
 			"WARMUP_EPOCHS": 1,
 			"freeze_backbone": False,  # freeze backbone wegiths to finetune
 			"decay_step": [60, 80],
@@ -39,14 +39,21 @@ TRAINING_PARAMS = \
 		"working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
 		# restore_model_weight:
-		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_poly_yolo_test/20201010230036/model_map_0.002.pth",
+		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_poly_yolo_test/20201014161130/model.pth",
 		# /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try+ce_loss/20201006121114/model.pth
 		# /home/xyl/桌面/YOLO_SUPER/darknet53/Multi-scale_try0/20200723120846/model.pth
 		# /home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
 		# ../darknet53/Multi-scale_try0/20200522220233/model_map_0.812.pth
 		"self_train_weight": True,
-		"resume_start_epoch": None,
+		"resume_start_epoch": 0,
 
+
+		# train_eval:
+		"start_eval": 10,
+		"interval_epoch_eval": 5, #每隔多少个epoch进行验证
+		"epoch_eval_times": 1, #每个epoch验证多少次
+		#train_eval参数的含义为：从"start_eval"第１０个epoch开始进行验证，此时第１０个epoch总共
+		# 会验证"epoch_eval_times"１次，然后间隔"interval_epoch_eval"５个epoch会再次进行验证
 
 		#tricks
 		"try": '_poly_yolo_test',

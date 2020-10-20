@@ -243,8 +243,9 @@ class txt_data(object):
     def generate_test_txt(self):
         f = open(os.path.join(self.dir_path, 'test.txt'), 'w')
         f_ignore = open(os.path.join(self.dir_path, 'test_ignore_region.txt'), 'w')
-        detrac_test_anno_paths = os.listdir(self.test_anno_path_dir)#这是全部测试数据集，但是太大了，所以进行选择缩小
-        #detrac_test_anno_paths = ["MVI_39401.xml", "MVI_40711.xml", "MVI_40712.xml"]
+        #detrac_test_anno_paths = os.listdir(self.test_anno_path_dir)#这是全部测试数据集，但是太大了，所以进行选择缩小
+        detrac_test_anno_paths = ["MVI_39401.xml", "MVI_40711.xml", "MVI_40712.xml"]#TODO:这里有两个选项生成不同的测试集!
+        #["MVI_39401.xml", "MVI_40711.xml", "MVI_40712.xml"]
         for detrac_test_anno_path in tqdm(detrac_test_anno_paths):
             anno_path = os.path.join(self.test_anno_path_dir, detrac_test_anno_path)
             tree = ET.parse(anno_path)

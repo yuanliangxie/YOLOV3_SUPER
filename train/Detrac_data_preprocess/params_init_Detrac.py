@@ -45,7 +45,7 @@ TRAINING_PARAMS = \
 }
 
 Eval = {
-        "DATA_PATH": "/home/xyl/Pycharmproject/YOLOv3/voc_data",     #voc数据集所放地址
+        #"DATA_PATH": "/home/xyl/Pycharmproject/YOLOv3/voc_data",     #voc数据集所放地址
         "PROJECT_PATH": "/home/xyl/桌面/YOLO_SUPER", #即本项目的地址
         "TEST_IMG_SIZE":544,
         "BATCH_SIZE":32,

@@ -2,7 +2,7 @@ import torch.nn as nn
 import models.head.poly_yolo_head as yolov3_head
 import models.backbone.poly_darknet.poly_darknet as darknet53
 import models.backbone.poly_darknet.poly_neck as neck
-import models.loss.poly_yolo_loss_module as loss
+import models.loss.poly_yolo_loss_anchor_free_module as loss
 from utils.logger import print_logger
 from models.layer.layer_fundation import Conv2dBatchLeaky as Convolutional
 import numpy as np

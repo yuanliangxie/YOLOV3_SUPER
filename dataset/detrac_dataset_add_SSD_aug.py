@@ -208,6 +208,6 @@ if __name__ == "__main__":
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             #cv2.imwrite("step{}_{}.jpg".format(step, i), image)
             cv2.imshow('show', image)
-            cv2.waitKey(200)
+            cv2.waitKey(1)
         # only one batch
         #break

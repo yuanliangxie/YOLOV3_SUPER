@@ -17,7 +17,7 @@ class yolov3_head(nn.Module):
 
 			OrderedDict([
 			('feature0', layer.Conv2dBatchLeaky(num_filters, num_filters*2, 3, 1)),
-			('feature1', layer.Conv2dBatchLeaky(num_filters*2, nAnchors * (nClass + 4), 1, 1)),
+			('feature1', layer.Conv2dBatchLeaky(num_filters*2, nAnchors * (nClass + 5), 1, 1)),
 			])
 		]
 
