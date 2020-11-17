@@ -3,9 +3,11 @@ import os
 import codecs
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 sys.path.append("../../../YOLOV3_SUPER")
-from models.model.model_yolov3_baseline import yolov3
+#from models.model.model_yolov3_baseline import yolov3
+from models.model.model_centernet_resnet import centernet_18 as yolov3
 from evaluate.evaluate_detrac_coco_api.coco_evaluater import coco_evaluater
-from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as config
+#from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as config
+from evaluate.evaluate_detrac_coco_api.centernet_config_detrac_test import TEST as config
 from utils.utils_select_device import select_device
 import torch
 import shutil
@@ -73,7 +75,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_id', type=int, default=0, help='gpu id')
     parser.add_argument('--visiual', type=int, default=1, help="get det image in ./data/results")
-    parser.add_argument('--scratch_run_flag', type=int, default=1, help="是否重新用模型测评或直接对比json文件得出结果")
+    parser.add_argument('--scratch_run_flag', type=int, default=True, help="是否重新用模型测评或直接对比json文件得出结果")
     parser.add_argument('--Analyze', type=int, default=0, help="是否在./analyze_figure生成分析图")
     opt = parser.parse_args()
     if opt.scratch_run_flag == False:

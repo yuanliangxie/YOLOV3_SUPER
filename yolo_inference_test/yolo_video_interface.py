@@ -1,5 +1,4 @@
 from yolo_inference_test.inference_pipline import yolo_inference_detector
-from yolo_inference_test.poly_yolo_config_voc import TEST as config
 from yolo_inference_test.utils_inference import video_save_from_capture, xyxy2xywh
 import numpy as np
 #from time_analyze import print_run_time, func_line_time
@@ -90,7 +89,10 @@ class vehicle_detector(yolo_inference_detector):
 		cv2.destroyAllWindows()
 
 if __name__ == '__main__':
+	#from yolo_inference_test.poly_yolo_config_voc import TEST as config
+	from yolo_inference_test.centernet_config_detrac import TEST as config
+	#from yolo_inference_test.yolov3_config_voc import TEST as config
 	detector = vehicle_detector(config)
 	#配置输入视频
-	detector.deploy_inference_video(video_name='./Radar1150_30.avi', video_save_name='poly_yolo_detect.avi', video_save_fps=30)
+	detector.deploy_inference_video(video_name='./Radar1150_30.avi', video_save_name='yolov3_voc_detect.avi', video_save_fps=30)
 	detector.show_video()

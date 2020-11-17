@@ -76,9 +76,9 @@ class YOLOLoss(nn.Module):
             pred_cls = torch.softmax(prediction[..., 5:], dim=-1)
 
         # Calculate offsets for each grid
-        grid_x = torch.linspace(0, in_w - 1, in_w).repeat(in_w, 1).repeat(
+        grid_x = torch.linspace(0, in_w - 1, in_w).repeat(in_h, 1).repeat(
             bs * self.num_anchors, 1, 1).view(x.shape).to(self.device)
-        grid_y = torch.linspace(0, in_h - 1, in_h).repeat(in_h, 1).t().repeat(
+        grid_y = torch.linspace(0, in_h - 1, in_h).repeat(in_w, 1).t().repeat(
             bs * self.num_anchors, 1, 1).view(y.shape).to(self.device)
         # Calculate anchor w, h
         anchor_w = torch.FloatTensor(scaled_anchors).index_select(1, torch.LongTensor([0])).to(self.device)
@@ -105,10 +105,27 @@ class YOLOLoss(nn.Module):
 
 
         if targets is not None:
-            n_obj, mask, noobj_mask, tx, ty, tw, th, tconf, tcls, coord_scale, giou_gt_box= self.get_target(targets, scaled_anchors,
+            all_n_obj, mask, noobj_mask, tx, ty, tw, th, tconf, tcls, coord_scale, giou_gt_box= self.get_target(targets, scaled_anchors,
                                                                                                 in_w, in_h, pred_boxes.detach()
                                                                                                 , scaled_total_anchors
                                                                                                 )
+
+            layer_n_obj = mask[mask == 1].shape[0]
+            if layer_n_obj == 0:
+                loss = torch.tensor(0).to(self.device)
+                loss_x = torch.tensor(0)
+                loss_y = torch.tensor(0)
+                loss_w = torch.tensor(0)
+                loss_h = torch.tensor(0)
+                loss_conf = torch.tensor(0)
+                loss_cls = torch.tensor(0)
+                loss_giou = torch.tensor(0)
+                if self.config["GIOU"]:
+                    return loss, loss_giou.item(), loss_conf.item(), loss_cls.item()
+                else:
+                    return loss, loss_x.item(), loss_y.item(), loss_w.item(), \
+                           loss_h.item(), loss_conf.item(), loss_cls.item()
+
 
             mask, noobj_mask, coord_scale = mask.to(self.device), noobj_mask.to(self.device), coord_scale.to(self.device)
             tx, ty, tw, th = tx.to(self.device), ty.to(self.device), tw.to(self.device), th.to(self.device)
@@ -116,31 +133,45 @@ class YOLOLoss(nn.Module):
             giou_gt_box = giou_gt_box.to(self.device)
 
             if self.config["GIOU"]:
-                loss_giou = self.giou_loss.cal_giou_loss(giou_gt_box, pred_boxes, mask).sum()/n_obj
+                loss_giou = self.giou_loss.cal_giou_loss(giou_gt_box, pred_boxes, mask).sum()/layer_n_obj
             else:
-                loss_x = (coord_scale * self.bce_loss(x * mask, tx)).sum()/n_obj
-                loss_y = (coord_scale * self.bce_loss(y * mask, ty)).sum()/n_obj
-                loss_w = (coord_scale* self.smooth_l1(w * mask , tw )).sum()/n_obj
-                loss_h = (coord_scale* self.smooth_l1(h * mask , th )).sum()/n_obj
+                loss_x = (coord_scale * self.bce_loss(x * mask, tx)).sum()/layer_n_obj
+                loss_y = (coord_scale * self.bce_loss(y * mask, ty)).sum()/layer_n_obj
+                loss_w = (coord_scale* self.smooth_l1(w * mask , tw )).sum()/layer_n_obj
+                loss_h = (coord_scale* self.smooth_l1(h * mask , th )).sum()/layer_n_obj
 
-            loss_conf = (self.bce_loss(conf * mask, mask).sum()/n_obj + \
-                         0.5 * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0).sum()/n_obj)
+            loss_conf = (self.bce_loss(conf * mask, mask).sum()/all_n_obj + \
+                         0.5 * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0).sum()/all_n_obj)
 
-            if tcls[mask == 1].shape[0] == 0:
-                loss_cls = torch.tensor(0).to(self.device)
-            else:
-                #加入lable_smooth
-                if self.config["label_smooth"]:
-                    ls = label_smooth(theta=0.01, classes=self.num_classes)
-                    tcls = ls.smooth(tcls, mask)
-                if self.config['bce']:
-                    loss_cls = self.bce_loss(pred_cls[mask == 1], tcls[mask == 1]).sum()/n_obj
-                #使用多分类交叉熵损失函数
-                if self.config['ce']:
-                    targets_label = tcls[mask==1]
-                    label_rc = torch.where(targets_label==1)
-                    #targets_label[label_rc[0], label_rc[1]] = label_rc[1].float()
-                    loss_cls = self.ce_loss(pure_cls[mask==1], label_rc[1]).sum()/n_obj
+            #may be the focal_loss for the yolov3
+            # loss_conf = ((1-conf) * mask * self.bce_loss(conf * mask, mask)).sum()/layer_n_obj + \
+            #             (conf * noobj_mask * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0)).sum()/layer_n_obj
+            #different normalize the loss for loss_conf
+            # loss_conf = ((1-conf) * mask * self.bce_loss(conf * mask, mask)).sum()/layer_n_obj + \
+            #             (conf * noobj_mask * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0)).sum()/all_n_obj
+
+
+
+            #加入lable_smooth
+            targets_label = tcls[mask==1]
+            if self.config["label_smooth"]:
+                ls = label_smooth(theta=0.01, classes=self.num_classes)
+                tcls = ls.smooth(tcls, mask)
+            if self.config['bce']:
+                loss_cls = self.bce_loss(pred_cls[mask == 1], tcls[mask == 1]).sum()/layer_n_obj
+            #使用多分类交叉熵损失函数
+            if self.config['ce'] and self.config["label_smooth"]:
+                #ce+label_smoothing
+                logprobs = torch.log(pred_cls[mask==1])
+                label_rc = torch.where(targets_label==1)
+                nll_loss = -logprobs.gather(dim=-1, index=label_rc[1].unsqueeze(1))
+                nll_loss = nll_loss.squeeze(1)
+                smooth_loss = -logprobs.sum(dim=-1)
+                loss_cls =  (1 - ls.theta - ls.k) * nll_loss + ls.k * smooth_loss
+                loss_cls = loss_cls.sum()/layer_n_obj
+            elif self.config['ce']:
+                label_rc = torch.where(targets_label==1)
+                loss_cls = self.ce_loss(pure_cls[mask==1], label_rc[1]).sum()/layer_n_obj
 
             #  total loss = losses * weight
             if self.config["GIOU"]:

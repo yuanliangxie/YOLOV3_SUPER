@@ -41,7 +41,7 @@ TRAINING_PARAMS = \
     "working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
     #restore_model_weight:
-    "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/20201010182038/model.pth",
+    "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_all_tricks/20201021090432/model.pth",
     #/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try+ce_loss/20201006121114/model.pth
     #/home/xyl/桌面/YOLO_SUPER/darknet53/Multi-scale_try0/20200723120846/model.pth
     #/home/xyl/PycharmProjects/YOLOV3_baseline/darknet53/Multi-scale_try0/20200523150149/model_map_0.835.pth
@@ -58,14 +58,14 @@ TRAINING_PARAMS = \
 
 
     #tricks
-    "try": '+ce_loss+giou+accumulate:2',
+    "try": '_all_tricks',
     "scheduler_way": "Cosdecay",
-    "label_smooth": False, #label_smooth还有一些问题要跟ce适应
+    "label_smooth": True, #label_smooth还有一些问题要跟ce适应
     "GIOU": True,
     "mix_up": False,
     "ce": True,
     "bce": False,
-    "accumulate":2
+    "accumulate":1
 }
 
 Eval = {

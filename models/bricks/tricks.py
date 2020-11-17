@@ -8,10 +8,11 @@ class label_smooth(object):
 	def __init__(self, theta=0.1, classes=20):
 		self.theta = theta
 		self.classes = classes
+		self.k = self.theta / (self.classes - 1)
 	def smooth(self, tcls, mask):
-		k = self.theta / (self.classes - 1)
-		tcls[mask == 1] *= (1 - self.theta - k)
-		tcls[mask == 1] += k
+		#k = self.theta / (self.classes - 1)
+		tcls[mask == 1] *= (1 - self.theta - self.k)
+		tcls[mask == 1] += self.k
 		return tcls
 
 class mix_up(object):

@@ -1,4 +1,6 @@
-from models.model.poly_yolo import yolov3
+#from models.model.poly_yolo import yolov3 as model
+#from models.model.model_yolov3_baseline import yolov3 as model
+from models.model.model_centernet_resnet import centernet_18 as model
 from yolo_inference_test.utils_inference import *
 from yolo_inference_test.visualize import visualize_boxes
 #from time_analyze import print_run_time, func_line_time
@@ -11,7 +13,7 @@ class yolo_inference_detector(object):
 		self.val_shape = config['TEST_IMG_SIZE']
 		self.classes = config['DATA']["CLASSES"]
 		self.device = torch.device('cuda:{}'.format(0) if torch.cuda.is_available() else 'cpu')
-		self.model = yolov3(config).to(self.device)
+		self.model = model(config).to(self.device)
 		self.model.eval()
 		self.__load_model_weights()
 		self.class_color = [(np.random.randint(255), np.random.randint(255),

@@ -167,7 +167,7 @@ if __name__ == "__main__":
     classes_category = params_init.TRAINING_PARAMS["yolo"]["classes_category"]
     vocdataset = DetracDataset(list_path="../data/detrac/test.txt", ignore_region_path="../data/detrac/test_ignore_region.txt",
                             labels_path='../data/detrac/labels_test',
-                               img_size=(960, 960), is_training=False, is_debug=True, batch_size=8)
+                               img_size=(320, 320), is_training=False, is_debug=True, batch_size=8)
     index_2_classes = vocdataset.index_2_classes(classes_category)
     dataloader = torch.utils.data.DataLoader(vocdataset,
                                              batch_size=8,
