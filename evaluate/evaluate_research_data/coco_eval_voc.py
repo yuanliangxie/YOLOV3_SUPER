@@ -3,13 +3,17 @@ import os
 # MY_DIRNAME = os.path.dirname(os.path.abspath(__file__))
 # sys.path.insert(0, os.path.join(MY_DIRNAME, '..'))
 sys.path.append("../../../YOLOV3_SUPER")
-from models.model.model_yolov3_baseline import yolov3
+#from models.model.model_yolov3_baseline import yolov3
 #from models.model.poly_yolo import yolov3
 #from models.model.model_centernet_resnet import centernet_18 as yolov3
-from evaluate.evaluate_research_data.coco_evaluater import coco_evaluater
+from models.model.model_LFFD import LFFD as yolov3
+
+#from evaluate.evaluate_research_data.yolov3_config_detrac_test import TEST as config
 #from evaluate.evaluate_research_data.yolov3_config_voc_test import TEST as config
 #from evaluate.evaluate_research_data.centernet_config_detrac_test import TEST as config
-from evaluate.evaluate_research_data.yolov3_config_detrac_test import TEST as config
+from evaluate.evaluate_research_data.LFFD_config_detrac_test import TEST as config
+
+from evaluate.evaluate_research_data.coco_evaluater import coco_evaluater
 from utils.utils_select_device import select_device
 import torch
 import shutil

@@ -14,7 +14,7 @@ PRE_DEFINE_CATEGORIES = {}
 #                           "cow": 10, "diningtable": 11, "dog": 12, "horse": 13,
 #                           "motorbike": 14, "person": 15, "pottedplant": 16,
 #                           "sheep": 17, "sofa": 18, "train": 19, "tvmonitor": 20}
-PRE_DEFINE_CATEGORIES = {'car':0, 'bus':1, 'van':2, 'others':3}
+PRE_DEFINE_CATEGORIES = {'car':0, 'bus':0, 'van':0, 'others':0}  #修改对应类别则在这里进行修改
 
 def get_xml_list(xml_dir, txt_path ='xml_list.txt'):
     xml_lists = os.listdir(xml_dir)

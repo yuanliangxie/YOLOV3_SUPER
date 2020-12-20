@@ -5,6 +5,9 @@ from train.Detrac_data_preprocess.params_init_Detrac import Eval as Detrac_confi
 from train.Detrac_data_preprocess.params_init_Detrac_centernet import TRAINING_PARAMS as Detrac_config_train_centernet
 from train.Detrac_data_preprocess.params_init_Detrac_centernet import Eval as Detrac_config_eval_centernet
 
+from train.Detrac_data_preprocess.params_init_detrac_LFFD import TRAINING_PARAMS as Detrac_config_train_lffd
+from train.Detrac_data_preprocess.params_init_detrac_LFFD import Eval as Detrac_config_eval_lffd
+
 #VOC的配置文件
 from train.Voc_data_preprocess.params_init_voc import TRAINING_PARAMS as Voc_config_train
 from train.Voc_data_preprocess.params_init_voc import Eval as Voc_config_eval
@@ -24,7 +27,8 @@ _config_factory = {
 
 	#U-DETRAC
 	"U-DETRAC":[Detrac_config_train, Detrac_config_eval],
-	"U-DETRAC_centernet":[Detrac_config_train_centernet, Detrac_config_eval_centernet]
+	"U-DETRAC_centernet":[Detrac_config_train_centernet, Detrac_config_eval_centernet],
+	"U-DETRAC_lffd":[Detrac_config_train_lffd, Detrac_config_eval_lffd]
 }
 
 def get_config(config_char):

@@ -23,8 +23,8 @@ class trainer():
 
 		#以下这段代码为将config_train的信息补充到config_eval上，后面coco_evaluater要用
 		self.config_eval['DATA'] = {}
-		self.config_eval['DATA']["CLASSES"] = self.config_train['yolo']['classes_category']
-		self.config_eval['DATA']["NUM"] = self.config_train['yolo']['classes']
+		self.config_eval['DATA']["CLASSES"] = self.config_train['model']['classes_category']
+		self.config_eval['DATA']["NUM"] = self.config_train['model']['classes']
 
 		self.logger = logger
 		self.device = select_device(config_train['device_id'])
@@ -35,7 +35,7 @@ class trainer():
 		self.dataset = self.get_dataset()
 		self.dataloader = torch.utils.data.DataLoader(self.dataset,
 													  batch_size=self.config_train["batch_size"],
-													  shuffle=True, num_workers=8, collate_fn=self.dataset.collate_fn, pin_memory=True, drop_last=True)
+													  shuffle=True, num_workers=4, collate_fn=self.dataset.collate_fn, pin_memory=True, drop_last=True)
 		logger.append("Total images: {}".format(len(self.dataset)))
 		self.timer = Timer(len(self.dataloader), self.config_train["epochs"])
 		self.lr_scheduler = get_lr_scheduler(self.config_train, self.optimizer, len(self.dataloader))
@@ -247,9 +247,9 @@ if __name__ == "__main__":
 	#在跑程序前需要清空../evaluate/data或者../evaluate_coco/data或者evaluate_detrac_coco_api方法中的文件
 	import argparse
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--config_name', type=str, default='VOC', help='VOC or U-DETRAC or VOC_poly_yolo')
+	parser.add_argument('--config_name', type=str, default='U-DETRAC_lffd', help='VOC or U-DETRAC or VOC_poly_yolo')
 	parser.add_argument('--device_id', type=int, default=0, help="choose the device_id")
-	parser.add_argument('--config_model_name', type=str, default='yolov3', help='you can cd ./models/model/model_factory to find model name')
+	parser.add_argument('--config_model_name', type=str, default='LFFD', help='you can cd ./models/model/model_factory to find model name')
 	opt = parser.parse_args()
-	trainer_voc = trainer.set_config(opt.config_name, opt.device_id, opt.config_model_name)
-	trainer_voc.start_train()
+	trainer_object = trainer.set_config(opt.config_name, opt.device_id, opt.config_model_name)
+	trainer_object.start_train()

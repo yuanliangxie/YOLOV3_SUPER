@@ -3,11 +3,20 @@ import os
 import codecs
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 sys.path.append("../../../YOLOV3_SUPER")
+
+#yolov3
 #from models.model.model_yolov3_baseline import yolov3
-from models.model.model_centernet_resnet import centernet_18 as yolov3
-from evaluate.evaluate_detrac_coco_api.coco_evaluater import coco_evaluater
 #from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as config
-from evaluate.evaluate_detrac_coco_api.centernet_config_detrac_test import TEST as config
+
+#centernet
+#from models.model.model_centernet_resnet import centernet_18 as yolov3
+#from evaluate.evaluate_detrac_coco_api.centernet_config_detrac_test import TEST as config
+
+#LFFD
+from models.model.model_LFFD import LFFD as yolov3
+from evaluate.evaluate_detrac_coco_api.LFFD_config_detrac_test import TEST as config
+
+from evaluate.evaluate_detrac_coco_api.coco_evaluater import coco_evaluater
 from utils.utils_select_device import select_device
 import torch
 import shutil

@@ -3,7 +3,6 @@ import os
 import codecs
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 sys.path.append("../../../YOLOV3_SUPER")
-import train.Detrac_data_preprocess.params_init_Detrac as params_init
 import xml.etree.ElementTree as ET
 import shutil
 from tqdm import tqdm
@@ -14,7 +13,7 @@ class txt_data(object):
         """
 
         :param voc_data_path: the dirpath of the vocdata
-        :param classes: the classes what you want to train ,just set what you want,
+        :param classes: the classes what you want to train ,just set what you want,可以提取你想提取的类别,当然这里提取所有的车辆类别
         because the class metheod has implement the Any class of training labels in voc
         :TODO: the class can func only in voc, but the method has generalization ability,so it can expand to other datasets.
         :TODO：如果想要使两个类别合并为一类，同样可以修改class_2_index,自输入额外的index，使两个不同类别对应的index一样即可。
@@ -35,7 +34,8 @@ class txt_data(object):
         self.clear_make_dir()
 
     def _class_2_index(self):#todo:如果后面要进行类的合并，则在这里修改就可以了
-        index = [i for i in range(len(self.classes))]
+        #index = [i for i in range(len(self.classes))]
+        index = [0 for i in range(len(self.classes))]
         class_2_index = dict(zip(self.classes, index))
         return class_2_index
 
@@ -284,7 +284,8 @@ class txt_data(object):
         print("label_dict:" + str(self.class_2_index))
 
 def main():
-    classes_category = params_init.TRAINING_PARAMS["yolo"]["classes_category"]
+    import train.Detrac_data_preprocess.params_init_detrac_LFFD as params_init
+    classes_category = params_init.TRAINING_PARAMS["model"]["classes_category"]
     data_path = params_init.TRAINING_PARAMS['data_path']
     generate_txt = txt_data(data_path, classes_category)
     generate_txt.generate_train_txt()

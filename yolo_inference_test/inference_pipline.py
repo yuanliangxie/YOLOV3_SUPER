@@ -1,6 +1,7 @@
 #from models.model.poly_yolo import yolov3 as model
 #from models.model.model_yolov3_baseline import yolov3 as model
-from models.model.model_centernet_resnet import centernet_18 as model
+#from models.model.model_centernet_resnet import centernet_18 as model
+from models.model.model_LFFD import LFFD as model
 from yolo_inference_test.utils_inference import *
 from yolo_inference_test.visualize import visualize_boxes
 #from time_analyze import print_run_time, func_line_time

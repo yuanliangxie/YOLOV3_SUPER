@@ -41,6 +41,16 @@ class coco_evaluater(Evaluator):
 			cocoEval.analyze('./'+self.config['generate_analyze_figure_dir_name'])
 		return state
 
+if __name__ == '__main__':
+	cocoGt = COCO('./voc_format_research_data_test.json')
+	cocoDt = cocoGt.loadRes('./pred_result.json')
+	cocoEval = COCOeval(cocoGt, cocoDt, "bbox")
+	cocoEval.evaluate()
+	cocoEval.accumulate()
+	state = cocoEval.summarize()
+	cocoEval.analyze('./Analyze_LFFD')
+
+
 
 
 
