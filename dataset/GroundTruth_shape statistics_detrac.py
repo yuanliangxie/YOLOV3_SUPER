@@ -162,7 +162,13 @@ class DetracDataset(Dataset):
 		return sample
 
 class Statistic_scale:
-	def __init__(self, continus_assign_scale, size_scale):
+	def __init__(self, continus_assign_scale, size_scale, index="_"):
+		"""
+		:param continus_assign_scale:
+		:param size_scale:
+		:param index: 代表所要保存的图片的特征标识
+		"""
+		self.index = index
 		self.assign_scales = continus_assign_scale
 		self.assign_area_scales = [[assign_scale[0]**2, assign_scale[1]**2] for assign_scale in self.assign_scales]
 		self.size_scale= size_scale
@@ -213,7 +219,10 @@ class Statistic_scale:
 		self.statistics_max_length(max_length)
 		self.statistics_scaled_max_length(max_length)
 
+
 	def show(self):
+		self.show_percent()
+
 		plt.figure(1, figsize=[9, 3])
 		ax1 = plt.subplot(1, 3, 1)
 		ax2 = plt.subplot(1, 3, 2)
@@ -244,8 +253,12 @@ class Statistic_scale:
 
 		plt.tight_layout()
 
-		plt.savefig("./SSDAugument_train_assign_scale_result.png", dpi=300)
-		plt.show()
+		plt.savefig("./assign_scale_result"+self.index+".png", dpi=300)
+		#plt.show()
+		plt.close()
+
+	def show_percent(self):
+		print(list(self.statistics_scaled_area_data/np.sum(self.statistics_scaled_area_data)))
 
 #  use for test dataloader
 if __name__ == "__main__":
@@ -257,34 +270,44 @@ if __name__ == "__main__":
 	classes_category = params_init.TRAINING_PARAMS["model"]["classes_category"]
 	vocdataset = DetracDataset(list_path="../data/detrac/train.txt", ignore_region_path="../data/detrac/train_ignore_region.txt",
 							   labels_path='../data/detrac/labels',
-							   img_size=(640, 640), is_training=True, is_debug=True, batch_size=8)
+							   img_size=(640, 640), is_training=False, is_debug=True, batch_size=8)
 	index_2_classes = vocdataset.index_2_classes(classes_category)
 	dataloader = torch.utils.data.DataLoader(vocdataset,
 											 batch_size=8,
 											 shuffle=False, num_workers=0, pin_memory=False, collate_fn=vocdataset.collate_fn)
 	print(len(vocdataset))
 
-	continue_assign_scale = [[10, 15], [15, 20], [20, 40], [40, 70], [70, 110], [110, 250], [250, 400], [400, 560]]
+	#continue_assign_scale = [[10, 15], [15, 20], [20, 40], [40, 70], [70, 110], [110, 250], [250, 400], [400, 560]]
+	continue_assign_scale_3_cluster = [[17.5, 44], [44, 72], [72, 300]]
+	continue_assign_scale_4_cluster = [[17.5, 41.5], [41.5, 51.5], [51.5, 66], [66, 300]]
+	continue_assign_scale_5_cluster = [[], [], [], [], []]
+	continue_assign_scale_3_cluster_train = [[15, 50], [50, 100], [100, 260]]
+	continue_assign_scale_4_cluster_train = [[15, 45], [45, 75], [75, 135], [135, 260]]
+	continue_assign_scale_5_cluster_train = [[15, 40], [40, 60], [60, 100], [100, 150], [150, 260]]
+	continue_assign_scale_cluster_train = [continue_assign_scale_3_cluster_train, continue_assign_scale_4_cluster_train
+										   , continue_assign_scale_5_cluster_train]
 	size_scale = 640
-	statisticser = Statistic_scale(continue_assign_scale, size_scale)
-	for step, sample in tqdm(enumerate(dataloader)):
-		#print(step)
-		for i, (image, label) in enumerate(zip(sample['image'], sample['label'])):
-			image = image.numpy()
-			label = label.numpy()
-			h, w = image.shape[:2]
-			for l in label:
-				if l.sum() == 0:
-					continue
-				gt_h = l[4] * h
-				gt_w = l[3] * w
+	for i, continue_assign_scale in enumerate(continue_assign_scale_cluster_train):
 
-				area = gt_h * gt_w
-				max_length = max(gt_h, gt_w)
+		statisticser = Statistic_scale(continue_assign_scale, size_scale, index="_train_"+str(i+3)+"_cluster")
+		for step, sample in tqdm(enumerate(dataloader)):
+			#print(step)
+			for i, (image, label) in enumerate(zip(sample['image'], sample['label'])):
+				image = image.numpy()
+				label = label.numpy()
+				h, w = image.shape[:2]
+				for l in label:
+					if l.sum() == 0:
+						continue
+					gt_h = l[4] * h
+					gt_w = l[3] * w
 
-				statisticser.run(max_length, area)
-	statisticser.show()
-	print(statisticser.collection_unassign_length)
+					area = gt_h * gt_w
+					max_length = max(gt_h, gt_w)
+
+					statisticser.run(max_length, area)
+		statisticser.show()
+		print(statisticser.collection_unassign_length)
 
 
 

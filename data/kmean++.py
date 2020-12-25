@@ -172,7 +172,8 @@ def plot_dynamic_picture(centroids, groups, loss, image_shape, n_clusters):
     plt.title("k-means clustering for anchors")
     plt.xlabel('width')
     plt.ylabel('height')
-    plt.show()
+    plt.savefig('./train_dataset_{}x{}_{}_anchor_kmean++.png'.format(image_h, image_w, n_clusters), dpi=300)
+    #plt.show()
 
 
 # 计算给定bounding boxes的n_anchors数量的centroids
@@ -182,18 +183,19 @@ def plot_dynamic_picture(centroids, groups, loss, image_shape, n_clusters):
 # grid_size * grid_size 是栅格数量
 # iterations_num是最大迭代次数
 # plus = 1时启用k means ++ 初始化centroids
-def compute_centroids(label_path, n_anchors, loss_convergence, grid_size, iterations_num, plus):
+def compute_centroids(label_path, n_anchors, loss_convergence, oringin_image_size, cluster_image_size, iterations_num, plus):
     """
 
     :param label_path: label_path应该是一个文件夹，里面装着文本文件，文件的每行的格式是：class_label, x_center, y_center, w , h
     :param n_anchors: 聚类几个anchor
     :param loss_convergence: 当聚类距离小于这个值时，循环跳出，得到结果
-    :param grid_size: 如果label_path中加入的时绝对坐标，那么grid_size设置为1，如果加入的是相对坐标（即0-1，归一化），那么grid_size设置为所在图像的大小, format:(h,w)
+    :param oringin_image_size: 原始图片的尺寸大小 format:(h,w)
+    :param cluster_image_size: 在此尺寸下进行聚类 format:(h,w)
     :param iterations_num: 限制迭代次数
     :param plus: 时候选择使用kmean+算法
     :return:
     """
-
+    scale = calculate_resize_scale(oringin_image_size, cluster_image_size)
     boxes = []
     for label_file in tqdm(os.listdir(label_path)):
         f = open(os.path.join(label_path, label_file))
@@ -232,17 +234,29 @@ def compute_centroids(label_path, n_anchors, loss_convergence, grid_size, iterat
     # print result
     for centroid in centroids:
         print("k-means result：\n")
-        print(centroid.w * grid_size[1], centroid.h * grid_size[0])
+        print("width:", centroid.w * oringin_image_size[1]*scale, "height:", centroid.h * oringin_image_size[0] * scale)
 
     #plot the finally_picture
     print("开始进行画图！")
-    plot_dynamic_picture(centroids, groups, loss, image_shape=(306, 544), n_clusters=n_anchors)
+    plot_dynamic_picture(centroids, groups, loss, image_shape=(oringin_image_size[0]*scale, oringin_image_size[1]*scale), n_clusters=n_anchors)
+
+def calculate_resize_scale(oringin_image_size, cluster_image_size):
+    """
+    :param oringin_image_size: 图像原本的尺度 （h, w）
+    :param cluster_image_size: 在所需要训练的尺度下图像的大小 (h, w)
+    :return: scale 返回需要转换为cluster_image_size需要变换的尺度
+    """
+    o_h, o_w = oringin_image_size
+    h, w = cluster_image_size
+    return min(h/o_h, w/o_w)
+
+
 
 if __name__ == '__main__':
     label_path = "./detrac/labels"
-    n_anchors = 9
     loss_convergence = 1e-3
-    featureMap_size = 1
     iterations_num = 100
     plus = 1
-    compute_centroids(label_path, n_anchors, loss_convergence, (306, 544), iterations_num, plus)
+    compute_centroids(label_path, 3, loss_convergence, (540, 960), (640, 640), iterations_num, plus)
+    compute_centroids(label_path, 4, loss_convergence, (540, 960), (640, 640), iterations_num, plus)
+    compute_centroids(label_path, 5, loss_convergence, (540, 960), (640, 640), iterations_num, plus)

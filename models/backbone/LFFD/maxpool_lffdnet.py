@@ -30,16 +30,16 @@ class ResBlock(nn.Module):
 		super(ResBlock, self).__init__()
 		self.conv2dRelu = nn.Sequential(
 			SeparableConv2d(channels, channels, kernel_size=3, stride=1, padding=1),
-			nn.BatchNorm2d(channels),
-			nn.ReLU6(channels),
+			#nn.BatchNorm2d(channels),
+			#nn.ReLU6(channels),
 			SeparableConv2d(channels, channels, kernel_size=3, stride=1, padding=1),
-			nn.BatchNorm2d(channels),
-			nn.ReLU6(channels)
+			#nn.BatchNorm2d(channels),
+			#nn.ReLU6(channels),
 		)
 		self.relu = nn.ReLU6(channels)
 
 	def forward(self, x):
-		return self.relu(x + self.conv2dRelu(x))
+		return self.conv2dRelu(x) #self.relu(x + self.conv2dRelu(x))
 
 
 class LFFDbackbone(nn.Module):
@@ -48,14 +48,16 @@ class LFFDbackbone(nn.Module):
 		self.num_classes = 3
 		self.priors = None
 		self.c1 = nn.Sequential(
-			SeparableConv2d(3, 64, kernel_size=3, stride=2, padding=1),
-			nn.BatchNorm2d(64),
-			nn.ReLU6(64)
+			SeparableConv2d(3, 64, kernel_size=3, stride=1, padding=1),
+			nn.MaxPool2d(2,2),
+			#nn.BatchNorm2d(64),
+			#nn.ReLU6(64),
 		)
 		self.c2 = nn.Sequential(
-			SeparableConv2d(64, 64, kernel_size=3, stride=2, padding=1),
-			nn.BatchNorm2d(64),
-			nn.ReLU6(64)
+			SeparableConv2d(64, 64, kernel_size=3, stride=1, padding=1),
+			nn.MaxPool2d(2,2),
+			#nn.BatchNorm2d(64),
+			#nn.ReLU6(64)
 		)
 		self.tinypart1 = nn.Sequential(
 			ResBlock(64),
@@ -64,22 +66,25 @@ class LFFDbackbone(nn.Module):
 		)
 		self.tinypart2 = ResBlock(64)
 		self.c11 = nn.Sequential(
-			nn.Conv2d(64, 64, kernel_size=3, stride=2, padding=1),
-			nn.BatchNorm2d(64),
-			nn.ReLU6(64)
+			nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+			nn.MaxPool2d(2,2),
+			#nn.BatchNorm2d(64),
+			#nn.ReLU6(64)
 		)
 		self.smallpart1 = ResBlock(64)
 		self.smallpart2 = ResBlock(64)
 		self.c16 = nn.Sequential(
-			nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1),
-			nn.BatchNorm2d(128),
-			nn.ReLU6(128)
+			nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+			nn.MaxPool2d(2,2),
+			#nn.BatchNorm2d(128),
+			#nn.ReLU6(128)
 		)
 		self.mediumpart = ResBlock(128)
 		self.c19 = nn.Sequential(
-			nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=1),
-			nn.BatchNorm2d(128),
-			nn.ReLU6(128)
+			nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+			nn.MaxPool2d(2, 2),
+			#nn.BatchNorm2d(128),
+			#nn.ReLU6(128)
 		)
 		self.largepart1 = ResBlock(128)
 		self.largepart2 = ResBlock(128)
@@ -104,7 +109,7 @@ class LFFDbackbone(nn.Module):
 		c23 = self.largepart2(c21)  # 32x
 		c25 = self.largepart3(c23)  # 32x
 
-		return c8, c10, c13, c15, c18, c21, c23, c25
+		return c8, c10, c13, c15, c18, c19, c21, c23, c25
 
 if __name__ == '__main__':
 	from tools.cal_reception_filed_tool.cal_RF import calc_receptive_filed
@@ -112,8 +117,8 @@ if __name__ == '__main__':
 	#torch.manual_seed(1)
 	lffd_backbone = LFFDbackbone()
 
-	calc_receptive_filed(lffd_backbone, (640, 640, 3), index=[34, 43, 46, 76, 88, 97, 106])
+	calc_receptive_filed(lffd_backbone, (640, 640, 3), index=[39, 47, -1])
 	#lffd_backbone.eval()
 	# train_weight = torch.load("/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LFFD_test_UA_detrac/20201203144225/model_map_0.910.pth")
 	# lffd_backbone.load_state_dict(state_dict=train_weight['state_dict'], strict=False)
-	#calculate_EPR(lffd_backbone)
+	calculate_EPR(lffd_backbone)

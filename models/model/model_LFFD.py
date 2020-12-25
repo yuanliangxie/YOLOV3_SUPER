@@ -171,11 +171,12 @@ class LFFD(nn.Module):
 
 		return loss_or_output #input=416,[13, 26, 52]
 if __name__ == '__main__':
+	from tools.cal_effect_field_tool import calculate_EPR
 	from tools.cal_reception_filed_tool.cal_RF import calc_receptive_filed
-	config={"device_id":0, "num_classes":1}
+	config={"device_id":'cpu', "num_classes":1, "model":{"classes":1}}
 	model = LFFD(config)
+	train_weight = torch.load("/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LFFD_test_UA_detrac/20201203144225/model_map_0.910.pth")
+	print(model.load_state_dict(state_dict=train_weight['state_dict'], strict=True))
 	#summary(model,(3,640,640),device = "cpu")
-	calc_receptive_filed(model, (640, 640, 3), index=[101])
-
-
-
+	#calc_receptive_filed(model, (640, 640, 3), index=[i for i in range(101)])
+	calculate_EPR(model.backbone)

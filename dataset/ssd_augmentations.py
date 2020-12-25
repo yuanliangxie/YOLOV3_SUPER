@@ -361,7 +361,7 @@ class RandomSample_for_all_scales(object):
         choose_boxes_xyxy = boxes[random_choice]
         choose_boxes_center_xy = (choose_boxes_xyxy[2:] + choose_boxes_xyxy[:2])/2
         max_side = np.max(choose_boxes_xyxy[2:]-choose_boxes_xyxy[:2])
-        random_face_scale = self.continuous_face_scale[random.randint(0, 8)]
+        random_face_scale = self.continuous_face_scale[random.randint(0, len(self.continuous_face_scale))]
         random_resize_value = random.uniform(random_face_scale[0], random_face_scale[1])
         alpha = random_resize_value/max_side
         self.crop_image_size = int(self.fix_image_size/alpha)
