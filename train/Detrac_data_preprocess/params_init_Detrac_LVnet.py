@@ -5,6 +5,12 @@ TRAINING_PARAMS = \
 			"backbone_weight": "",
 		},
 		"model": {
+			"anchors": [
+				[[28, 21]],
+				[[57, 38]],
+				[[100, 65]],
+				[[164, 121]]
+			],
 			"classes": 1,
 			#"classes_category": ['car', 'bus', 'van', 'others']
 			"classes_category": ["car"]
@@ -36,15 +42,16 @@ TRAINING_PARAMS = \
 		"working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
 		# restore_model_weight:
-		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LFFD_test_UA_detrac/20201202223844/model.pth",
-	    # /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LFFD_test_UA_detrac/20201202223844/model.pth
-		# /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_LFFD_test_UA_detrac/20201118222434/model.pth
+		"pretrain_snapshot": "",
+	    # /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20201227114112/model.pth
+		# /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20201226225134/model.pth
+		# /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20201226180056/model.pth
 		"self_train_weight": True,
-		"resume_start_epoch": 24,
+		"resume_start_epoch": 1,
 
 
 		# train_eval:
-		"start_eval": 31,
+		"start_eval": 2,
 		"interval_epoch_eval": 1, #每隔多少个epoch进行验证
 		"epoch_eval_times": 1, #每个epoch验证多少轮
 		#train_eval参数的含义为：从"start_eval"第2个epoch开始进行验证，此时"epoch_eval_times"第２个epoch总共
@@ -52,7 +59,7 @@ TRAINING_PARAMS = \
 
 
 		#tricks
-		"try": '_LFFD_test_UA_detrac',
+		"try": '_LVnet_test_UA_detrac',
 		"scheduler_way": "Cosdecay",
 		"GIOU": False,
 		"mix_up": False,
@@ -60,9 +67,8 @@ TRAINING_PARAMS = \
 	}
 
 Eval = {
-	#"DATA_PATH": "/home/xyl/Pycharmproject/YOLOv3/voc_data",     #voc数据集所放地址
 	"PROJECT_PATH": "/home/xyl/PycharmProjects/YOLOV3_SUPER", #即本项目的地址
-	"TEST_IMG_SIZE":544,
+	"TEST_IMG_SIZE":640,
 	"BATCH_SIZE":32,
 	"NUMBER_WORKERS":0,
 	"CONF_THRESH":0.01,

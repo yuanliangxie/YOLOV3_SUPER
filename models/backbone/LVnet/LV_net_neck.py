@@ -68,12 +68,12 @@ class neck(nn.Module):
 			# output the layer recep small
 
 			OrderedDict([
-				('stack_to_head3', stack_to_head(96, first_head=False))
+				('stack_to_head3', stack_to_head(96, first_head=False, last_head=True))
 			]),
 
 			#tinyPart
 			OrderedDict([
-				('stack_to_head4', stack_to_head(80, first_head=False, last_head=True))
+				('stack_to_head4', stack_to_head(96, first_head=False, last_head=True))
 			]),
 
 			#largepart
@@ -92,7 +92,7 @@ class neck(nn.Module):
 			#smallPart
 			# UpSample, connect the reception_middle to reception_small
 			OrderedDict([
-				('upsample3', Upsample(32))
+				('upsample3', Upsample(64))
 			])
 
 		]
@@ -198,17 +198,17 @@ if __name__ == '__main__':
 	from tools.cal_reception_filed_tool.cal_RF import calc_receptive_filed
 	from models.backbone.LVnet.LV_net import LV_Net_backbone
 	from tools.cal_effect_field_tool import calculate_EPR
-	# input = torch.ones(1,3,640,640)
+	input = torch.ones(1, 3, 640, 640)
 
-	# backbone = LV_Net_backbone()
-	# neck = neck()
-	#
-	# features = backbone(input)
-	# outputs = neck(features)
-	#
-	# for output in outputs:
-	# 	print(output.shape)
+	backbone = LV_Net_backbone()
+	#neck1 = neck()
 
-	backbone = LV_backbone()
-	calculate_EPR(backbone)
+	features = backbone(input)
+	#outputs = neck1(features)
+
+	for output in features:
+		print(output.shape)
+
+	# backbone = LV_backbone()
+	# calculate_EPR(backbone)
 	#calc_receptive_filed(backbone,(640, 640, 3), index=[110, 122, 134, 146])

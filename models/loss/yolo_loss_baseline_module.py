@@ -5,8 +5,8 @@ class yolo_loss_module(nn.Module):
         super().__init__()
         yolo_losses = []
         for i in range(3):
-            yolo_losses.append(YOLOLoss(config["yolo"]["anchors"][i],
-                                        config["yolo"]["classes"], strides[i], config=config, device_id = config["device_id"]))
+            yolo_losses.append(YOLOLoss(config["model"]["anchors"][i],
+                                        config["model"]["classes"], strides[i], config=config, device_id = config["device_id"]))
         # self.yolo_losses_0 = yolo_losses[0]
         # self.yolo_losses_1 = yolo_losses[1]
         # self.yolo_losses_2 = yolo_losses[2]

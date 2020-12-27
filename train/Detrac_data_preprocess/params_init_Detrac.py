@@ -4,13 +4,13 @@ TRAINING_PARAMS = \
         "backbone_name": "darknet53",
         "backbone_weight": "",
     },
-    "yolo": {
+    "model": {
         "anchors": [[[116, 90], [156, 198], [373, 326]],
                     [[30, 61], [62, 45], [59, 119]],
                     [[10, 13], [16, 30], [33, 23]]],
-        "classes": 4,
-        "classes_category": ['car', 'bus', 'van', 'others']
-        # "classes_category": ["car"]
+        "classes": 1,
+        #"classes_category": ['car', 'bus', 'van', 'others']
+        "classes_category": ["car"]
     },
     "lr": {
         "backbone_lr": 1e-4,
@@ -32,22 +32,41 @@ TRAINING_PARAMS = \
     "train_ignore_region": "../data/detrac/train_ignore_region.txt",
     "train_labels_path": "../data/detrac/labels",
     "epochs": 80,
-    "Multi-scale training": True, #要增加多尺度训练！
-    "img_h": 416,#如果Multi-scale training是False，则使用此单尺度训练
-    "img_w": 416,
+    "Multi-scale training": False, #要增加多尺度训练！
+    "img_h": 640,#如果Multi-scale training是False，则使用此单尺度训练
+    "img_w": 640,
     "parallels": [0],                         #  config GPU device
-    "working_dir": "/home/xyl/桌面/YOLO_SUPER",              #  replace with your working dir
-    "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLO_superX/darknet53/Multi-scale_trydetrac_baseline_train/20200625231341/model.pth",
-    #../darknet53/Multi-scale_trydetrac_baseline_train/20200624231208/model.pth
-    "try": "detrac_baseline_train",
+    "working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
+
+    # restore_model_weight:
+    "pretrain_snapshot": "",
+    # /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_LFFD_test_UA_detrac/20201118222434/model.pth
+    "self_train_weight": True,
+    "resume_start_epoch": 24,
+
+
+    # train_eval:
+    "start_eval": 31,
+    "interval_epoch_eval": 1, #每隔多少个epoch进行验证
+    "epoch_eval_times": 1, #每个epoch验证多少轮
+    #train_eval参数的含义为：从"start_eval"第2个epoch开始进行验证，此时"epoch_eval_times"第２个epoch总共
+    # 会验证两次，然后间隔"interval_epoch_eval"２个epoch会再次进行验证
+
+
+    #tricks
+    "try": 'yolov3',
     "scheduler_way": "Cosdecay",
-    "mix_up": True
+    "label_smooth": False, #label_smooth还有一些问题要跟ce适应
+    "GIOU": False,
+    "mix_up": False,
+    "ce": False,
+    "bce": True,
+    "accumulate":1
 }
 
 Eval = {
-        #"DATA_PATH": "/home/xyl/Pycharmproject/YOLOv3/voc_data",     #voc数据集所放地址
-        "PROJECT_PATH": "/home/xyl/桌面/YOLO_SUPER", #即本项目的地址
-        "TEST_IMG_SIZE":544,
+        "PROJECT_PATH": "/home/xyl/PycharmProjects/YOLOV3_SUPER", #即本项目的地址
+        "TEST_IMG_SIZE":640,
         "BATCH_SIZE":32,
         "NUMBER_WORKERS":0,
         "CONF_THRESH":0.01,

@@ -13,7 +13,7 @@ from models.bricks.tricks import GIOU
 class YOLOLoss(nn.Module):
     def __init__(self, anchors, num_classes, stride, config, device_id):#([],80,(w,h))
         super(YOLOLoss, self).__init__()
-        config_anchor = config["yolo"]["anchors"]
+        config_anchor = config["model"]["anchors"]
         self.anchors = anchors
         self.total_anchors = self.get_total_anchors(config_anchor)
         self.anchors_mask = self.get_anchors_mask()

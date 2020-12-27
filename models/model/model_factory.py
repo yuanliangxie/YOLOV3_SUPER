@@ -4,6 +4,7 @@ from models.model.model_yolov3_x import yolov3 as yolov3_x
 from models.model.poly_yolo import yolov3 as poly_yolo
 from models.model.model_centernet_resnet import centernet_18 as centernet_18
 from models.model.model_LFFD import LFFD
+from models.model.model_LVnet import LVnet
 
 _model_factory = {
 	"yolov3": yolov3,
@@ -11,7 +12,8 @@ _model_factory = {
 	"yolov3_x": yolov3_x,
 	"poly_yolo": poly_yolo,
 	"centernet_18": centernet_18,
-	"LFFD": LFFD
+	"LFFD": LFFD,
+	"LVnet":LVnet
 }
 
 def load_model(model_name):

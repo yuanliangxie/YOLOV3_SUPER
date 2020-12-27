@@ -15,7 +15,7 @@ class yolov3(nn.Module):
         super().__init__()
         self.backbone = darknet53.darknet53()
         self.neck = neck.neck()
-        self.head = yolov3_head.yolov3_head(nAnchors=3, nClass=config["yolo"]["classes"])
+        self.head = yolov3_head.yolov3_head(nAnchors=3, nClass=config["model"]["classes"])
         self.loss = loss.yolo_loss_module(config, strides=[32, 16, 8])
         if logger == None:
             self.logger = print_logger()

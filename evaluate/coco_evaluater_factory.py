@@ -9,6 +9,7 @@ _coco_evaluater_factory = {
 	"U-DETRAC": detrac_evaluater,
 	"U-DETRAC_centernet": detrac_evaluater,
 	"U-DETRAC_lffd": detrac_evaluater,
+	"U-DETRAC_LVnet": detrac_evaluater,
 }
 
 def load_coco_evaluater(config_name):

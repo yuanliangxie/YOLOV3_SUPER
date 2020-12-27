@@ -349,7 +349,10 @@ class ToTensor(object):
 
 class RandomSample_for_all_scales(object):
     def __init__(self, mean):
-        self.continuous_face_scale=[[10, 15], [15, 20], [20, 40], [40, 70], [70, 110], [110, 250], [250, 400], [400, 560]]
+        #self.continuous_face_scale=[[10, 15], [15, 20], [20, 40], [40, 70], [70, 110], [110, 250], [250, 400], [400, 560]]
+        self.continuous_face_scale=[[15, 45], [45, 75], [75, 135], [135, 260]]
+        #TODO:delete
+        #self.continuous_face_scale=[[15, 45]]
         self.fix_image_size = 640
         self.mean = mean
 
@@ -409,7 +412,7 @@ class RandomSample_for_all_scales(object):
 
         #将过小的boxes过滤掉！
         area = np.prod(boxes[:, 2:] - boxes[:, :2], axis=1)
-        choose = area > 100
+        choose = area > 225
         boxes = boxes[choose]
         labels = labels[choose]
 
@@ -650,9 +653,9 @@ class SSDAugmentation(object):
             xywh_to_xyxy(),
             #PhotometricDistort(),
             ImageBaseAug(),
-            Expand(mean),
-            RandomSampleCrop(),
-        #RandomSample_for_all_scales(mean),
+        #Expand(mean),
+        #RandomSampleCrop(),
+            RandomSample_for_all_scales(mean),
             RandomMirror(),
             #xyxy_to_xywh(),
             #ToPercentCoords(),

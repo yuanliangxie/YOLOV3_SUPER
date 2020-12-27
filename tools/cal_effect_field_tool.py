@@ -5,7 +5,7 @@ import cv2 as cv
 def calculate_EPR(model): #TODO:尝试通过加载预训练权重计算有效感受野
 	for module in model.modules():
 		try:
-			nn.init.constant_(module.weight, 0.1)
+			nn.init.constant_(module.weight, 0.05)
 			nn.init.zeros_(module.bias)
 			nn.init.zeros_(module.running_mean)
 			nn.init.ones_(module.running_var)
@@ -76,4 +76,5 @@ def show(input, i):
 	np.expand_dims(grad_input, axis=2).repeat(3, axis=2)
 	grad_input = (grad_input * 255).astype(np.uint8)
 	cv.imshow("receip_field"+str(i), grad_input)
+	#cv.imwrite("./receip_field"+str(i)+".png", grad_input)
 
