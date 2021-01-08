@@ -3,9 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class Conv2dBatchLeaky(nn.Module):
+class Conv2dBatchRelu6(nn.Module):
 	def __init__(self, in_channels, out_channels, kernel_size=3, stride= 1, padding=1):
-		super(Conv2dBatchLeaky, self).__init__()
+		super(Conv2dBatchRelu6, self).__init__()
 		self.layer = nn.Sequential(
 			nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding),
 			nn.BatchNorm2d(out_channels),
@@ -69,7 +69,7 @@ class LV_Net_backbone(nn.Module):
 		)
 		self.c11 = nn.Sequential(
 			# SeparableConv2d(64, 64, kernel_size=3, stride=1, padding=1),
-			Conv2dBatchLeaky(64, 64, kernel_size=3, stride=2, padding=1),
+			Conv2dBatchRelu6(64, 64, kernel_size=3, stride=2, padding=1),
 			#nn.MaxPool2d(2, 2),
 		)
 		self.smallpart1 = nn.Sequential(
@@ -77,15 +77,15 @@ class LV_Net_backbone(nn.Module):
 			#Conv2dBatchLeaky(64, 64, kernel_size=1, stride=1, padding=0)
 		)
 		self.c18 = nn.Sequential(
-			Conv2dBatchLeaky(64, 128, kernel_size=3, stride=2, padding=1),
+			Conv2dBatchRelu6(64, 128, kernel_size=3, stride=2, padding=1),
 			#nn.MaxPool2d(2, 2)
 		)
 		self.mediumpart = nn.Sequential(
 			ResBlock(128),
-			Conv2dBatchLeaky(128, 128, kernel_size=3, stride=1, padding=1)
+			Conv2dBatchRelu6(128, 128, kernel_size=3, stride=1, padding=1)
 		)
 		self.c25 = nn.Sequential(
-			Conv2dBatchLeaky(128, 256, kernel_size=3, stride=2, padding=1),
+			Conv2dBatchRelu6(128, 256, kernel_size=3, stride=2, padding=1),
 			#nn.MaxPool2d(2, 2)
 		)
 		self.largepart = ResBlock(256)

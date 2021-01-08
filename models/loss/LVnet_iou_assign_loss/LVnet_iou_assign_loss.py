@@ -7,9 +7,8 @@ class LVnetloss_module(nn.Module):
 
 		self.num_classes = config['model']['classes']
 		self.bbox_attrs = 4 + self.num_classes#85
-		self.strides = [4, 8, 16, 32]
+		self.strides = [16, 32]
 		self.choose_feature_map = [i for i in range(len(self.strides))]
-		self.continuous_face_scale=[[15, 45], [45, 75], [75, 135], [135, 260]]
 		self.lambda_xy = 1
 		self.lambda_wh = 1
 		self.lambda_cls = 1
@@ -18,7 +17,7 @@ class LVnetloss_module(nn.Module):
 		self.smooth_l1 = nn.SmoothL1Loss(reduction='none')
 		self.device = select_device(config["device_id"])
 		self.config = config
-		self.anchors = [[28, 21], [57, 38], [100, 65], [164, 121]] #(w, h)
+		self.anchors = [[100, 65], [164, 121]] #(w, h)
 
 
 		self.focal_loss_gama = 2
@@ -67,17 +66,20 @@ class LVnetloss_module(nn.Module):
 				t_h = target_tensor[i][..., 3]
 				t_cls = target_tensor[i][..., 4]
 				t_scale_area_weight = target_tensor[i][..., 5]
+				t_noobj_mask = target_tensor[i][..., 6]
 
 				t_x, t_y = t_x.to(self.device), t_y.to(self.device)
 				t_w, t_h = t_w.to(self.device), t_h.to(self.device)
 				t_cls, t_scale_area_weight = t_cls.to(self.device), t_scale_area_weight.to(self.device)
+				t_noobj_mask = t_noobj_mask.to(self.device)
 
 				loss_x = (t_scale_area_weight * self.bce_loss(x * t_cls, t_x)).sum()/n_obj
 				loss_y = (t_scale_area_weight * self.bce_loss(y * t_cls, t_y)).sum()/n_obj
 				loss_w = (t_scale_area_weight * self.smooth_l1(w * t_cls, t_w)).sum()/n_obj
 				loss_h = (t_scale_area_weight * self.smooth_l1(h * t_cls, t_h)).sum()/n_obj
-				loss_cls_conf = (self.focal_loss_alpha * (1-conf)**self.focal_loss_gama * t_cls * self.bce_loss(conf * t_cls, t_cls)).sum()/n_obj + \
-								((1-self.focal_loss_alpha) * conf**self.focal_loss_gama * (1-t_cls) * self.bce_loss(conf * (1-t_cls), (1-t_cls) * 0.0)).sum()/n_obj #这里采用focal_loss进行编写
+				# loss_cls_conf = (self.focal_loss_alpha * (1-conf)**self.focal_loss_gama * t_cls * self.bce_loss(conf * t_cls, t_cls)).sum()/n_obj + \
+				# 				((1-self.focal_loss_alpha) * conf**self.focal_loss_gama * (1-t_cls) * self.bce_loss(conf * (1-t_cls), (1-t_cls) * 0.0)).sum()/n_obj #这里采用focal_loss进行编写
+				loss_cls_conf = self.bce_loss(t_cls * conf, t_cls).sum()/n_obj + 0.5*self.bce_loss(t_noobj_mask*conf, t_noobj_mask*0).sum()/n_obj
 				loss = loss_x + loss_y + loss_w + loss_h + loss_cls_conf
 				result.append([loss, loss_x.item(), loss_y.item(), loss_w.item(), loss_h.item(), loss_cls_conf.item()])
 			else:

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from collections import OrderedDict
-from models.backbone.LVnet.LV_net import SeparableConv2d, Conv2dBatchLeaky
+from models.backbone.LVnet.LV_net import SeparableConv2d, Conv2dBatchRelu6
 
 
 class stack_to_head(nn.Module):
@@ -15,9 +15,9 @@ class stack_to_head(nn.Module):
 			half_nchannels = int(input_channel / 3)
 		in_nchannels = 2 * half_nchannels
 		layers = [
-			Conv2dBatchLeaky(input_channel, half_nchannels, 1, 1, 0),
+			Conv2dBatchRelu6(input_channel, half_nchannels, 1, 1, 0),
 			SeparableConv2d(half_nchannels, in_nchannels, 3, 1),
-			Conv2dBatchLeaky(in_nchannels, half_nchannels, 1, 1, 0)
+			Conv2dBatchRelu6(in_nchannels, half_nchannels, 1, 1, 0)
 		]
 		self.feature = nn.Sequential(*layers)
 
@@ -37,7 +37,7 @@ class Upsample(nn.Module):
 		self.input_channel = input_channel
 		half_nchannels = int(input_channel / 2)
 		layers = [
-			Conv2dBatchLeaky(self.input_channel, half_nchannels, 1, 1, 0),
+			Conv2dBatchRelu6(self.input_channel, half_nchannels, 1, 1, 0),
 			nn.Upsample(scale_factor=2)
 		]
 

@@ -9,12 +9,29 @@ sys.path.append("../../../YOLOV3_SUPER")
 #from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as config
 
 #centernet
-#from models.model.model_centernet_resnet import centernet_18 as yolov3
-#from evaluate.evaluate_detrac_coco_api.centernet_config_detrac_test import TEST as config
+# from models.model.model_centernet_resnet import centernet_18 as yolov3
+# from evaluate.evaluate_detrac_coco_api.centernet_config_detrac_test import TEST as config
 
 #LFFD
-from models.model.model_LFFD import LFFD as yolov3
-from evaluate.evaluate_detrac_coco_api.LFFD_config_detrac_test import TEST as config
+# from models.model.model_LFFD import LFFD as yolov3
+# from evaluate.evaluate_detrac_coco_api.LFFD_config_detrac_test import TEST as config
+
+#LVnet
+# from models.model.model_LVnet import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_config_detrac_test import TEST as config
+
+#LVnet_with_deconv
+#from models.model.model_LVnet_with_deconv import LVnet as yolov3
+#from evaluate.evaluate_detrac_coco_api.LVnet_with_deconv_config_detrac_test import TEST as config
+
+#LVnet_with_deconv_centerloss
+#from models.model.model_LVnet_with_deconv_shallow_centerloss import LVnet as yolov3
+#from evaluate.evaluate_detrac_coco_api.LVnet_with_deconv_centerloss_config_detrac_test import TEST as config
+
+#LVnet_with_pure_centerloss
+from models.model.model_LVnet_with_pure_centerloss import LVnet as yolov3
+from evaluate.evaluate_detrac_coco_api.LVnet_with_pure_centerloss_config_detrac_test import TEST as config
+
 
 from evaluate.evaluate_detrac_coco_api.coco_evaluater import coco_evaluater
 from utils.utils_select_device import select_device

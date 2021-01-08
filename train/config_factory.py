@@ -11,6 +11,19 @@ from train.Detrac_data_preprocess.params_init_detrac_LFFD import Eval as Detrac_
 from train.Detrac_data_preprocess.params_init_Detrac_LVnet import TRAINING_PARAMS as Detrac_config_train_LVnet
 from train.Detrac_data_preprocess.params_init_Detrac_LVnet import Eval as Detrac_config_eval_LVnet
 
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_deconv import TRAINING_PARAMS as Detrac_config_train_LVnet_deconv
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_deconv import Eval as Detrac_config_eval_LVnet_deconv
+
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_deconv_centerloss import TRAINING_PARAMS as Detrac_config_train_LVnet_deconv_centerloss
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_deconv_centerloss import Eval as Detrac_config_eval_LVnet_deconv_centerloss
+
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_pure_centerloss import TRAINING_PARAMS as Detrac_config_train_LVnet_pure_centerloss
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_pure_centerloss import Eval as Detrac_config_eval_LVnet_pure_centerloss
+
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_iou_assign import TRAINING_PARAMS as Detrac_config_train_LVnet_iou_assign
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_iou_assign import Eval as Detrac_config_eval_LVnet_iou_assign
+
+
 #VOC的配置文件
 from train.Voc_data_preprocess.params_init_voc import TRAINING_PARAMS as Voc_config_train
 from train.Voc_data_preprocess.params_init_voc import Eval as Voc_config_eval
@@ -32,7 +45,11 @@ _config_factory = {
 	"U-DETRAC":[Detrac_config_train, Detrac_config_eval],
 	"U-DETRAC_centernet":[Detrac_config_train_centernet, Detrac_config_eval_centernet],
 	"U-DETRAC_lffd":[Detrac_config_train_lffd, Detrac_config_eval_lffd],
-	"U-DETRAC_LVnet":[Detrac_config_train_LVnet, Detrac_config_eval_LVnet]
+	"U-DETRAC_LVnet":[Detrac_config_train_LVnet, Detrac_config_eval_LVnet],
+	"U-DETRAC_LVnet_deconv":[Detrac_config_train_LVnet_deconv, Detrac_config_eval_LVnet_deconv],
+	"U-DETRAC_LVnet_deconv_centerloss":[Detrac_config_train_LVnet_deconv_centerloss, Detrac_config_eval_LVnet_deconv_centerloss],
+	"U-DETRAC_LVnet_pure_centerloss":[Detrac_config_train_LVnet_pure_centerloss, Detrac_config_eval_LVnet_pure_centerloss],
+	"U-DETRAC_LVnet_iou_assign":[Detrac_config_train_LVnet_iou_assign, Detrac_config_eval_LVnet_iou_assign]
 }
 
 def get_config(config_char):

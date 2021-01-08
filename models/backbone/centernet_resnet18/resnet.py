@@ -167,6 +167,7 @@ def resnet18(pretrained=False, hr_pretrained=False, **kwargs):
 			print('Loading the high resolution pretrained model ...')
 			model.load_state_dict(torch.load("backbone/weights/resnet18_hr_10.pth"), strict=False)
 		else:
+			print("loading the pretrained model of resnet18")
 			model.load_state_dict(model_zoo.load_url(model_urls['resnet18']), strict=False)
 	return model
 

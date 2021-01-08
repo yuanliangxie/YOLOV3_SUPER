@@ -12,16 +12,16 @@ TEST = {
 	"TEST_IMG_SIZE":640,
 	"BATCH_SIZE":16,
 	"NUMBER_WORKERS":0,
-	"CONF_THRESH":0.01,
-	"NMS_THRESH":0.5,
+	"CONF_THRESH":0.1,
+	"NMS_THRESH":0.45,
 	"MULTI_SCALE_TEST":False,
 	"FLIP_TEST":False,
 	"model": {
 		"classes": 1,
 	},
-	"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LFFD_test_UA_detrac/20201203144225/model_map_0.910.pth",
+	"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_deconv_centerloss_test_UA_detrac/20210105141932/model_map_0.932.pth",
 
 	"generate_analyze_figure": False,
-	"generate_analyze_figure_dir_name": "analyze_loss_LFFD"
+	"generate_analyze_figure_dir_name":"analyze_loss_LVnet_deconv_centerloss_640_conf_0.5"
 }
 

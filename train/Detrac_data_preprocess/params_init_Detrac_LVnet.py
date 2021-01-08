@@ -46,12 +46,13 @@ TRAINING_PARAMS = \
 	    # /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20201227114112/model.pth
 		# /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20201226225134/model.pth
 		# /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20201226180056/model.pth
+		#/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20201228114516/model_map_0.917.pth
 		"self_train_weight": True,
 		"resume_start_epoch": 1,
 
 
 		# train_eval:
-		"start_eval": 2,
+		"start_eval": 31,
 		"interval_epoch_eval": 1, #每隔多少个epoch进行验证
 		"epoch_eval_times": 1, #每个epoch验证多少轮
 		#train_eval参数的含义为：从"start_eval"第2个epoch开始进行验证，此时"epoch_eval_times"第２个epoch总共

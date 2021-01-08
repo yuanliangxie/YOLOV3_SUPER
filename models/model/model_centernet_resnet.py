@@ -32,7 +32,7 @@ class centernet_18(nn.Module):
 		self.deconv4 = DeConv2d(256, 256, ksize=4, stride=2) # 16 -> 8
 		self.deconv3 = DeConv2d(256, 256, ksize=4, stride=2) #  8 -> 4
 
-		self.num_classes = config['yolo']['classes']
+		self.num_classes = config['model']['classes']
 
 		self.cls_pred = nn.Sequential(
 			Conv2d(256, 64, ksize=3, padding=1, leakyReLU=True),

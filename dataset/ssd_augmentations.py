@@ -156,7 +156,7 @@ class ResizeImage_multi_scale(object):
     def __init__(self, batch_size=16, interpolation=cv2.INTER_AREA, mean=(104, 117, 123)):
         self.interpolation = interpolation
         self.image_size = {1: (320, 320), 2: (352, 352), 3: (384, 384), 4: (416, 416), 5: (448, 448), 6: (480, 480),
-                           7: (544, 544), 8: (576, 576), 9: (608, 608)
+                           7: (544, 544), 8: (576, 576), 9: (608, 608), 10: (640, 640)
                            }
         self.batch_size_oral = batch_size
         self.batch_size = batch_size
@@ -170,6 +170,13 @@ class ResizeImage_multi_scale(object):
             self.new_size = self.choose_image_size(index=None)
         image, boxes = self.cv2_letterbox_image(image, boxes, self.new_size)
         self.batch_size = self.batch_size - 1
+
+        #将过小的boxes过滤掉！
+        area = np.prod(boxes[:, 2:] - boxes[:, :2], axis=1)
+        choose = area > 100
+        boxes = boxes[choose]
+        labels = labels[choose]
+
         return image, boxes, labels
 
     def cv2_letterbox_image(self, image, boxes, expected_size):
@@ -198,7 +205,7 @@ class ResizeImage_multi_scale(object):
 
     def choose_image_size(self, index=None):
         if index is None:
-            index = random.randint(1, 10)
+            index = random.randint(1, len(self.image_size)+1)
         return tuple(self.image_size[index])
 
 class ResizeImage_single_scale(object):
@@ -233,6 +240,13 @@ class ResizeImage_single_scale(object):
 
     def __call__(self, image, boxes=None, labels=None):
         image, boxes = self.cv2_letterbox_image(image, boxes, self.new_size)
+
+        #将过小的boxes过滤掉！
+        area = np.prod(boxes[:, 2:] - boxes[:, :2], axis=1)
+        choose = area > 100
+        boxes = boxes[choose]
+        labels = labels[choose]
+
         return image, boxes, labels
 
 

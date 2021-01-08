@@ -7,9 +7,8 @@ class LVnetloss_module(nn.Module):
 
 		self.num_classes = config['model']['classes']
 		self.bbox_attrs = 4 + self.num_classes#85
-		self.strides = [4, 8, 16, 32]
+		self.strides = [16, 32]
 		self.choose_feature_map = [i for i in range(len(self.strides))]
-		self.continuous_face_scale=[[15, 45], [45, 75], [75, 135], [135, 260]]
 		self.lambda_xy = 1
 		self.lambda_wh = 1
 		self.lambda_cls = 1
@@ -18,7 +17,7 @@ class LVnetloss_module(nn.Module):
 		self.smooth_l1 = nn.SmoothL1Loss(reduction='none')
 		self.device = select_device(config["device_id"])
 		self.config = config
-		self.anchors = [[28, 21], [57, 38], [100, 65], [164, 121]] #(w, h)
+		self.anchors = [[100, 65], [164, 121]] #(w, h)
 
 
 		self.focal_loss_gama = 2

@@ -15,6 +15,7 @@ from evaluate.coco_evaluater_factory import load_coco_evaluater
 from train.train_eval import train_evaler
 from models.bricks.tricks import mix_up
 #from memory_profiler import profile
+from tools.time_analyze import func_line_time
 
 class trainer():
 	def __init__(self, config_train, config_eval, logger):
@@ -247,9 +248,9 @@ if __name__ == "__main__":
 	#在跑程序前需要清空../evaluate/data或者../evaluate_coco/data或者evaluate_detrac_coco_api方法中的文件
 	import argparse
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--config_name', type=str, default='U-DETRAC_LVnet', help='VOC or U-DETRAC or VOC_poly_yolo')
+	parser.add_argument('--config_name', type=str, default='U-DETRAC_LVnet_iou_assign', help='VOC or U-DETRAC or VOC_poly_yolo')
 	parser.add_argument('--device_id', type=int, default=0, help="choose the device_id")
-	parser.add_argument('--config_model_name', type=str, default='LVnet', help='you can cd ./models/model/model_factory to find model name')
+	parser.add_argument('--config_model_name', type=str, default='LVnet_with_iou_assign', help='you can cd ./models/model/model_factory to find model name')
 	opt = parser.parse_args()
 	trainer_object = trainer.set_config(opt.config_name, opt.device_id, opt.config_model_name)
 	trainer_object.start_train()

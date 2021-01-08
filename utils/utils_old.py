@@ -42,6 +42,70 @@ def bbox_ious(boxes1, boxes2):
 
     return intersections / unions
 
+def bbox_iou_xyxy_numpy(boxes1, boxes2):
+    """
+    :param boxes1: boxes1和boxes2的shape可以不相同，但是需要满足广播机制
+    :param boxes2: 且需要保证最后一维为坐标维，以及坐标的存储结构为(xmin, ymin, xmax, ymax)
+    :return: 返回boxes1和boxes2的IOU，IOU的shape为boxes1和boxes2广播后的shape[:-1]
+    """
+
+    boxes1_area = (boxes1[..., 2] - boxes1[..., 0]) * (boxes1[..., 3] - boxes1[..., 1])
+    boxes2_area = (boxes2[..., 2] - boxes2[..., 0]) * (boxes2[..., 3] - boxes2[..., 1])
+
+    # 计算出boxes1和boxes2相交部分的左上角坐标、右下角坐标
+    left_up = np.maximum(boxes1[..., :2], boxes2[..., :2])
+    right_down = np.minimum(boxes1[..., 2:], boxes2[..., 2:])
+
+    # 计算出boxes1和boxes2相交部分的宽、高
+    # 因为两个boxes没有交集时，(right_down - left_up) < 0，所以maximum可以保证当两个boxes没有交集时，它们之间的iou为0
+    inter_section = np.maximum(right_down - left_up, 0.0)
+    inter_area = inter_section[..., 0] * inter_section[..., 1]
+    union_area = boxes1_area + boxes2_area - inter_area
+    IOU = 1.0 * inter_area / union_area
+    return IOU
+
+def bbox_iou_xywh_numpy(boxes1, boxes2):
+    """
+    :param boxes1: boxes1和boxes2的shape可以不相同，但是需要满足广播机制
+    :param boxes2: 且需要保证最后一维为坐标维，以及坐标的存储结构为(x, y, w, h)
+    :return: 返回boxes1和boxes2的IOU，IOU的shape为boxes1和boxes2广播后的shape[:-1]
+    """
+
+    #tranform the xywh to xyxy
+    x1 = boxes1[..., 0:1] - boxes1[..., 2:3]/2
+    y1 = boxes1[..., 1:2] - boxes1[..., 3:4]/2
+
+    x1_2 = boxes1[..., 0:1] + boxes1[..., 2:3]/2
+    y1_2 = boxes1[..., 1:2] + boxes1[..., 3:4]/2
+
+    boxes1 = np.concatenate([x1, y1, x1_2, y1_2], axis=-1)
+
+    x2 = boxes2[..., 0:1] - boxes2[..., 2:3]/2
+    y2 = boxes2[..., 1:2] - boxes2[..., 3:4]/2
+
+    x2_2 = boxes2[..., 0:1] + boxes2[..., 2:3]/2
+    y2_2 = boxes2[..., 1:2] + boxes2[..., 3:4]/2
+
+    boxes2 = np.concatenate([x2, y2, x2_2, y2_2], axis=-1)
+
+
+
+
+    boxes1_area = (boxes1[..., 2] - boxes1[..., 0]) * (boxes1[..., 3] - boxes1[..., 1])
+    boxes2_area = (boxes2[..., 2] - boxes2[..., 0]) * (boxes2[..., 3] - boxes2[..., 1])
+
+    # 计算出boxes1和boxes2相交部分的左上角坐标、右下角坐标
+    left_up = np.maximum(boxes1[..., None, :2], boxes2[..., :2])
+    right_down = np.minimum(boxes1[..., None, 2:], boxes2[..., 2:])
+
+    # 计算出boxes1和boxes2相交部分的宽、高
+    # 因为两个boxes没有交集时，(right_down - left_up) < 0，所以maximum可以保证当两个boxes没有交集时，它们之间的iou为0
+    inter_section = np.maximum(right_down - left_up, 0.0)
+    inter_area = inter_section[..., 0] * inter_section[..., 1]
+    union_area = boxes1_area[:, None] + boxes2_area - inter_area
+    IOU = 1.0 * inter_area / union_area
+    return IOU
+
 
 # from utils.utils_select_device import select_device
 # device = select_device(0)
@@ -245,15 +309,20 @@ class HeatmapLoss(nn.Module):
         other_loss = -other_id * (1 - targets) ** self.beta * (inputs) ** self.alpha * torch.log(1.0 - inputs + 1e-14)
         return center_loss + other_loss
 if __name__ == '__main__':
-    seed =2
-    np.random.seed(seed)
-    torch.manual_seed(seed)
+    # seed =2
+    # np.random.seed(seed)
+    # torch.manual_seed(seed)
+    #
+    # a = torch.sigmoid(torch.randn(2,2))
+    # b = torch.ones(2,2)
+    # b[1,1] = 0
+    # focal = focal_loss(weight_pos=0.2)
+    # loss = focal(a, b)
+    # print(loss)
 
-    a = torch.sigmoid(torch.randn(2,2))
-    b = torch.ones(2,2)
-    b[1,1] = 0
-    focal = focal_loss(weight_pos=0.2)
-    loss = focal(a, b)
-    print(loss)
 
+    boxes1 = np.array([[0, 0, 1, 1], [0, 0, 1, 1], [0, 0, 1, 1]])
+    boxes2 = np.array([[0.5, 0.5, 1, 1], [0.5, 0, 1, 1]])
+    iou = bbox_iou_xywh_numpy(boxes1, boxes2)
+    print(iou)
 
