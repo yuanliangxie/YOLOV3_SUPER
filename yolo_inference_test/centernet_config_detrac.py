@@ -5,7 +5,7 @@ TEST = {
 	'DATA':{#"CLASSES":['car', 'bus', 'van', 'others'],
 			"CLASSES":['car'],
 			"NUM":1},
-	"TEST_IMG_SIZE":(608, 608),
+	"TEST_IMG_SIZE":(320, 320),
 	"CONF_THRESH": 0.3,
 	"NMS_THRESH": 0.5,
 	"device_id": 0,

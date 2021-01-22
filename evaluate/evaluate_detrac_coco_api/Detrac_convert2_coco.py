@@ -54,6 +54,7 @@ def get_filename_as_int(filename):
 def convert(xml_list, xml_dir, json_file):
     list_fp = open(xml_list, 'r')#这里要与Detrac_data_process的测试集一致
     #list_fp = ["MVI_39401.xml", "MVI_40711.xml", "MVI_40712.xml"]
+    #list_fp = os.listdir("/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/UA-DETRAC/DETRAC-Test-Annotations-XML")
     json_dict = {"images": [], "type": "instances", "annotations": [],
                  "categories": []}
     categories = PRE_DEFINE_CATEGORIES
@@ -104,7 +105,7 @@ def convert(xml_list, xml_dir, json_file):
     json_str = json.dumps(json_dict)
     json_fp.write(json_str)
     json_fp.close()
-    #list_fp.close()
+    list_fp.close()
 
 
 

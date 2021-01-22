@@ -35,10 +35,10 @@ TRAINING_PARAMS = \
 		"working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
 		# restore_model_weight:
-		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_with_iou_assign_test_UA_detrac/20210108112230/model.pth",
+		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_with_iou_assign_no_fpn_test_UA_detrac_SSD_aug/20210119121739/model.pth",
 		#/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20210104163731/model.pth
 		"self_train_weight": True,
-		"resume_start_epoch": 16,
+		"resume_start_epoch": 25,
 
 
 		# train_eval:
@@ -50,7 +50,7 @@ TRAINING_PARAMS = \
 
 
 		#tricks
-		"try": '_LVnet_with_iou_assign_test_UA_detrac',
+		"try": '_LVnet_with_iou_assign_no_fpn_test_UA_detrac_SSD_aug',
 		"scheduler_way": "Cosdecay",
 		"GIOU": False,
 		"mix_up": False,

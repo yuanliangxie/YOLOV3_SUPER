@@ -6,7 +6,6 @@ from models import bricks as bricks
 import numpy as np
 from models.layer.layer_fundation import Conv2dBatchLeaky as Convolutional
 
-
 class tiny_yolov3_backbone(nn.Module):
 	def __init__(self):
 		super().__init__()
@@ -40,22 +39,8 @@ class tiny_yolov3_backbone(nn.Module):
 			OrderedDict([
 				('9_maxpool', nn.MaxPool2d(2, 2)),
 				('10_convbl', layer.Conv2dBatchLeaky(256, 512, 3, 1)),
-				('11_maxpool', nn.MaxPool2d(3, 1, padding=1)),
-				('12_convbl', layer.Conv2dBatchLeaky(512, 1024, 3, 1)),
-				('13_convbl', layer.Conv2dBatchLeaky(1024, 256, 1, 1)),
-			]),
-
-			OrderedDict([
-				('9_maxpool', nn.MaxPool2d(2, 2)),
-				('10_convbl', layer.Conv2dBatchLeaky(256, 512, 3, 1)),
-				('11_maxpool', nn.MaxPool2d(3, 1, padding=1)),
-				('12_convbl', layer.Conv2dBatchLeaky(512, 1024, 3, 1)),
-				('13_convbl', layer.Conv2dBatchLeaky(1024, 256, 1, 1)),
-			]),
-			OrderedDict([
-				('9_maxpool', nn.MaxPool2d(2, 2)),
-				('10_convbl', layer.Conv2dBatchLeaky(256, 512, 3, 1)),
-				('11_maxpool', nn.MaxPool2d(3, 1, padding=1)),
+				('11_maxpool', nn.Sequential(nn.ZeroPad2d((0, 1, 0, 1)),
+											 nn.MaxPool2d((2, 2), 1))),  # stride = 32
 				('12_convbl', layer.Conv2dBatchLeaky(512, 1024, 3, 1)),
 				('13_convbl', layer.Conv2dBatchLeaky(1024, 256, 1, 1)),
 			]),
@@ -63,7 +48,7 @@ class tiny_yolov3_backbone(nn.Module):
 		self.layer = nn.ModuleList([nn.Sequential(layer_dict) for layer_dict in layer_list])
 
 	def load_darknet_weights(self, weight_file, cutoff=52):#加载成功
-		"https://github.com/ultralytics/yolov3/blob/master/models.py"
+		"https://github.com/ultralytics/yolov3/blob/master/moy"
 
 		print("load darknet weights : ", weight_file)
 
@@ -128,26 +113,22 @@ class tiny_yolov3_backbone(nn.Module):
 		stage6 = self.layer[2](stage5)
 		stage7 = self.layer[3](stage6)
 
-		#test_append
-		stage8 = self.layer[4](stage7)
-		stage9 = self.layer[5](stage8)
-
-		features = [stage4, stage5, stage6, stage7, stage8, stage9]
+		features = [stage6, stage7]
 		return features
 
 if __name__ == '__main__':
 	from tools.cal_reception_filed_tool.cal_RF import calc_receptive_filed
 	from tools.cal_effect_field_tool import calculate_EPR
-	input = torch.ones(1, 3, 416, 416)
-	model = tiny_yolov3_backbone()
+	#input = torch.ones(1, 3, 416, 416)
+	#model = tiny_yolov3_backbone()
 	#model.load_darknet_weights('/home/xyl/桌面/yolov3-tiny.weights')
 	#model.eval()
-	calc_receptive_filed(model, (640, 640, 3), index=[14, 18, 27, 38])
-	calculate_EPR(model)
+	#calc_receptive_filed(model, (640, 640, 3), index=[14, 18, 27, 38])
+	#calculate_EPR(model)
 	#
-	# input = torch.randn(1, 3, 416, 416)
-	# model = tiny_yolov3_backbone()
-	# features = model(input)
-	# for i in features:
-	# 	print(i.shape)
+	input = torch.randn(1, 3, 416, 416)
+	model = tiny_yolov3_backbone()
+	features = model(input)
+	for i in features:
+		print(i.shape)
 

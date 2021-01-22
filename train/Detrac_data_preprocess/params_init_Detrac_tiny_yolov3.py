@@ -3,19 +3,23 @@ TRAINING_PARAMS = \
 		"model_params": {
 			"backbone_name": "darknet53",
 			"backbone_weight": "",
+			#../weights/darknet53_weights_pytorch.pth
 		},
 		"model": {
+			"anchors": [[[10, 14], [23, 27], [37, 58]],
+						[[81, 82], [135, 169], [344, 319]]],
 			"classes": 1,
+			#"classes_category": ['car', 'bus', 'van', 'others']
 			"classes_category": ["car"]
 		},
 		"lr": {
-			"backbone_lr": 1e-3,
-			"other_lr": 1e-3,
-			"LR_INIT": 1e-3,
-			"LR_END": 1e-5,
+			"backbone_lr": 1e-4,
+			"other_lr": 1e-4,
+			"LR_INIT": 1e-4,
+			"LR_END": 1e-6,
 			"WARMUP_EPOCHS": 1,
 			"freeze_backbone": False,  # freeze backbone wegiths to finetune
-			"decay_step": [15, 20],
+			"decay_step": [60, 80],
 			"decay_gamma": 0.1
 		},
 		"optimizer": {
@@ -35,10 +39,10 @@ TRAINING_PARAMS = \
 		"working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
 		# restore_model_weight:
-		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_with_iou_assign_test_UA_detrac/20210108112230/model.pth",
-		#/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20210104163731/model.pth
+		"pretrain_snapshot": "",
+		# /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_LFFD_test_UA_detrac/20201118222434/model.pth
 		"self_train_weight": True,
-		"resume_start_epoch": 16,
+		"resume_start_epoch": 10,
 
 
 		# train_eval:
@@ -50,10 +54,13 @@ TRAINING_PARAMS = \
 
 
 		#tricks
-		"try": '_LVnet_with_iou_assign_test_UA_detrac',
+		"try": '_tiny_yolov3_test_UA_detrac',
 		"scheduler_way": "Cosdecay",
+		"label_smooth": False, #label_smooth还有一些问题要跟ce适应
 		"GIOU": False,
 		"mix_up": False,
+		"ce": False,
+		"bce": True,
 		"accumulate":1
 	}
 

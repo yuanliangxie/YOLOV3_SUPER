@@ -23,7 +23,7 @@ class LVnetloss_module(nn.Module):
 		self.focal_loss_gama = 2
 		self.focal_loss_alpha = 0.25
 
-	def forward(self, input, target_tensor=None, n_obj = 0):
+	def forward(self, pred_boxes_list, pred_cls_conf_list, pred_position_list, target_tensor=None, n_obj = 0):
 		result = []
 		if target_tensor != None:
 			assert n_obj != 0, "n_obj等于0，需要debug n_obj"
@@ -32,31 +32,14 @@ class LVnetloss_module(nn.Module):
 		#self.choose_feature_map = [3] #test2
 
 		for i in self.choose_feature_map:
-			scale_input = input[i]
 
-			bs = scale_input.size(0)
-			in_h = scale_input.size(2)
-			in_w = scale_input.size(3)
+			pred_boxes = pred_boxes_list[i]
+			conf = pred_cls_conf_list[i].squeeze(-1) #把后面的维去掉
+			x, y, w, h = pred_position_list[i]
+
+			bs = pred_boxes.size(0)
 			stride_h = self.strides[i]
 			stride_w = self.strides[i]
-			prediction = scale_input.view(bs, self.bbox_attrs, in_h, in_w).permute(0, 2, 3, 1).contiguous()
-
-			# Get outputs
-			x = torch.sigmoid(prediction[..., 0])  # Center x
-			y = torch.sigmoid(prediction[..., 1])  # Center y
-			w = prediction[..., 2]  # Width
-			h = prediction[..., 3]  # Height
-			conf = torch.sigmoid(prediction[..., 4])  # Cls pred.
-
-			# Calculate offsets for each grid
-			grid_x = torch.linspace(0, in_w - 1, in_w).repeat(in_h, 1).repeat(
-				bs, 1, 1).view(x.shape).to(self.device)
-			grid_y = torch.linspace(0, in_h - 1, in_h).repeat(in_w, 1).t().repeat(
-				bs, 1, 1).view(y.shape).to(self.device)
-
-			pred_boxes = torch.stack([x + grid_x, y + grid_y,
-									  torch.exp(w) * self.anchors[i][0]/(self.strides[i]),
-									  torch.exp(h) * self.anchors[i][1]/(self.strides[i])], dim=-1)
 
 			if target_tensor is not None:
 

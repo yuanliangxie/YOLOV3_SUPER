@@ -4,9 +4,8 @@
 TEST = {
 	"device_id": 0,
 	"PROJECT_PATH": "/home/xyl/PycharmProjects/YOLOV3_SUPER",
-	"test_path": "../../data/detrac/test.txt",
-	"test_ignore_region": "../../data/detrac/test_ignore_region.txt",
-	"test_labels_path": "../../data/detrac/labels_test",
+	"test_path": "../../data/research_11_50_data/test.txt",
+	"test_labels_path": "../../data/research_11_50_data/labels_test",
 	'DATA':{"CLASSES":['car'],
 			"NUM":1},
 	"TEST_IMG_SIZE":640,

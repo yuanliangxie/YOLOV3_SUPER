@@ -10,7 +10,7 @@ TEST = {
 	'DATA':{"CLASSES":['car'],
 			"NUM":1},
 	"TEST_IMG_SIZE":640,
-	"BATCH_SIZE":16,
+	"BATCH_SIZE":32,
 	"NUMBER_WORKERS":0,
 	"CONF_THRESH":0.01,
 	"NMS_THRESH":0.5,
@@ -19,7 +19,7 @@ TEST = {
 	"model": {
 		"classes": 1,
 	},
-	"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20201231120913/model.pth",
+	"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_test_UA_detrac/20201228114516/model_map_0.917.pth",
 
 	"generate_analyze_figure": False,
 	"generate_analyze_figure_dir_name":"analyze_loss_LVnet_768"

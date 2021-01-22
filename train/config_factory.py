@@ -23,6 +23,11 @@ from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_pure_centerloss 
 from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_iou_assign import TRAINING_PARAMS as Detrac_config_train_LVnet_iou_assign
 from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_iou_assign import Eval as Detrac_config_eval_LVnet_iou_assign
 
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_iou_assign_no_fpn import TRAINING_PARAMS as Detrac_config_train_LVnet_iou_assign_no_fpn
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_iou_assign_no_fpn import Eval as Detrac_config_eval_LVnet_iou_assign_no_fpn
+
+from train.Detrac_data_preprocess.params_init_Detrac_tiny_yolov3 import TRAINING_PARAMS as Detrac_config_train_tiny_yolov3
+from train.Detrac_data_preprocess.params_init_Detrac_tiny_yolov3 import Eval as Detrac_config_eval_tiny_yolov3
 
 #VOC的配置文件
 from train.Voc_data_preprocess.params_init_voc import TRAINING_PARAMS as Voc_config_train
@@ -49,7 +54,9 @@ _config_factory = {
 	"U-DETRAC_LVnet_deconv":[Detrac_config_train_LVnet_deconv, Detrac_config_eval_LVnet_deconv],
 	"U-DETRAC_LVnet_deconv_centerloss":[Detrac_config_train_LVnet_deconv_centerloss, Detrac_config_eval_LVnet_deconv_centerloss],
 	"U-DETRAC_LVnet_pure_centerloss":[Detrac_config_train_LVnet_pure_centerloss, Detrac_config_eval_LVnet_pure_centerloss],
-	"U-DETRAC_LVnet_iou_assign":[Detrac_config_train_LVnet_iou_assign, Detrac_config_eval_LVnet_iou_assign]
+	"U-DETRAC_LVnet_iou_assign":[Detrac_config_train_LVnet_iou_assign, Detrac_config_eval_LVnet_iou_assign],
+	"U-DETRAC_LVnet_iou_assign_no_fpn":[Detrac_config_train_LVnet_iou_assign_no_fpn, Detrac_config_eval_LVnet_iou_assign_no_fpn],
+	"U-DETRAC_tiny_yolov3":[Detrac_config_train_tiny_yolov3, Detrac_config_eval_tiny_yolov3],
 }
 
 def get_config(config_char):

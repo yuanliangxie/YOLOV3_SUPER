@@ -9,6 +9,8 @@ from models.model.model_LVnet_with_deconv import LVnet as LVnet_with_deconv
 from models.model.model_LVnet_with_deconv_shallow_centerloss import LVnet as LVnet_with_deconv_centerloss
 from models.model.model_LVnet_with_pure_centerloss import LVnet as LVnet_with_pure_centerloss
 from models.model.model_LVnet_with_deconv_shalllow_centerloss_iou_assign import LVnet as LVnet_with_iou_assign
+from models.model.model_LVnet_oringin_iou_assign_no_fpn import LVnet as LVnet_with_iou_assign_no_fpn
+from models.model.model_tiny_yolov3 import tiny_yolov3 as tiny_yolov3
 _model_factory = {
 	"yolov3": yolov3,
 	"yolov3_mobile": yolov3_mobile,
@@ -21,6 +23,8 @@ _model_factory = {
 	"LVnet_with_deconv_centerloss": LVnet_with_deconv_centerloss,
 	"LVnet_with_pure_centerloss":LVnet_with_pure_centerloss,
 	"LVnet_with_iou_assign":LVnet_with_iou_assign,
+	"LVnet_with_iou_assign_no_fpn":LVnet_with_iou_assign_no_fpn,
+	"tiny_yolov3":tiny_yolov3,
 }
 
 def load_model(model_name):

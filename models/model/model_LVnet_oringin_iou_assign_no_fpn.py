@@ -1,9 +1,7 @@
 import torch.nn as nn
 from models.loss.LVnet_iou_assign_loss.LVnet_iou_assign_centernet_loss_module import centernet_loss_module
-from models.backbone.LVnet.LV_net import LV_Net_backbone as backbone
+from models.backbone.LVnet.LV_net_oringin import LV_Net_backbone as backbone
 from models.head.LVnet_head import LVnetHead as head
-from models.backbone.LVnet.LV_net import Conv2dBatchRelu6
-from models.bricks.centernet_bricks import SPP
 from models.loss.LVnet_iou_assign_loss.LVnet_iou_assign_loss import LVnetloss_module
 from models.assign_target.LVnet_iou_assign_target import assign_targets
 from utils.logger import print_logger
@@ -12,48 +10,14 @@ import torch
 from utils.utils_select_device import select_device
 from tools.time_analyze import func_line_time
 
-class DeConv2d(nn.Module):
-	def __init__(self, in_channels, out_channels, ksize, stride=2, leakyReLU=False):
-		super(DeConv2d, self).__init__()
-		# deconv basic config
-		if ksize == 4:
-			padding = 1
-			output_padding = 0
-		elif ksize == 3:
-			padding = 1
-			output_padding = 1
-		elif ksize == 2:
-			padding = 0
-			output_padding = 0
-
-		self.convs = nn.Sequential(
-			nn.ConvTranspose2d(in_channels, out_channels, ksize, stride=stride, padding=padding, output_padding=output_padding),
-			nn.BatchNorm2d(out_channels),
-			nn.LeakyReLU(0.1, inplace=True) if leakyReLU else nn.ReLU6(inplace=True)
-		)
-
-	def forward(self, x):
-		return self.convs(x)
-
 class LVnet(nn.Module):
 	def __init__(self, config, logger=None, init_weight=True):
 		super().__init__()
 		self.backbone = backbone()
-		#self.neck = neck()
-		self.head1 = head(in_channels=128, out_channels=64, nClass=config["model"]["classes"])
-		self.head2 = head(in_channels=128, out_channels=64, nClass=config["model"]["classes"])
-		self.head3 = head(in_channels=256, out_channels=128, nClass=config["model"]["classes"])
+		self.head1 = head(in_channels=64, out_channels=64, nClass=config["model"]["classes"])
+		self.head2 = head(in_channels=64, out_channels=64, nClass=config["model"]["classes"])
+		self.head3 = head(in_channels=128, out_channels=128, nClass=config["model"]["classes"])
 		self.head4 = head(in_channels=256, out_channels=256, nClass=config["model"]["classes"])
-
-		self.smooth = nn.Sequential(
-			SPP(),
-			Conv2dBatchRelu6(1024, 128, kernel_size=1, stride=1, padding=0),
-			Conv2dBatchRelu6(128, 256, kernel_size=3, stride=1, padding=1)
-		)
-
-		self.deconv4 = DeConv2d(256, 128, ksize=4, stride=2)
-		self.deconv3 = DeConv2d(256, 64, ksize=4, stride=2)
-		self.deconv2 = DeConv2d(128, 64, ksize=4, stride=2)
 
 		self.centernet_loss_4x = centernet_loss_module(config, stride=4, anchor=[28, 21])
 		self.centerent_loss_8x = centernet_loss_module(config, stride=8, anchor=[57, 38])
@@ -69,12 +33,7 @@ class LVnet(nn.Module):
 	#@func_line_time
 	def forward(self, input, target=None):
 		features = self.backbone(input)
-		#neck_features = self.neck(features)
 		f1, f2, f3, f4 = features
-		f4 = self.smooth(f4)
-		f3 = torch.cat([f3, self.deconv4(f4)], dim=1) #尝试用加法试试
-		f2 = torch.cat([f2, self.deconv3(f3)], dim=1)
-		f1 = torch.cat([f1, self.deconv2(f2)], dim=1)
 		neck_features = [f1, f2, f3, f4]
 		head1 = self.head1(neck_features[0])
 		head2 = self.head2(neck_features[1])

@@ -10,10 +10,10 @@ TEST = {
 	'DATA':{"CLASSES":['car'],
 			"NUM":1},
 	"TEST_IMG_SIZE":640,
-	"BATCH_SIZE":16,
+	"BATCH_SIZE":32,
 	"NUMBER_WORKERS":0,
-	"CONF_THRESH":0.1,
-	"NMS_THRESH":0.45,
+	"CONF_THRESH":0.01,
+	"NMS_THRESH":0.5,
 	"MULTI_SCALE_TEST":False,
 	"FLIP_TEST":False,
 	"model": {

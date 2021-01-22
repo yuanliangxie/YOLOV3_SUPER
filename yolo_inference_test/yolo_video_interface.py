@@ -93,7 +93,10 @@ if __name__ == '__main__':
 	from yolo_inference_test.centernet_config_detrac import TEST as config
 	#from yolo_inference_test.yolov3_config_voc import TEST as config
 	#from yolo_inference_test.LFFD_config_detrac import TEST as config
+	#from yolo_inference_test.tiny_yolov3_config_detrac import TEST as config
+	#from yolo_inference_test.yolov3_config_detrac import TEST as config
+	#from yolo_inference_test.LVnet_iou_assign import TEST as config
 	detector = vehicle_detector(config)
 	#配置输入视频
-	detector.deploy_inference_video(video_name='./Radar1150_30.avi', video_save_name='yolov3_voc_detect.avi', video_save_fps=30)
+	detector.deploy_inference_video(video_name='./Radar1150_30.avi', video_save_name='tiny_yolov3_detrac_detect.avi', video_save_fps=30)
 	detector.show_video()

@@ -5,8 +5,8 @@ import os
 sys.path.append("../../../YOLOV3_SUPER")
 
 #yolov3_detrac
-#from models.model.model_yolov3_baseline import yolov3
-#from evaluate.evaluate_research_data.yolov3_config_detrac_test import TEST as config
+from models.model.model_yolov3_baseline import yolov3
+from evaluate.evaluate_research_data.yolov3_config_detrac_test import TEST as config
 
 #yolov3_voc
 #from models.model.model_yolov3_baseline import yolov3
@@ -16,8 +16,8 @@ sys.path.append("../../../YOLOV3_SUPER")
 #from models.model.poly_yolo import yolov3
 
 #centernet_18
-from models.model.model_centernet_resnet import centernet_18 as yolov3
-from evaluate.evaluate_research_data.centernet_config_detrac_test import TEST as config
+# from models.model.model_centernet_resnet import centernet_18 as yolov3
+# from evaluate.evaluate_research_data.centernet_config_detrac_test import TEST as config
 
 #LFFD
 # from models.model.model_LFFD import LFFD as yolov3
@@ -27,6 +27,26 @@ from evaluate.evaluate_research_data.centernet_config_detrac_test import TEST as
 # from models.model.model_LVnet import LVnet as yolov3
 # from evaluate.evaluate_research_data.LVnet_config_detrac_test import TEST as config
 
+
+#LVnet_with_deconv_centerloss
+# from models.model.model_LVnet_with_deconv_shallow_centerloss import LVnet as yolov3
+# from evaluate.evaluate_research_data.LVnet_with_deconv_centerloss_config_detrac_test import TEST as config
+
+#LVnet_with_pure_centerloss
+# from models.model.model_LVnet_with_pure_centerloss import LVnet as yolov3
+# from evaluate.evaluate_research_data.LVnet_with_pure_centerloss_config_detrac_test import TEST as config
+
+#LVnet_with_iou_assign
+# from models.model.model_LVnet_with_deconv_shalllow_centerloss_iou_assign import LVnet as yolov3
+# from evaluate.evaluate_research_data.LVnet_with_iou_assign import TEST as config
+
+#LVnet_with_no_fpn_centerloss_yololoss
+# from models.model.model_LVnet_oringin_iou_assign_no_fpn import LVnet as yolov3
+# from evaluate.evaluate_research_data.LVnet_with_iou_assign_no_fpn import TEST as config
+
+#tiny_yolov3
+# from models.model.model_tiny_yolov3 import tiny_yolov3 as yolov3
+# from evaluate.evaluate_research_data.tiny_yolov3_config_detrac_test import TEST as config
 
 
 

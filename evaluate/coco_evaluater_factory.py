@@ -13,7 +13,9 @@ _coco_evaluater_factory = {
 	"U-DETRAC_LVnet_deconv": detrac_evaluater,
 	"U-DETRAC_LVnet_deconv_centerloss": detrac_evaluater,
 	"U-DETRAC_LVnet_pure_centerloss": detrac_evaluater,
-	"U-DETRAC_LVnet_iou_assign": detrac_evaluater
+	"U-DETRAC_LVnet_iou_assign": detrac_evaluater,
+	"U-DETRAC_LVnet_iou_assign_no_fpn": detrac_evaluater,
+	"U-DETRAC_tiny_yolov3": detrac_evaluater,
 }
 
 def load_coco_evaluater(config_name):

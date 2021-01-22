@@ -30,10 +30,10 @@ class assign_targets(object):
 
 
 	#@func_line_time
-	def __call__(self, target, loss_inputs_detach):
-		pred_boxes_list, pred_cls_conf_list = self.get_pred_boxes(loss_inputs_detach)
+	def __call__(self, target, loss_inputs):
+		pred_boxes_list, pred_cls_conf_list, pred_position_list = self.get_pred_boxes(loss_inputs)
 		if target == None:
-			return None, 0
+			return None, 0, pred_boxes_list, pred_cls_conf_list, pred_position_list
 		self.target = target
 		bs = self.target.shape[0]
 		ts = self.target.shape[1]
@@ -70,14 +70,15 @@ class assign_targets(object):
 								self.target[b, t, 4]*self.oringin_h]
 					self.matching_strategy(b, t, scale_xywh, gt_boxes, pred_boxes_b)
 
-		return self.t_scales, n_obj#, pred_boxes_list, pred_cls_conf_list
+		return self.t_scales, n_obj, pred_boxes_list, pred_cls_conf_list, pred_position_list
 
 
 
-	def get_pred_boxes(self, loss_input_detach):
+	def get_pred_boxes(self, loss_input):
 		pred_boxes_list = []
 		pred_cls_conf_list = []
-		for i, input in enumerate(loss_input_detach):
+		pred_position_list = []
+		for i, input in enumerate(loss_input):
 			bs = input.size(0)
 			in_h = input.size(2)
 			in_w = input.size(3)
@@ -101,7 +102,8 @@ class assign_targets(object):
 			pred_boxes = torch.stack([x + grid_x, y + grid_y, torch.exp(w) * self.anchors[i][0]/stride_w, torch.exp(h) * self.anchors[i][1]/stride_h], dim=-1)
 			pred_boxes_list.append(pred_boxes)
 			pred_cls_conf_list.append(pred_cls)
-		return pred_boxes_list, pred_cls_conf_list
+			pred_position_list.append([x, y, w, h])
+		return pred_boxes_list, pred_cls_conf_list, pred_position_list
 
 	#@func_line_time
 	def matching_strategy(self, b, t, scale_xywh, gt_boxes, pred_boxes_b):

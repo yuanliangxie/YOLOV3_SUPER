@@ -43,31 +43,12 @@ class centernet_Loss(nn.Module):
 		self.config = config
 		self.topk = topk
 
-	def forward(self, input, targets=None, n_obj=None):
-		bs = input.size(0)
-		in_h = input.size(2)
-		in_w = input.size(3)
+	def forward(self, pred_boxes, pred_cls_conf, pred_position, targets=None, n_obj=None):
+		bs = pred_boxes.size(0)
 		stride_h = self.stride
 		stride_w = self.stride
-		prediction = input.view(bs,	self.bbox_attrs, in_h, in_w).permute(0, 2, 3, 1).contiguous()
-
-		# Get outputs
-		x = torch.sigmoid(prediction[..., 0])  # Center x
-		y = torch.sigmoid(prediction[..., 1])  # Center y
-		w = prediction[..., 2]  # Width
-		h = prediction[..., 3]  # Height
-		#conf = torch.sigmoid(prediction[..., 4])  # Conf
-		pred_cls = torch.sigmoid(prediction[..., 4:])  # Cls pred.
-
-		# Calculate offsets for each grid
-		grid_x = torch.linspace(0, in_w - 1, in_w).repeat(in_h, 1).repeat(
-			bs, 1, 1).view(x.shape).to(self.device)
-		grid_y = torch.linspace(0, in_h - 1, in_h).repeat(in_w, 1).t().repeat(
-			bs, 1, 1).view(y.shape).to(self.device)
-
-
-		pred_boxes = torch.stack([x + grid_x, y + grid_y, torch.exp(w) * self.anchor[0]/stride_w, torch.exp(h) * self.anchor[1]/stride_h], dim=-1)
-
+		pred_cls = pred_cls_conf
+		x, y, w, h = pred_position
 		if targets is not None:
 
 			tx = targets[..., 0]
