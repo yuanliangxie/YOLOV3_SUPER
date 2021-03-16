@@ -219,6 +219,25 @@ class Statistic_scale:
 		self.statistics_max_length(max_length)
 		self.statistics_scaled_max_length(max_length)
 
+	def only_run_max_length(self, max_length):
+		self.statistics_max_length(max_length)
+
+	def only_show_max_length(self):
+		plt.figure(1, figsize=[5, 3])
+		ax1 = plt.subplot(1,1,1)
+		plt.sca(ax1)
+		ax1.xaxis.set_major_locator(plt.MultipleLocator(128))
+		plt.bar(self.max_length_data_x, self.statistics_max_length_data, align="center", color="c")
+		plt.xlabel("Distribution of the longest side")
+		plt.ylabel("Amount")
+		plt.tight_layout()
+		plt.savefig("./Distribution_of_the_longest_side"+self.index+".png", dpi=300)
+		plt.show()
+		plt.close()
+
+
+
+
 
 	def show(self):
 		self.show_percent()
@@ -284,11 +303,11 @@ if __name__ == "__main__":
 	continue_assign_scale_3_cluster_train = [[15, 50], [50, 100], [100, 260]]
 	continue_assign_scale_4_cluster_train = [[15, 45], [45, 75], [75, 135], [135, 260]]
 	continue_assign_scale_5_cluster_train = [[15, 40], [40, 60], [60, 100], [100, 150], [150, 260]]
-	continue_assign_scale_cluster_train = [continue_assign_scale_3_cluster_train, continue_assign_scale_4_cluster_train
-										   , continue_assign_scale_5_cluster_train]
+	# continue_assign_scale_cluster_train = [continue_assign_scale_3_cluster_train, continue_assign_scale_4_cluster_train
+	# 									   , continue_assign_scale_5_cluster_train]
+	continue_assign_scale_cluster_train = [continue_assign_scale_4_cluster_train]
 	size_scale = 640
 	for i, continue_assign_scale in enumerate(continue_assign_scale_cluster_train):
-
 		statisticser = Statistic_scale(continue_assign_scale, size_scale, index="_train_"+str(i+3)+"_cluster")
 		for step, sample in tqdm(enumerate(dataloader)):
 			#print(step)
@@ -305,29 +324,8 @@ if __name__ == "__main__":
 					area = gt_h * gt_w
 					max_length = max(gt_h, gt_w)
 
-					statisticser.run(max_length, area)
-		statisticser.show()
-		print(statisticser.collection_unassign_length)
-
-
-
-
-
-
-			# for l in label:
-			# 	if l.sum() == 0:
-			# 		continue
-			# 	x1 = int((l[1] - l[3] / 2) * w)
-			# 	y1 = int((l[2] - l[4] / 2) * h)
-			# 	x2 = int((l[1] + l[3] / 2) * w)
-			# 	y2 = int((l[2] + l[4] / 2) * h)
-			#
-			# 	cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 255), thickness=2)
-			# 	cv2.putText(image, index_2_classes[l[0]], (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
-			#
-			# image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-			# #cv2.imwrite("step{}_{}.jpg".format(step, i), image)
-			# cv2.imshow('show', image)
-			# cv2.waitKey(40)
-		# only one batch
-		#break
+					#statisticser.run(max_length, area)
+					statisticser.only_run_max_length(max_length)
+		#statisticser.show()
+		statisticser.only_show_max_length()
+		#print(statisticser.collection_unassign_length)

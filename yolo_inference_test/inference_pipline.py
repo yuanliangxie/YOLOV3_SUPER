@@ -1,9 +1,10 @@
 #from models.model.poly_yolo import yolov3 as model
-#from models.model.model_yolov3_baseline import yolov3 as model
-from models.model.model_centernet_resnet import centernet_18 as model
+from models.model.model_yolov3_baseline import yolov3 as model
+#from models.model.model_centernet_resnet import centernet_18 as model
 #from models.model.model_LFFD import LFFD as model
 #from models.model.model_tiny_yolov3 import tiny_yolov3 as model
 #from models.model.model_LVnet_with_deconv_shalllow_centerloss_iou_assign import LVnet as model
+#from models.model.model_LVnet_oringin_iou_assign_no_fpn import LVnet as model
 
 from yolo_inference_test.utils_inference import *
 from yolo_inference_test.visualize import visualize_boxes
@@ -16,13 +17,16 @@ class yolo_inference_detector(object):
 		self.nms_thresh = config["NMS_THRESH"]
 		self.val_shape = config['TEST_IMG_SIZE']
 		self.classes = config['DATA']["CLASSES"]
-		self.device = torch.device('cuda:{}'.format(0) if torch.cuda.is_available() else 'cpu')
+		if config['device_id'] == "cpu" or config['device_id'] == "CPU":
+			self.device = torch.device('cpu')
+		else:
+			self.device = torch.device('cuda:{}'.format(0) if torch.cuda.is_available() else 'cpu')
 		self.model = model(config).to(self.device)
 		self.model.eval()
 		self.__load_model_weights()
 		self.class_color = [(np.random.randint(255), np.random.randint(255),
 							 np.random.randint(255)) for _ in range(20)]
-		self.Resize = Resize(self.val_shape, correct_box=False)
+		self.Resize = Auto_Resize(self.val_shape, correct_box=False)
 
 	def __load_model_weights(self):
 		if self.config["pretrain_snapshot"]:
@@ -41,7 +45,7 @@ class yolo_inference_detector(object):
 		:param img:
 		:return: shape为(N, 6)，存储格式为(xmin, ymin, xmax, ymax, score, class)
 		"""
-		bboxes = self.__predict(img, self.val_shape, (0, np.inf))
+		bboxes = self.__predict(img, (0, np.inf))
 		bboxes = nms(bboxes, self.conf_thresh, self.nms_thresh)
 		return bboxes
 
@@ -164,11 +168,12 @@ class yolo_inference_detector(object):
 	#     return img
 
 	#@func_line_time
-	def __predict(self, img, test_shape, valid_scale):
+	def __predict(self, img, valid_scale):
 		#org_img = np.copy(img)
 		org_h, org_w, _ = img.shape
 
-		img = self.__get_img_tensor(img, test_shape).to(self.device)
+		img, test_shape = self.__get_img_tensor(img)
+		img = img.to(self.device)
 		#self.model.eval()
 		with torch.no_grad():
 			#torch.cuda.synchronize()
@@ -183,11 +188,11 @@ class yolo_inference_detector(object):
 		return bboxes
 
 	#@func_line_time
-	def __get_img_tensor(self, img, test_shape):
+	def __get_img_tensor(self, img):
 
-		img = self.Resize(img, None)
+		img, test_shape = self.Resize(img, None)
 		img = img.transpose(2, 0, 1)
-		return torch.from_numpy(img[np.newaxis, ...]).type(torch.FloatTensor)
+		return torch.from_numpy(img[np.newaxis, ...]).type(torch.FloatTensor), test_shape
 
 	#@func_line_time
 	def __convert_pred(self, pred_bbox, test_input_size, org_img_shape, valid_scale):

@@ -135,10 +135,10 @@ class YOLOLoss(nn.Module):
             if self.config["GIOU"]:
                 loss_giou = self.giou_loss.cal_giou_loss(giou_gt_box, pred_boxes, mask).sum()/layer_n_obj
             else:
-                loss_x = (coord_scale * self.bce_loss(x * mask, tx)).sum()/layer_n_obj
-                loss_y = (coord_scale * self.bce_loss(y * mask, ty)).sum()/layer_n_obj
-                loss_w = (coord_scale* self.smooth_l1(w * mask , tw )).sum()/layer_n_obj
-                loss_h = (coord_scale* self.smooth_l1(h * mask , th )).sum()/layer_n_obj
+                loss_x = (coord_scale * self.bce_loss(x * mask, tx)).sum()/all_n_obj
+                loss_y = (coord_scale * self.bce_loss(y * mask, ty)).sum()/all_n_obj
+                loss_w = (coord_scale* self.smooth_l1(w * mask , tw )).sum()/all_n_obj
+                loss_h = (coord_scale* self.smooth_l1(h * mask , th )).sum()/all_n_obj
 
             loss_conf = (self.bce_loss(conf * mask, mask).sum()/all_n_obj + \
                          0.5 * self.bce_loss(conf * noobj_mask, noobj_mask * 0.0).sum()/all_n_obj)
@@ -158,7 +158,7 @@ class YOLOLoss(nn.Module):
                 ls = label_smooth(theta=0.01, classes=self.num_classes)
                 tcls = ls.smooth(tcls, mask)
             if self.config['bce']:
-                loss_cls = self.bce_loss(pred_cls[mask == 1], tcls[mask == 1]).sum()/layer_n_obj
+                loss_cls = self.bce_loss(pred_cls[mask == 1], tcls[mask == 1]).sum()/all_n_obj
             #使用多分类交叉熵损失函数
             if self.config['ce'] and self.config["label_smooth"]:
                 #ce+label_smoothing

@@ -54,6 +54,28 @@ class vehicle_detector(yolo_inference_detector):
 		inference_image = self.cv2_visualize_boxes(image, bboxes)
 		return inference_image
 
+	def cal_inference_time(self):
+		"""
+		纯计算检测速度，不进行显示
+		"""
+		count = 0
+		total_time = 0
+		while(True):
+			rec, frame = self.cap.read()
+			if not rec:
+				break
+			start_time = time.time()
+			self.get_bbox(frame)
+			end_time = time.time()
+			count += 1
+			if count > 200:
+				total_time += (end_time - start_time)
+				average_time = total_time / (count-200)
+				fps = 1 / average_time
+				print("FPS:%.2f"%fps)
+		print("average_fps:%.2f"%fps)
+		self.cap.release()
+
 	def show_video(self,):
 		"""
 		对结果进行了显示，且计算了fps
@@ -90,13 +112,15 @@ class vehicle_detector(yolo_inference_detector):
 
 if __name__ == '__main__':
 	#from yolo_inference_test.poly_yolo_config_voc import TEST as config
-	from yolo_inference_test.centernet_config_detrac import TEST as config
+	#from yolo_inference_test.centernet_config_detrac import TEST as config
 	#from yolo_inference_test.yolov3_config_voc import TEST as config
 	#from yolo_inference_test.LFFD_config_detrac import TEST as config
 	#from yolo_inference_test.tiny_yolov3_config_detrac import TEST as config
-	#from yolo_inference_test.yolov3_config_detrac import TEST as config
+	from yolo_inference_test.yolov3_config_detrac import TEST as config
 	#from yolo_inference_test.LVnet_iou_assign import TEST as config
+	#from yolo_inference_test.LVnet_no_fpn_centerloss_yololoss import TEST as config
 	detector = vehicle_detector(config)
 	#配置输入视频
 	detector.deploy_inference_video(video_name='./Radar1150_30.avi', video_save_name='tiny_yolov3_detrac_detect.avi', video_save_fps=30)
+	#detector.cal_inference_time()
 	detector.show_video()

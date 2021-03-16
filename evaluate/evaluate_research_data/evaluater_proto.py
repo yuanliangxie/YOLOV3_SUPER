@@ -49,7 +49,7 @@ class Evaluator(object):
 
 
 				bboxes_prd = nms(bboxes, self.conf_thresh, self.nms_thresh)
-				if bboxes_prd.shape[0]!=0 and self.__visiual and self.__visual_imgs < 100:
+				if bboxes_prd.shape[0]!=0 and self.__visiual and self.__visual_imgs % (len(self.generator)*self.config['BATCH_SIZE']//100) == 0:
 					boxes = bboxes_prd[..., :4]
 					class_inds = bboxes_prd[..., 5].astype(np.int32)
 					scores = bboxes_prd[..., 4]
@@ -60,7 +60,7 @@ class Evaluator(object):
 					visualize_boxes(image=img, boxes=boxes, labels=class_inds, probs=scores, class_labels=self.classes)
 					path = os.path.join(self.pred_result_path, "{}.jpg".format(self.__visual_imgs))
 					cv2.imwrite(path, img)
-					self.__visual_imgs += 1
+				self.__visual_imgs += 1
 				yield img_ind, bboxes_prd
 
 	def get_bbox(self, img, multi_test=False, flip_test=False):

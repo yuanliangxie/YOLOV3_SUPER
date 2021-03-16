@@ -164,32 +164,16 @@ class tiny_yolov3(nn.Module):
 			print("convert success!")
 
 if __name__ == '__main__':
-	import train.Voc_data_preprocess.params_init_voc as params_init
-	config = params_init.TRAINING_PARAMS
-	device = select_device(0)
-	torch.cuda.manual_seed_all(1)
-	torch.backends.cudnn.deterministic = True
-	torch.manual_seed(1)
-	np.random.seed(1)
-	net = yolov3(config)
-	net.to(device)
-	# net.cpu()
-	# net.count_darknet_count()
-	# for idx, m  in enumerate(net.backbone.layer[0].modules()):
-	#     print(idx, "->", m)
-	# net.backbone.layer[0].parameters()
-	#pretrain_coco_weight_darknet = torch.load("darknet53_weights_pytorch.pth")
-	net.load_darknet_weights('../../weights/darknet53.conv.74')
-	#net.load_darknet_pth_weights(pth_file = "../../weights/darknet53_weights_pytorch.pth")
-	net.eval()
-	images = torch.ones((1,3,416,416)).to(device)
-	yolo_loss_input = net(images)
-	print(yolo_loss_input[0].shape)
-	print(yolo_loss_input[0])
-	"""
-	output:
-	tensor([ 1.1618e-05, -2.5806e-04, -1.8426e-04, -1.0144e-06, -8.8483e-05,
-				   -2.9103e-05, -4.6486e-05, -5.9855e-05, -3.9318e-05, -4.0554e-05,
-				   -6.2083e-05,  2.8495e-05, -2.7813e-04], grad_fn=<SliceBackward>)
-	"""
+	#计算参数量和计算量
+	from thop import profile
+	from thop import clever_format
+	config={"device_id":'cpu', "num_classes":1,
+			"model":{"anchors": [[[10, 14], [23, 27], [37, 58]],
+								 [[81, 82], [135, 169], [344, 319]]],"classes":1},
+			"ce": False,"bce": True}
+	model = tiny_yolov3(config)
+	input = torch.randn(1, 3, 640, 640)
+	flops, params = profile(model, inputs=(input, ))
+	flops, params = clever_format([flops, params], "%.3f")# 增加可读性
+	print(flops, params)
 

@@ -5,8 +5,8 @@ sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 sys.path.append("../../../YOLOV3_SUPER")
 
 #yolov3
-# from models.model.model_yolov3_baseline import yolov3
-# from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as config
+from models.model.model_yolov3_baseline import yolov3
+from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as config
 
 #centernet
 # from models.model.model_centernet_resnet import centernet_18 as yolov3
@@ -37,8 +37,8 @@ sys.path.append("../../../YOLOV3_SUPER")
 # from evaluate.evaluate_detrac_coco_api.LVnet_with_iou_assign import TEST as config
 
 #LVnet_with_no_fpn_centerloss_yololoss
-from models.model.model_LVnet_oringin_iou_assign_no_fpn import LVnet as yolov3
-from evaluate.evaluate_detrac_coco_api.LVnet_with_iou_assign_no_fpn import TEST as config
+# from models.model.model_LVnet_oringin_iou_assign_no_fpn import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_with_iou_assign_no_fpn import TEST as config
 
 #tiny_yolov3
 # from models.model.model_tiny_yolov3 import tiny_yolov3 as yolov3

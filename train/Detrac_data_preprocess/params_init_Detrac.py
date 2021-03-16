@@ -2,7 +2,7 @@ TRAINING_PARAMS = \
 {
     "model_params": {
         "backbone_name": "darknet53",
-        "backbone_weight": "",
+        "backbone_weight": "../weights/darknet53_weights_pytorch.pth",
         #../weights/darknet53_weights_pytorch.pth
     },
     "model": {
@@ -33,17 +33,17 @@ TRAINING_PARAMS = \
     "train_ignore_region": "../data/detrac/train_ignore_region.txt",
     "train_labels_path": "../data/detrac/labels",
     "epochs": 32,
-    "Multi-scale training": False, #要增加多尺度训练！
+    "Multi-scale training": True, #要增加多尺度训练！
     "img_h": 640,#如果Multi-scale training是False，则使用此单尺度训练
     "img_w": 640,
     "parallels": [0],                         #  config GPU device
     "working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
     # restore_model_weight:
-    "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_yolov3_baseline_test_UA_detrac/20210110135455/model.pth",
+    "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_yolov3_baseline_SSDaug_coco_pretrain_loss_div_all_objects_test_UA_detrac/20210311221810/model.pth",
     # /home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_LFFD_test_UA_detrac/20201118222434/model.pth
     "self_train_weight": True,
-    "resume_start_epoch": 10,
+    "resume_start_epoch": 1,
 
 
     # train_eval:
@@ -55,7 +55,7 @@ TRAINING_PARAMS = \
 
 
     #tricks
-    "try": '_yolov3_baseline_test_UA_detrac',
+    "try": '_yolov3_baseline_SSDaug_coco_pretrain_loss_div_all_objects_test_UA_detrac',
     "scheduler_way": "Cosdecay",
     "label_smooth": False, #label_smooth还有一些问题要跟ce适应
     "GIOU": False,

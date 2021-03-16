@@ -5,8 +5,8 @@ import os
 sys.path.append("../../../YOLOV3_SUPER")
 
 #yolov3_detrac
-from models.model.model_yolov3_baseline import yolov3
-from evaluate.evaluate_research_data.yolov3_config_detrac_test import TEST as config
+# from models.model.model_yolov3_baseline import yolov3
+# from evaluate.evaluate_research_data.yolov3_config_detrac_test import TEST as config
 
 #yolov3_voc
 #from models.model.model_yolov3_baseline import yolov3
@@ -45,8 +45,8 @@ from evaluate.evaluate_research_data.yolov3_config_detrac_test import TEST as co
 # from evaluate.evaluate_research_data.LVnet_with_iou_assign_no_fpn import TEST as config
 
 #tiny_yolov3
-# from models.model.model_tiny_yolov3 import tiny_yolov3 as yolov3
-# from evaluate.evaluate_research_data.tiny_yolov3_config_detrac_test import TEST as config
+from models.model.model_tiny_yolov3 import tiny_yolov3 as yolov3
+from evaluate.evaluate_research_data.tiny_yolov3_config_detrac_test import TEST as config
 
 
 

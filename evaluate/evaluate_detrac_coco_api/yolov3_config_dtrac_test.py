@@ -29,8 +29,8 @@ TEST = {
         "bce": True,
 
 
-        "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_yolov3_baseline_test_UA_detrac/20210111102829/model.pth",
-
+        "pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_yolov3_baseline_SSDaug_coco_pretrain_loss_div_all_objects_test_UA_detrac/20210312092005/model_map_0.986.pth",
+        #/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_yolov3_baseline_test_UA_detrac/20210111102829/model.pth
         "generate_analyze_figure":False,
         "generate_analyze_figure_dir_name":"analyze_loss_yolov3_baseline_UA_detrac_test"
         }

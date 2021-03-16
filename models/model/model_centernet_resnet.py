@@ -70,5 +70,16 @@ class centernet_18(nn.Module):
 		loss_or_output = self.loss(center_loss_input, target)
 		return loss_or_output #input=416,[13, 26, 52]
 
+if __name__ == '__main__':
+	#计算参数量和计算量
+	from thop import profile
+	from thop import clever_format
+	config={"device_id":'cpu', "num_classes":1, "model":{"classes":1}}
+	model = centernet_18(config)
+	input = torch.randn(1, 3, 640, 640)
+	flops, params = profile(model, inputs=(input, ))
+	flops, params = clever_format([flops, params], "%.3f")# 增加可读性
+	print(flops, params)
+
 
 

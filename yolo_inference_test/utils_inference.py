@@ -145,6 +145,53 @@ class Resize(object):
             return image, bboxes
         return image
 
+class Auto_Resize(object):
+    """
+    Resize the image to target size and transforms it into a color channel(BGR->RGB),
+    as well as pixel value normalization([0,1])
+    """
+    def __init__(self, target_shape, correct_box=True):
+        # self.w_org = 1920
+        # self.h_org = 1080
+        self.h, self.w = target_shape
+        self.correct_box = correct_box
+
+    def calculate_target_size(self, org_shape):
+        h_org , w_org = org_shape
+        resize_ratio = min(1.0 * self.w / w_org, 1.0 * self.h / h_org)#这里使用min是防止resize导致形状过大
+        resize_w = int(resize_ratio * w_org)
+        resize_h = int(resize_ratio * h_org)
+        self.w_target = resize_w
+        if resize_h//32 == 0:
+            self.h_target = resize_h
+        else:
+            self.h_target = (resize_h//32+1)*32
+        return resize_ratio, resize_w, resize_h
+
+
+    #@func_line_time
+    def __call__(self, img, bboxes):
+        h_org , w_org , _= img.shape
+        resize_ratio, resize_w, resize_h = self.calculate_target_size([h_org, w_org])
+        #先缩小大小，然后再执行操作！这样更快
+        image_resized = cv2.resize(img, (resize_w, resize_h))
+        image_resized = cv2.cvtColor(image_resized, cv2.COLOR_BGR2RGB)
+        image_resized = image_resized.astype(np.float32)
+
+        image_paded = np.full((self.h_target, self.w_target, 3), 128.0)
+        #image_paded = np.ones((self.h_target, self.w_target, 3))*128.0
+        dw = int((self.w_target - resize_w) / 2)
+        dh = int((self.h_target - resize_h) / 2)
+        image_paded[dh:resize_h + dh, dw:resize_w + dw, :] = image_resized
+        image = image_paded / 255.0  # normalize to [0, 1]
+        test_shape = (self.h_target, self.w_target)
+
+        if self.correct_box:
+            bboxes[:, [0, 2]] = bboxes[:, [0, 2]] * resize_ratio + dw
+            bboxes[:, [1, 3]] = bboxes[:, [1, 3]] * resize_ratio + dh
+            return image, bboxes
+        return image, test_shape
+
 def video_save_from_capture(video_name, video_imgsize, fps = 30.0):
     """
 

@@ -9,11 +9,11 @@ from tqdm import tqdm
 import numpy as np
 
 class txt_data(object):
-    def __init__(self, data_path, classes):
+    def __init__(self, data_path):
         """
 
         :param voc_data_path: the dirpath of the vocdata
-        :param classes: the classes what you want to train ,just set what you want,可以提取你想提取的类别,当然这里提取所有的车辆类别
+        :param classes: 该数据集的全部种类
         because the class metheod has implement the Any class of training labels in voc
         :TODO: the class can func only in voc, but the method has generalization ability,so it can expand to other datasets.
         :TODO：如果想要使两个类别合并为一类，同样可以修改class_2_index,自输入额外的index，使两个不同类别对应的index一样即可。
@@ -29,13 +29,13 @@ class txt_data(object):
         self.labels_path = self.dir_path + '/' + 'labels'
         self.labels_test_path = self.dir_path + '/' + 'labels_test'
 
-        self.classes = classes
+        self.classes = ['car', 'bus', 'van', 'others']
         self.class_2_index = self._class_2_index()
         self.clear_make_dir()
 
     def _class_2_index(self):#todo:如果后面要进行类的合并，则在这里修改就可以了
-        #index = [i for i in range(len(self.classes))]
-        index = [0 for i in range(len(self.classes))]
+        #index = [i for i in range(len(self.classes))] #这里是分为4类
+        index = [0 for i in range(len(self.classes))] #将所有种类都合并为0，一类car类
         class_2_index = dict(zip(self.classes, index))
         return class_2_index
 
@@ -284,10 +284,10 @@ class txt_data(object):
         print("label_dict:" + str(self.class_2_index))
 
 def main():
-    import train.Detrac_data_preprocess.params_init_detrac_LFFD as params_init
-    classes_category = params_init.TRAINING_PARAMS["model"]["classes_category"]
+    #模型想要什么，数据就需要生产什么
+    import train.Detrac_data_preprocess.params_init_Detrac as params_init
     data_path = params_init.TRAINING_PARAMS['data_path']
-    generate_txt = txt_data(data_path, classes_category)
+    generate_txt = txt_data(data_path)
     generate_txt.generate_train_txt()
     generate_txt.generate_test_txt()
     print('\n')

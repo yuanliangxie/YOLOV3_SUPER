@@ -5,9 +5,9 @@ TEST = {
 	'DATA':{"CLASSES":['car'],
 			"NUM":1},
 	"TEST_IMG_SIZE":(320, 320),
-	"CONF_THRESH": 0.5,
+	"CONF_THRESH": 0.2,
 	"NMS_THRESH": 0.5,
-	"device_id": 0,
+	"device_id": 'cpu',
 	"model": {
 		"anchors": [[[10, 14], [23, 27], [37, 58]],
 					[[81, 82], [135, 169], [344, 319]]],
