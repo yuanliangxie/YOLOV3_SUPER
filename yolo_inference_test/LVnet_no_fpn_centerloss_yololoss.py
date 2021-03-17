@@ -4,10 +4,10 @@
 TEST = {
 	'DATA':{"CLASSES":['car'],
 			"NUM":1},
-	"TEST_IMG_SIZE":(320, 320),
-	"CONF_THRESH": 0.2,
+	"TEST_IMG_SIZE":(640, 640),
+	"CONF_THRESH": 0.3,
 	"NMS_THRESH": 0.5,
-	"device_id": 'cpu',#0,
+	"device_id": '0',#0,
 	"model": {
 		"classes": 1,
 	},
