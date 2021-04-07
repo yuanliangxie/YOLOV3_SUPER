@@ -667,9 +667,9 @@ class SSDAugmentation(object):
             xywh_to_xyxy(),
             #PhotometricDistort(),
             ImageBaseAug(),
-            Expand(mean),
-            RandomSampleCrop(),
-        #RandomSample_for_all_scales(mean),
+        # Expand(mean),
+        # RandomSampleCrop(),
+            RandomSample_for_all_scales(mean),#LFFD
             RandomMirror(),
             #xyxy_to_xywh(),
             #ToPercentCoords(),

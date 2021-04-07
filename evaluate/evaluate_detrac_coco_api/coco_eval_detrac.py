@@ -5,8 +5,8 @@ sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 sys.path.append("../../../YOLOV3_SUPER")
 
 #yolov3
-from models.model.model_yolov3_baseline import yolov3
-from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as config
+#from models.model.model_yolov3_baseline import yolov3
+#from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as config
 
 #centernet
 # from models.model.model_centernet_resnet import centernet_18 as yolov3
@@ -40,9 +40,25 @@ from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as c
 # from models.model.model_LVnet_oringin_iou_assign_no_fpn import LVnet as yolov3
 # from evaluate.evaluate_detrac_coco_api.LVnet_with_iou_assign_no_fpn import TEST as config
 
+#LVnet_with_large_fpn
+from models.model.model_LVnet_fpn_large_weight import LVnet as yolov3
+from evaluate.evaluate_detrac_coco_api.LVnet_large_fpn import TEST as config
+
 #tiny_yolov3
 # from models.model.model_tiny_yolov3 import tiny_yolov3 as yolov3
 # from evaluate.evaluate_detrac_coco_api.tiny_yolov3_config_detrac_test import TEST as config
+
+#mobilenetv2_yolov3
+# from models.model.model_yolov3_mobilev2 import yolov3_mobilev2 as yolov3
+# from evaluate.evaluate_detrac_coco_api.Mobilenetv2_yolov3_config_detrac_test import TEST as config
+
+#shulffnetv2_yolov3
+# from models.model.model_yolov3_shulffnetv2 import yolov3_shulffnetv2 as yolov3
+# from evaluate.evaluate_detrac_coco_api.Shulffnetv2_yolov3_config_detrac_test import TEST as config
+
+#LVnet_largest_fpn
+# from models.model.model_LVnet_fpn_largest_weight import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_largest_fpn import TEST as config
 
 from evaluate.evaluate_detrac_coco_api.coco_evaluater import coco_evaluater
 from utils.utils_select_device import select_device

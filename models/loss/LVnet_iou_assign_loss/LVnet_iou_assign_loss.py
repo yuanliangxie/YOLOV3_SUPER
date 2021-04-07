@@ -56,8 +56,8 @@ class LVnetloss_module(nn.Module):
 				t_cls, t_scale_area_weight = t_cls.to(self.device), t_scale_area_weight.to(self.device)
 				t_noobj_mask = t_noobj_mask.to(self.device)
 
-				loss_x = (t_scale_area_weight * self.bce_loss(x * t_cls, t_x)).sum()/n_obj
-				loss_y = (t_scale_area_weight * self.bce_loss(y * t_cls, t_y)).sum()/n_obj
+				loss_x = (t_scale_area_weight * self.smooth_l1(x * t_cls, t_x)).sum()/n_obj
+				loss_y = (t_scale_area_weight * self.smooth_l1(y * t_cls, t_y)).sum()/n_obj
 				loss_w = (t_scale_area_weight * self.smooth_l1(w * t_cls, t_w)).sum()/n_obj
 				loss_h = (t_scale_area_weight * self.smooth_l1(h * t_cls, t_h)).sum()/n_obj
 				# loss_cls_conf = (self.focal_loss_alpha * (1-conf)**self.focal_loss_gama * t_cls * self.bce_loss(conf * t_cls, t_cls)).sum()/n_obj + \

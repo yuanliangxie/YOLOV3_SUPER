@@ -11,7 +11,7 @@ TEST = {
 	"TEST_IMG_SIZE":640,
 	"BATCH_SIZE":32,
 	"NUMBER_WORKERS":0,
-	"CONF_THRESH":0.1,
+	"CONF_THRESH":0.01,
 	"NMS_THRESH":0.5,
 	"MULTI_SCALE_TEST":False,
 	"FLIP_TEST":False,
@@ -20,7 +20,7 @@ TEST = {
 	},
 	"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/size640x640_try_LVnet_with_iou_assign_no_fpn_test_UA_detrac/20210115164520/model_map_0.934.pth",
 
-	"generate_analyze_figure": False,
-	"generate_analyze_figure_dir_name":"analyze_loss_LVnet_with_iou_assign"
+	"generate_analyze_figure": True,
+	"generate_analyze_figure_dir_name":"analyze_loss_LVnet_with_iou_assign_no_fpn"
 }
 

@@ -29,6 +29,18 @@ from train.Detrac_data_preprocess.params_init_Detrac_LVnet_with_iou_assign_no_fp
 from train.Detrac_data_preprocess.params_init_Detrac_tiny_yolov3 import TRAINING_PARAMS as Detrac_config_train_tiny_yolov3
 from train.Detrac_data_preprocess.params_init_Detrac_tiny_yolov3 import Eval as Detrac_config_eval_tiny_yolov3
 
+from train.Detrac_data_preprocess.params_init_Detrac_mobilev2 import TRAINING_PARAMS as Detrac_config_train_mobilev2_yolov3
+from train.Detrac_data_preprocess.params_init_Detrac_mobilev2 import Eval as Detrac_config_eval_mobilev2_yolov3
+
+from train.Detrac_data_preprocess.params_init_Detrac_shulffnetv2_yolov3 import TRAINING_PARAMS as Detrac_config_train_shulffnetv2_yolov3
+from train.Detrac_data_preprocess.params_init_Detrac_shulffnetv2_yolov3 import Eval as Detrac_config_eval_shulffnetv2_yolov3
+
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_fpn_large_weight import TRAINING_PARAMS as Detrac_config_train_LVnet_fpn_large_weight
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_fpn_large_weight import Eval as Detrac_config_eval_LVnet_fpn_large_weight
+
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_fpn_largest_weight import TRAINING_PARAMS as Detrac_config_train_LVnet_fpn_largest_weight
+from train.Detrac_data_preprocess.params_init_Detrac_LVnet_fpn_largest_weight import Eval as Detrac_config_eval_LVnet_fpn_largest_weight
+
 #VOC的配置文件
 from train.Voc_data_preprocess.params_init_voc import TRAINING_PARAMS as Voc_config_train
 from train.Voc_data_preprocess.params_init_voc import Eval as Voc_config_eval
@@ -57,6 +69,10 @@ _config_factory = {
 	"U-DETRAC_LVnet_iou_assign":[Detrac_config_train_LVnet_iou_assign, Detrac_config_eval_LVnet_iou_assign],
 	"U-DETRAC_LVnet_iou_assign_no_fpn":[Detrac_config_train_LVnet_iou_assign_no_fpn, Detrac_config_eval_LVnet_iou_assign_no_fpn],
 	"U-DETRAC_tiny_yolov3":[Detrac_config_train_tiny_yolov3, Detrac_config_eval_tiny_yolov3],
+	"U-DETRAC_mobilev2_yolov3": [Detrac_config_train_mobilev2_yolov3, Detrac_config_eval_mobilev2_yolov3],
+	"U-DETRAC_shulffnetv2_yolov3":[Detrac_config_train_shulffnetv2_yolov3, Detrac_config_eval_shulffnetv2_yolov3],
+	"U-DETRAC_LVnet_fpn_large_weight":[Detrac_config_train_LVnet_fpn_large_weight, Detrac_config_eval_LVnet_fpn_large_weight],
+	"U-DETRAC_LVnet_fpn_largest_weight":[Detrac_config_train_LVnet_fpn_largest_weight, Detrac_config_eval_LVnet_fpn_largest_weight]
 }
 
 def get_config(config_char):

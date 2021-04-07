@@ -24,7 +24,7 @@ TEST = {
 	"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/darknet53/Multi-scale_try_centernet_test_UA_detrac/20210103214308/model_map_0.983.pth",
 	"ce": False,
 	"bce": True,
-	"generate_analyze_figure": False,
-	"generate_analyze_figure_dir_name":"analyze_loss_poly_yolo"
+	"generate_analyze_figure": True,
+	"generate_analyze_figure_dir_name":"analyze_loss_centernet_resnet18"
 }
 
