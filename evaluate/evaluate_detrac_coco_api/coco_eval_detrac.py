@@ -13,8 +13,8 @@ sys.path.append("../../../YOLOV3_SUPER")
 # from evaluate.evaluate_detrac_coco_api.centernet_config_detrac_test import TEST as config
 
 #LFFD
-# from models.model.model_LFFD import LFFD as yolov3
-# from evaluate.evaluate_detrac_coco_api.LFFD_config_detrac_test import TEST as config
+from models.model.model_LFFD import LFFD as yolov3
+from evaluate.evaluate_detrac_coco_api.LFFD_config_detrac_test import TEST as config
 
 #LVnet
 # from models.model.model_LVnet import LVnet as yolov3
@@ -41,8 +41,8 @@ sys.path.append("../../../YOLOV3_SUPER")
 # from evaluate.evaluate_detrac_coco_api.LVnet_with_iou_assign_no_fpn import TEST as config
 
 #LVnet_with_large_fpn
-from models.model.model_LVnet_fpn_large_weight import LVnet as yolov3
-from evaluate.evaluate_detrac_coco_api.LVnet_large_fpn import TEST as config
+# from models.model.model_LVnet_fpn_large_weight import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_large_fpn import TEST as config
 
 #tiny_yolov3
 # from models.model.model_tiny_yolov3 import tiny_yolov3 as yolov3

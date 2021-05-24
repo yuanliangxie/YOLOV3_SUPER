@@ -5,9 +5,10 @@
 #from models.model.model_tiny_yolov3 import tiny_yolov3 as model
 #from models.model.model_LVnet_with_deconv_shalllow_centerloss_iou_assign import LVnet as model
 #from models.model.model_LVnet_oringin_iou_assign_no_fpn import LVnet as model
-from models.model.model_yolov3_shulffnetv2 import yolov3_shulffnetv2 as model
+#from models.model.model_yolov3_shulffnetv2 import yolov3_shulffnetv2 as model
 #from models.model.model_yolov3_mobilev2 import yolov3_mobilev2 as model
 #from models.model.model_LVnet_fpn_largest_weight import LVnet as model
+from models.model.model_LVnet_with_pure_centerloss import LVnet as model
 
 from yolo_inference_test.utils_inference import *
 from yolo_inference_test.visualize import visualize_boxes

@@ -181,10 +181,10 @@ if __name__ == '__main__':
 	flops, params = clever_format([flops, params], "%.3f")# 增加可读性
 	print(flops, params)
 
-	#计算感受野并画图
-	from tools.cal_effect_field_tool import calculate_EPR
-	calculate_EPR(model.backbone)
-
-	#计算相对应层的感受野程序
-	from tools.cal_reception_filed_tool.cal_RF import calc_receptive_filed
-	calc_receptive_filed(model, (640, 640, 3), index=[i for i in range(101)])
+	# #计算感受野并画图
+	# from tools.cal_effect_field_tool import calculate_EPR
+	# calculate_EPR(model.backbone)
+	#
+	# #计算相对应层的感受野程序
+	# from tools.cal_reception_filed_tool.cal_RF import calc_receptive_filed
+	# calc_receptive_filed(model, (640, 640, 3), index=[i for i in range(101)])
