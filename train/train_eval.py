@@ -9,6 +9,7 @@
 
 from utils.utils_select_device import select_device
 import torch
+#from memory_profiler import profile
 #import os
 # os.environ["CUDA_VISIBLE_DEVICES"]='0'
 # config['DATA'] = {}
@@ -37,6 +38,7 @@ class train_evaler(object):
         # Set data parallel
         #self.__model = nn.DataParallel(self.__model)
 
+    #@profile(precision=4, stream=open('./memory_profiler_eval_voc.log', 'w+'))
     def eval_voc(self):
         print('*' * 20 + "Validate" + '*' * 20)
 

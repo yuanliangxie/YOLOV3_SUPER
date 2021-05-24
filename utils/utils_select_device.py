@@ -6,7 +6,7 @@ elif device == 'CPU' or device == 'cpu':
     select_cpu = True
 
 def select_device(id, force_cpu= select_cpu):
-    cuda = False if force_cpu else torch.cuda.is_available()
+    cuda = False if (force_cpu or id=='cpu' or id == 'CPU') else torch.cuda.is_available()
     device = torch.device('cuda:{}'.format(id) if cuda else 'cpu')
 
     if not cuda:

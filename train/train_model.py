@@ -13,6 +13,9 @@ from models.model.model_factory import load_model
 from dataset.dataset_factory import load_dataset
 from evaluate.coco_evaluater_factory import load_coco_evaluater
 from train.train_eval import train_evaler
+from models.bricks.tricks import mix_up
+#from memory_profiler import profile
+from tools.time_analyze import func_line_time
 
 class trainer():
 	def __init__(self, config_train, config_eval, logger):
@@ -21,8 +24,8 @@ class trainer():
 
 		#以下这段代码为将config_train的信息补充到config_eval上，后面coco_evaluater要用
 		self.config_eval['DATA'] = {}
-		self.config_eval['DATA']["CLASSES"] = self.config_train['yolo']['classes_category']
-		self.config_eval['DATA']["NUM"] = self.config_train['yolo']['classes']
+		self.config_eval['DATA']["CLASSES"] = self.config_train['model']['classes_category']
+		self.config_eval['DATA']["NUM"] = self.config_train['model']['classes']
 
 		self.logger = logger
 		self.device = select_device(config_train['device_id'])
@@ -33,14 +36,17 @@ class trainer():
 		self.dataset = self.get_dataset()
 		self.dataloader = torch.utils.data.DataLoader(self.dataset,
 													  batch_size=self.config_train["batch_size"],
-													  shuffle=True, num_workers=8, collate_fn=self.dataset.collate_fn, pin_memory=True, drop_last=True)
+													  shuffle=True, num_workers=4, collate_fn=self.dataset.collate_fn, pin_memory=True, drop_last=True)
 		logger.append("Total images: {}".format(len(self.dataset)))
 		self.timer = Timer(len(self.dataloader), self.config_train["epochs"])
 		self.lr_scheduler = get_lr_scheduler(self.config_train, self.optimizer, len(self.dataloader))
 		self.restore_model()
 		self.coco_evaluater = self.get_coco_evaluater()
-		self.train_evaler = train_evaler(model=self.net, logger=self.logger,
+		self.train_evaler = train_evaler(model=None, logger=self.logger,
 					 config_eval=self.config_eval, coco_evaluater=self.coco_evaluater)
+
+		self.mix_up = mix_up(1)
+
 
 
 	@classmethod
@@ -80,7 +86,7 @@ class trainer():
 	def init_params(self):
 		self.config_train["global_step"] = self.config_train.get("start_step", 0)
 		self.max_map = 0
-		self.epoch_init=-1
+		self.epoch_init= 0
 		if self.config_train["Multi-scale training"]:
 			self.image_size_train = None
 		else:
@@ -108,7 +114,7 @@ class trainer():
 		return coco_evaluater
 
 	def restore_model(self):
-		if self.config_train["pretrain_snapshot"].strip():
+		if self.config_train["pretrain_snapshot"].strip() and self.config_train["self_train_weight"]:
 			self.logger.append("Load pretrained weights from {}".format(self.config_train["pretrain_snapshot"]))
 			#print("Load pretrained weights from {}".format(config["pretrain_snapshot"]))
 			if self.config_train["pretrain_snapshot"].split('/')[-1].strip(" ") == "model.pth":
@@ -118,50 +124,90 @@ class trainer():
 			#加载最新的保存有
 			load_checkpoint = torch.load(self.config_train["pretrain_snapshot"])
 			state_dict = load_checkpoint["state_dict"]
-			self.epoch_init = load_checkpoint["epoch"]
-			self.config_train["global_step"] = load_checkpoint['global_step']
+
+			#加入了继续训练的功能,其中还可以在config文件中自行设置在哪个epoch继续训练,如果为空或者None,则默认从记录的开始加载步数
+
+			if self.config_train["resume_start_epoch"]:
+				self.epoch_init = self.config_train["resume_start_epoch"]
+				self.config_train["global_step"] = self.epoch_init * len(self.dataloader)
+			else:
+				self.epoch_init = load_checkpoint["epoch"]
+				self.config_train["global_step"] = load_checkpoint['global_step']
+
 			self.net.load_state_dict(state_dict)
 			self.optimizer.load_state_dict(load_checkpoint['optimizer'])
 			self.lr_scheduler.step(self.config_train["global_step"])#通过得到已经走过的步数信息，更新lr
 			self.config_train["global_step"] += 1
+	#如果是调用不是自己训练的权重，那么进行额外的解析！
+		elif self.config_train["pretrain_snapshot"].strip() and not self.config_train["self_train_weight"]:
+			self.logger.append("Load pretrained weights from {}".format(self.config_train["pretrain_snapshot"]))
+			state_dict = torch.load(self.config_train["pretrain_snapshot"])
+			if self.config_train["resume_start_epoch"] != None and self.config_train["resume_start_epoch"] >= 0:
+				self.epoch_init = int(self.config_train["resume_start_epoch"]) #防止将resume_start_epoch设置为浮点数
+				self.config_train["global_step"] = self.epoch_init * len(self.dataloader)
+			else:
+				self.epoch_init = 0
+				self.config_train["global_step"] = 0
+			self.net.load_state_dict(state_dict)
+			self.lr_scheduler.step(self.config_train["global_step"])#通过得到已经走过的步数信息，更新lr
+			self.config_train["global_step"] += 1
 
+	#@profile(precision=4, stream=open('./memory_profiler_start_train.log', 'w+'))
 	def start_train(self):
 		# Start the training loop
 		self.logger.append("Start training.")
 		#print("Start training.")
-		for epoch in range(self.epoch_init+1, self.config_train["epochs"]):
+		for epoch in range(self.epoch_init, self.config_train["epochs"]):
 			for step, samples in enumerate(self.dataloader):
 
-				images, labels = samples["image"].to(self.device), samples["label"]
+				#images, labels = samples["image"].to(self.device), samples["label"]
+
+				#加入mixup
+				if self.config_train['mix_up'] == True:
+					images, labels = samples['image'], samples['label']
+					images, labels = self.mix_up.mixup(images, labels)
+					images = images.to(self.device)
+				else:
+					images, labels = samples["image"].to(self.device), samples["label"]
+
+
 				start_time = time.time()
 
-
 				# Forward and backward
-				self.optimizer.zero_grad()
 				outputs = self.net(images, target=labels)
-				losses_name = ["total_loss", "x", "y", "w", "h", "conf", "cls"]
+				if self.config_train["GIOU"]:
+					losses_name = ["total_loss", "giou", "conf", "cls"]
+				else:
+					losses_name = ["total_loss", "x", "y", "w", "h", "conf", "cls"]
+
 				losses = []
 				for _ in range(len(losses_name)):
 					losses.append([])
-				for i in range(3):
+				for i in range(len(outputs)):
 					for j, l in enumerate(outputs[i]):
 						losses[j].append(l)
 				losses = [sum(l) for l in losses]#TODO:这里用sum会进行反向传播吗？经过简单的实验验证是可以反向传播的！
-				loss = losses[0]  # 求的是total_loss
+				loss = losses[0]/self.config_train["accumulate"]  # 求的是total_loss
 				loss.backward()
-				self.optimizer.step()
+
+				#每累加到一定次数才清零
+				if step % self.config_train["accumulate"] == 0:
+					self.optimizer.step()
+					self.optimizer.zero_grad()
 				self.lr_scheduler.step(self.config_train["global_step"])#这里两个Ir_scheduler合并一致了
 
-				if step >0 and step % int(len(self.dataloader)-1) == 0:#TODO:设置定时放map，此时是一个epoch来记录一下模型
+				if step > 0 and step % (int(len(self.dataloader)-1)//self.config_train["epoch_eval_times"]) == 0:#TODO:设置定时放map，此时是一个epoch来记录一下模型
 
 					save_checkpoint(self.net.state_dict(), self.config_train, map=None, optimizer=self.optimizer, epoch=epoch, logger=self.logger)#TODO：记录最佳的map与正常的模型，存储模型时加入epoch和step信息，便于重新加载训练！
 
-					if epoch >= 0 and epoch % 5 == 0:
+					if epoch >= self.config_train["start_eval"] and epoch % self.config_train["interval_epoch_eval"] == 0:
 						images.cpu()
+						del images
 						del samples
 						self.net.train(False)  # 进入eval模式
 						self.train_evaler.model = self.net
 						map = self.train_evaler.eval_voc()
+						self.train_evaler.model = None
 						self.net.train(True)  # 再次开启训练模式
 						if map > self.max_map:
 							if os.path.exists(os.path.join(self.config_train["sub_working_dir"], "model_map_%.3f.pth" % self.max_map)):
@@ -202,9 +248,9 @@ if __name__ == "__main__":
 	#在跑程序前需要清空../evaluate/data或者../evaluate_coco/data或者evaluate_detrac_coco_api方法中的文件
 	import argparse
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--config_name', type=str, default='VOC', help='VOC or U-DETRAC')
+	parser.add_argument('--config_name', type=str, default='U-DETRAC_LVnet_fpn_largest_weight', help='VOC or U-DETRAC or VOC_poly_yolo')
 	parser.add_argument('--device_id', type=int, default=0, help="choose the device_id")
-	parser.add_argument('--config_model_name', type=str, default='yolov3', help='you can cd ./models/model/model_factory to find model name')
+	parser.add_argument('--config_model_name', type=str, default='LVnet_with_fpn_largest_weight', help='you can cd ./models/model/model_factory to find model name')
 	opt = parser.parse_args()
-	trainer_voc = trainer.set_config(opt.config_name, opt.device_id, opt.config_model_name)
-	trainer_voc.start_train()
+	trainer_object = trainer.set_config(opt.config_name, opt.device_id, opt.config_model_name)
+	trainer_object.start_train()

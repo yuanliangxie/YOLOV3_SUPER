@@ -3,9 +3,64 @@ import os
 import codecs
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 sys.path.append("../../../YOLOV3_SUPER")
-from models.model.model_yolov3_baseline import yolov3
+
+#yolov3
+#from models.model.model_yolov3_baseline import yolov3
+#from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as config
+
+#centernet
+# from models.model.model_centernet_resnet import centernet_18 as yolov3
+# from evaluate.evaluate_detrac_coco_api.centernet_config_detrac_test import TEST as config
+
+#LFFD
+from models.model.model_LFFD import LFFD as yolov3
+from evaluate.evaluate_detrac_coco_api.LFFD_config_detrac_test import TEST as config
+
+#LVnet
+# from models.model.model_LVnet import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_config_detrac_test import TEST as config
+
+#LVnet_with_deconv
+# from models.model.model_LVnet_with_deconv import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_with_deconv_config_detrac_test import TEST as config
+
+#LVnet_with_deconv_centerloss
+# from models.model.model_LVnet_with_deconv_shallow_centerloss import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_with_deconv_centerloss_config_detrac_test import TEST as config
+
+#LVnet_with_pure_centerloss
+# from models.model.model_LVnet_with_pure_centerloss import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_with_pure_centerloss_config_detrac_test import TEST as config
+
+#LVnet_with_iou_assign
+# from models.model.model_LVnet_with_deconv_shalllow_centerloss_iou_assign import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_with_iou_assign import TEST as config
+
+#LVnet_with_no_fpn_centerloss_yololoss
+# from models.model.model_LVnet_oringin_iou_assign_no_fpn import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_with_iou_assign_no_fpn import TEST as config
+
+#LVnet_with_large_fpn
+# from models.model.model_LVnet_fpn_large_weight import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_large_fpn import TEST as config
+
+#tiny_yolov3
+# from models.model.model_tiny_yolov3 import tiny_yolov3 as yolov3
+# from evaluate.evaluate_detrac_coco_api.tiny_yolov3_config_detrac_test import TEST as config
+
+#mobilenetv2_yolov3
+# from models.model.model_yolov3_mobilev2 import yolov3_mobilev2 as yolov3
+# from evaluate.evaluate_detrac_coco_api.Mobilenetv2_yolov3_config_detrac_test import TEST as config
+
+#shulffnetv2_yolov3
+# from models.model.model_yolov3_shulffnetv2 import yolov3_shulffnetv2 as yolov3
+# from evaluate.evaluate_detrac_coco_api.Shulffnetv2_yolov3_config_detrac_test import TEST as config
+
+#LVnet_largest_fpn
+# from models.model.model_LVnet_fpn_largest_weight import LVnet as yolov3
+# from evaluate.evaluate_detrac_coco_api.LVnet_largest_fpn import TEST as config
+
 from evaluate.evaluate_detrac_coco_api.coco_evaluater import coco_evaluater
-from evaluate.evaluate_detrac_coco_api.yolov3_config_dtrac_test import TEST as config
 from utils.utils_select_device import select_device
 import torch
 import shutil
@@ -15,7 +70,7 @@ class COCOAPI_evaler(object):
     def __init__(self,
                  gpu_id=0,
                  img_size=config['TEST_IMG_SIZE'],
-                 visiual = False,
+                 visiual = True,
                  ):
         self.img_size = img_size
         self.__num_class = config['DATA']["NUM"]
@@ -45,17 +100,17 @@ class COCOAPI_evaler(object):
         print("loading weight file is done")
 
 
-    def eval_voc(self, Analyze = False):
+    def eval_voc(self):
 
         print('*' * 20 + "Validate" + '*' * 20)
 
         with torch.no_grad():
-            coco_evaluater(self.__model, config, visiual=self.__visiual).eval(Analyze=Analyze)
+            coco_evaluater(self.__model, config, visiual=self.__visiual).eval()
 
     @staticmethod
-    def eval_data_with_result_file(Analyze = False):
+    def eval_data_with_result_file():
         print('*' * 20 + "直接通过已生成的预测结果文件进行Validate" + '*' * 20)
-        coco_evaluater.eval(Analyze=Analyze)
+        coco_evaluater.eval_result(config)
 
 def pre_process(data_dir_path):
     if not os.path.isdir(data_dir_path):
@@ -73,14 +128,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_id', type=int, default=0, help='gpu id')
     parser.add_argument('--visiual', type=int, default=1, help="get det image in ./data/results")
-    parser.add_argument('--scratch_run_flag', type=int, default=1, help="是否重新用模型测评或直接对比json文件得出结果")
+    parser.add_argument('--scratch_run_flag', type=int, default=True, help="是否重新用模型测评或直接对比json文件得出结果")
     parser.add_argument('--Analyze', type=int, default=0, help="是否在./analyze_figure生成分析图")
     opt = parser.parse_args()
     if opt.scratch_run_flag == False:
         assert os.path.isfile('pred_result.json'), "找不到pred_result.json文件，请将scrach_run_flag设置为True"
-        COCOAPI_evaler.eval_data_with_result_file(Analyze=opt.Analyze)
+        COCOAPI_evaler.eval_data_with_result_file()
     else:
         pre_process('data')
         remove_file('pred_result.json')
         COCOAPI_evaler(gpu_id=opt.gpu_id,
-                visiual=opt.visiual).eval_voc(Analyze=opt.Analyze)
+                visiual=opt.visiual).eval_voc()

@@ -36,7 +36,8 @@ class coco_evaluater(Evaluator):
         cocoEval.evaluate()
         cocoEval.accumulate()
         state = cocoEval.summarize()
-        #cocoEval.analyze('./analyze_figure')
+        if self.config["generate_analyze_figure"]:
+            cocoEval.analyze('./'+self.config['generate_analyze_figure_dir_name'])
         return state
 
 

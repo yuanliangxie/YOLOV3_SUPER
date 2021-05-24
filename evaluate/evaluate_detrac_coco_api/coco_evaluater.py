@@ -13,9 +13,10 @@ class coco_evaluater(Evaluator):
 
     def __init__(self, model, config, visiual=True):
         super().__init__(model, config, visiual)
-        # self.gt_save_path = os.path.join(current_file_path, "Detrac_test.json")
-        # self.pred_save_path = os.path.join(current_file_path, "pred_result.json")
+        self.gt_save_path = os.path.join(current_file_path, "Detrac_test.json")
+        self.pred_save_path = os.path.join(current_file_path, "pred_result.json")
         self.generate_eval_result_json()
+        self.config = config
 
     def generate_eval_result_json(self):
         data_dict = []
@@ -35,9 +36,8 @@ class coco_evaluater(Evaluator):
             json.dump(data_dict, open(self.pred_save_path, 'w'))
 
     @classmethod
-    def eval(cls, Analyze = False):
+    def eval_result(cls, config):
         """
-        :param Analyze: 是否进行分析画图
         :return:
         """
         cocoGt = COCO(cls.gt_save_path)  # 标注文件的路径及文件名，json文件形式
@@ -46,9 +46,21 @@ class coco_evaluater(Evaluator):
         cocoEval.evaluate()
         cocoEval.accumulate()
         state = cocoEval.summarize()
-        if Analyze:
-            cocoEval.analyze('./analyze_figure')
+        if config["generate_analyze_figure"]:
+            cocoEval.analyze('./'+config['generate_analyze_figure_dir_name'])
         return state
+
+    def eval(self):
+        cocoGt = COCO(self.gt_save_path)  # 标注文件的路径及文件名，json文件形式
+        cocoDt = cocoGt.loadRes(self.pred_save_path)  # 自己的生成的结果的路径及文件名，json文件形式
+        cocoEval = COCOeval(cocoGt, cocoDt, "bbox")
+        cocoEval.evaluate()
+        cocoEval.accumulate()
+        state = cocoEval.summarize()
+        if self.config["generate_analyze_figure"]:
+            cocoEval.analyze('./'+self.config['generate_analyze_figure_dir_name'])
+        return state
+
 
 
 

@@ -1,1 +1,1 @@
-device = "gpu"#"GPU"or "CPU"
+device = "GPU"#"GPU"or "CPU"

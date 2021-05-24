@@ -5,14 +5,14 @@ from models import layer as layer
 class MobileNetv2(nn.Module):
     def __init__(self, width_mult=1.0, inverted_residual_setting=None, round_nearest=8):
         """
-                    MobileNet V2 main class
+        MobileNet V2 main class
 
-                    Args:
-                        width_mult (float): Width multiplier - adjusts number of channels in each layer by this amount
-                        inverted_residual_setting: Network structure
-                        round_nearest (int): Round the number of channels in each layer to be a multiple of this number
-                        Set to 1 to turn off rounding
-                    """
+        Args:
+            width_mult (float): Width multiplier - adjusts number of channels in each layer by this amount
+            inverted_residual_setting: Network structure
+            round_nearest (int): Round the number of channels in each layer to be a multiple of this number
+            Set to 1 to turn off rounding
+        """
 
         super(MobileNetv2, self).__init__()
         block = bricks.InvertedResidual
@@ -91,7 +91,7 @@ class MobileNetv2(nn.Module):
 
             # yolo layers
             x = module(x)
-
+            #print(x.shape)
             # route layers
             if i in [6, 13, 25, 32, 39]:
                 route_layers.append(x)

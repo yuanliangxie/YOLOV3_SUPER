@@ -14,7 +14,7 @@ PRE_DEFINE_CATEGORIES = {}
 #                           "cow": 10, "diningtable": 11, "dog": 12, "horse": 13,
 #                           "motorbike": 14, "person": 15, "pottedplant": 16,
 #                           "sheep": 17, "sofa": 18, "train": 19, "tvmonitor": 20}
-PRE_DEFINE_CATEGORIES = {'car':0, 'bus':1, 'van':2, 'others':3}
+PRE_DEFINE_CATEGORIES = {'car':0, 'bus':0, 'van':0, 'others':0}  #修改对应类别则在这里进行修改
 
 def get_xml_list(xml_dir, txt_path ='xml_list.txt'):
     xml_lists = os.listdir(xml_dir)
@@ -54,6 +54,7 @@ def get_filename_as_int(filename):
 def convert(xml_list, xml_dir, json_file):
     list_fp = open(xml_list, 'r')#这里要与Detrac_data_process的测试集一致
     #list_fp = ["MVI_39401.xml", "MVI_40711.xml", "MVI_40712.xml"]
+    #list_fp = os.listdir("/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/UA-DETRAC/DETRAC-Test-Annotations-XML")
     json_dict = {"images": [], "type": "instances", "annotations": [],
                  "categories": []}
     categories = PRE_DEFINE_CATEGORIES
@@ -104,7 +105,7 @@ def convert(xml_list, xml_dir, json_file):
     json_str = json.dumps(json_dict)
     json_fp.write(json_str)
     json_fp.close()
-    #list_fp.close()
+    list_fp.close()
 
 
 
@@ -208,5 +209,5 @@ if __name__ == '__main__':
     #xml_dir = "/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/UA-DETRAC/DETRAC-Test-Annotations-XML"
     #test_image_dir ="/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/UA-DETRAC/DETRAC-test-data"
     xml_list_txt = "Detrac_xml_list.txt"
-    get_xml_list(opt.xml_dir, xml_list_txt)
+    #get_xml_list(opt.xml_dir, xml_list_txt)
     convert(xml_list_txt, opt.xml_dir, "Detrac_test.json")

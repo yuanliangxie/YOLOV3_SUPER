@@ -55,6 +55,21 @@ class Upsample(nn.Module):
         x = self.features(data)
         return x
 
+class Upsample_in_out(nn.Module):
+    def __init__(self, input_channel, output_channel):
+        super(Upsample_in_out, self).__init__()
+        layers = [
+            layer.Conv2dBatchLeaky(input_channel, output_channel, 1, 1),
+            nn.Upsample(scale_factor=2)
+        ]
+
+        self.features = nn.Sequential(*layers)
+
+    def forward(self, data):
+        x = self.features(data)
+        return x
+
+
 def test_Upsample(input_channel):
     half_nchannels = int(input_channel / 2)
     layers = [

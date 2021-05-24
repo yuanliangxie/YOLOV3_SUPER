@@ -163,15 +163,15 @@ if __name__ == "__main__":
     import sys
     MY_DIRNAME = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, os.path.join(MY_DIRNAME, '..'))
-    import train.Detrac_data_preprocess.params_init_Detrac as params_init
-    classes_category = params_init.TRAINING_PARAMS["yolo"]["classes_category"]
-    vocdataset = DetracDataset(list_path="../data/detrac/test.txt", ignore_region_path="../data/detrac/test_ignore_region.txt",
-                            labels_path='../data/detrac/labels_test',
-                               img_size=(960, 960), is_training=False, is_debug=True, batch_size=8)
+    import train.Detrac_data_preprocess.params_init_detrac_LFFD as params_init
+    classes_category = params_init.TRAINING_PARAMS["model"]["classes_category"]
+    vocdataset = DetracDataset(list_path="../data/detrac/train.txt", ignore_region_path="../data/detrac/train_ignore_region.txt",
+                            labels_path='../data/detrac/labels',
+                               img_size=(640, 640), is_training=True, is_debug=True, batch_size=8)
     index_2_classes = vocdataset.index_2_classes(classes_category)
     dataloader = torch.utils.data.DataLoader(vocdataset,
                                              batch_size=8,
-                                             shuffle=False, num_workers=0, pin_memory=False, collate_fn=vocdataset.collate_fn)
+                                             shuffle=True, num_workers=0, pin_memory=False, collate_fn=vocdataset.collate_fn)
     print(len(vocdataset))
     for step, sample in enumerate(dataloader):
         #print(step)
@@ -200,7 +200,7 @@ if __name__ == "__main__":
                 # x2 = int(l[3] * w)
                 # y2 = int(l[4] * h)
                 cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 255), thickness=2)
-                #cv2.putText(image, index_2_classes[l[0]], (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
+                cv2.putText(image, index_2_classes[l[0]], (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
                 #cv2.putText(image, "%s,%s,%s"%(truncation_ratio, overlap_ratio, iou_ratio), (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
                 # cv2.putText(image, "%s" %(iou_ratio), (x1, y1),
                 #             cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
@@ -208,6 +208,6 @@ if __name__ == "__main__":
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             #cv2.imwrite("step{}_{}.jpg".format(step, i), image)
             cv2.imshow('show', image)
-            cv2.waitKey(200)
+            cv2.waitKey(2000)
         # only one batch
         #break

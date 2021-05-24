@@ -33,6 +33,22 @@ def jaccard_numpy(box_a, box_b):
     union = area_a + area_b - inter
     return inter / union  # [A,B]
 
+def jaccard_numpy_sample(box_a, box_b):
+    """Compute the jaccard overlap of two sets of boxes.  The jaccard overlap
+    is simply the intersection over union of two boxes.
+    E.g.:
+        A ∩ B / A  = A ∩ B / area(A)
+    Args:
+        box_a: Multiple bounding boxes, Shape: [num_boxes,4]
+        box_b: Single bounding box, Shape: [4]
+    Return:
+        jaccard overlap: Shape: [box_a.shape[0], box_a.shape[1]]
+    """
+    inter = intersect(box_a, box_b)
+    area_a = ((box_a[:, 2]-box_a[:, 0]) *
+              (box_a[:, 3]-box_a[:, 1]))  # [A,B]
+    return inter / area_a # [A,B]
+
 
 class Compose(object):
     """Composes several augmentations together.
@@ -140,7 +156,7 @@ class ResizeImage_multi_scale(object):
     def __init__(self, batch_size=16, interpolation=cv2.INTER_AREA, mean=(104, 117, 123)):
         self.interpolation = interpolation
         self.image_size = {1: (320, 320), 2: (352, 352), 3: (384, 384), 4: (416, 416), 5: (448, 448), 6: (480, 480),
-                           7: (544, 544), 8: (576, 576), 9: (608, 608)
+                           7: (544, 544), 8: (576, 576), 9: (608, 608), 10: (640, 640)
                            }
         self.batch_size_oral = batch_size
         self.batch_size = batch_size
@@ -154,6 +170,13 @@ class ResizeImage_multi_scale(object):
             self.new_size = self.choose_image_size(index=None)
         image, boxes = self.cv2_letterbox_image(image, boxes, self.new_size)
         self.batch_size = self.batch_size - 1
+
+        #将过小的boxes过滤掉！
+        area = np.prod(boxes[:, 2:] - boxes[:, :2], axis=1)
+        choose = area > 100
+        boxes = boxes[choose]
+        labels = labels[choose]
+
         return image, boxes, labels
 
     def cv2_letterbox_image(self, image, boxes, expected_size):
@@ -182,7 +205,7 @@ class ResizeImage_multi_scale(object):
 
     def choose_image_size(self, index=None):
         if index is None:
-            index = random.randint(1, 10)
+            index = random.randint(1, len(self.image_size)+1)
         return tuple(self.image_size[index])
 
 class ResizeImage_single_scale(object):
@@ -217,6 +240,13 @@ class ResizeImage_single_scale(object):
 
     def __call__(self, image, boxes=None, labels=None):
         image, boxes = self.cv2_letterbox_image(image, boxes, self.new_size)
+
+        #将过小的boxes过滤掉！
+        area = np.prod(boxes[:, 2:] - boxes[:, :2], axis=1)
+        choose = area > 100
+        boxes = boxes[choose]
+        labels = labels[choose]
+
         return image, boxes, labels
 
 
@@ -328,6 +358,90 @@ class ToTensor(object):
             return torch.from_numpy(image),\
                    torch.from_numpy(boxes).type(torch.FloatTensor),\
                    torch.from_numpy(labels).type(torch.FloatTensor)
+
+
+
+class RandomSample_for_all_scales(object):
+    def __init__(self, mean):
+        #self.continuous_face_scale=[[10, 15], [15, 20], [20, 40], [40, 70], [70, 110], [110, 250], [250, 400], [400, 560]]
+        self.continuous_face_scale=[[15, 45], [45, 75], [75, 135], [135, 260]]
+        #TODO:delete
+        #self.continuous_face_scale=[[15, 45]]
+        self.fix_image_size = 640
+        self.mean = mean
+
+
+    def __call__(self, image, boxes=None, labels=None):
+
+        bs = boxes.shape[0]
+        random_choice = random.randint(0, bs)
+        choose_boxes_xyxy = boxes[random_choice]
+        choose_boxes_center_xy = (choose_boxes_xyxy[2:] + choose_boxes_xyxy[:2])/2
+        max_side = np.max(choose_boxes_xyxy[2:]-choose_boxes_xyxy[:2])
+        random_face_scale = self.continuous_face_scale[random.randint(0, len(self.continuous_face_scale))]
+        random_resize_value = random.uniform(random_face_scale[0], random_face_scale[1])
+        alpha = random_resize_value/max_side
+        self.crop_image_size = int(self.fix_image_size/alpha)
+        padding_image = np.ones((self.crop_image_size, self.crop_image_size, 3), dtype=np.uint8)
+
+        for i in range(3):
+            padding_image[..., i] = padding_image[..., i] * self.mean[i] #进行均值的初始化
+
+        crop_image_size_boxes = np.append(choose_boxes_center_xy - int(self.crop_image_size/2),
+                                          choose_boxes_center_xy + int(self.crop_image_size/2))
+
+        non_occlution = jaccard_numpy_sample(boxes, crop_image_size_boxes)
+        mask = non_occlution > 0.5
+        boxes = boxes[mask==True]
+        labels = labels[mask==True]
+
+        zeros_point = choose_boxes_center_xy - int(self.crop_image_size/2)
+
+        crop_image_position = self.calculate_jaccard_position(crop_image_size_boxes,
+                                                              np.array([[0, 0, image.shape[1], image.shape[0]]]))
+        x1, y1, x2, y2 = crop_image_position[0]
+
+        relative_crop_positon = self.calculate_relative_position(zeros_point, crop_image_position)
+
+        rela_x1, rela_y1, rela_x2, rela_y2 = relative_crop_positon[0]
+
+        min_w = int(min(x2-x1, rela_x2- rela_x1))
+        min_h = int(min(y2-y1, rela_y2- rela_y1))
+
+        padding_image[int(rela_y2)-min_h:int(rela_y2), int(rela_x2)-min_w:int(rela_x2), :] = image[int(y2)-min_h:int(y2), int(x2)-min_w:int(x2), :]
+
+        image_position_boxes = self.calculate_jaccard_position(crop_image_size_boxes, boxes)
+
+        boxes = self.calculate_relative_position(zeros_point, image_position_boxes)
+
+
+        image = cv2.resize(padding_image, (640, 640), interpolation=cv2.INTER_AREA)
+
+        boxes = boxes * 640/padding_image.shape[0]
+
+        #防止boxes越界，好像不防止也不要紧，因为这是当做预测的值的。
+        # boxes[:, :2] = np.clip(boxes[:, :2], a_min=0, a_max=np.inf)
+        # boxes[:, 2:] = np.clip(boxes[:, 2:], a_min=0, a_max=self.fix_image_size)
+
+
+        #将过小的boxes过滤掉！
+        area = np.prod(boxes[:, 2:] - boxes[:, :2], axis=1)
+        choose = area > 225
+        boxes = boxes[choose]
+        labels = labels[choose]
+
+        return image, boxes, labels
+
+
+    def calculate_jaccard_position(self, crop_image_size_boxes, boxes):
+        left_top = np.maximum(crop_image_size_boxes[:2], boxes[:, :2])
+        rignt_bottom = np.minimum(crop_image_size_boxes[2:], boxes[:, 2:])
+        return np.concatenate([left_top, rignt_bottom], axis=1)
+
+    def calculate_relative_position(self, zeros_point, jaccard_boxes):
+        zeros_point_xyxy = np.append(zeros_point, zeros_point)
+        return jaccard_boxes - zeros_point_xyxy
+
 
 
 class RandomSampleCrop(object):
@@ -537,6 +651,13 @@ class ImageBaseAug(object):
         image = self.seq(image=image)
         return image, boxes, labels
 
+# class Mixup(object):
+#     def __init__(self, alpha):
+#         self.alpha = alpha
+#
+#     def __call__(self, image, boxes, labels):
+
+
 
 class SSDAugmentation(object):
     def __init__(self, mean=(104, 117, 123)):
@@ -546,8 +667,9 @@ class SSDAugmentation(object):
             xywh_to_xyxy(),
             #PhotometricDistort(),
             ImageBaseAug(),
-            Expand(mean),
-            RandomSampleCrop(),
+        # Expand(mean),
+        # RandomSampleCrop(),
+            RandomSample_for_all_scales(mean),#LFFD
             RandomMirror(),
             #xyxy_to_xywh(),
             #ToPercentCoords(),
