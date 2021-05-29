@@ -119,10 +119,10 @@ if __name__ == '__main__':
 	#from yolo_inference_test.yolov3_config_detrac import TEST as config
 	#from yolo_inference_test.LVnet_iou_assign import TEST as config
 	#from yolo_inference_test.LVnet_no_fpn_centerloss_yololoss import TEST as config
-	#from yolo_inference_test.mobilenetv2_yolov3_config_detrac import TEST as config
+	from yolo_inference_test.mobilenetv2_yolov3_config_detrac import TEST as config
 	#from yolo_inference_test.shulffnetv2_yolov3_config_detrac import TEST as config
 	#from yolo_inference_test.LVnet_largest_fpn_config_detrac import TEST as config
-	from yolo_inference_test.LVnet_pure_centernet_config_detrac import TEST as config
+	#from yolo_inference_test.LVnet_pure_centernet_config_detrac import TEST as config
 	detector = vehicle_detector(config)
 	#配置输入视频
 	detector.deploy_inference_video(video_name='./Radar1150_30.avi', video_save_name='LVnet_largest_fpn_detrac_detect.avi', video_save_fps=30)
