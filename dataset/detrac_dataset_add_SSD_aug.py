@@ -3,7 +3,7 @@ import cv2
 import os
 import torch
 from torch.utils.data import Dataset
-from dataset import ssd_augmentations
+from dataset import ssd_augmentations_LVD_net
 
 # mean = np.array([0.40789654, 0.44719302, 0.47026115],
 #                     dtype=np.float32).reshape(1, 1, 3)
@@ -48,23 +48,23 @@ class DetracDataset(Dataset):
         self.is_debug = is_debug
 
         #  transforms and augmentation
-        self.total_transforms = ssd_augmentations.Compose(transforms=[])
+        self.total_transforms = ssd_augmentations_LVD_net.Compose(transforms=[])
 
         # self.transforms.add(data_transforms.KeepAspect())
 
         if is_training:
-            self.total_transforms.add(ssd_augmentations.SSDAugmentation(mean=mean))
+            self.total_transforms.add(ssd_augmentations_LVD_net.SSDAugmentation(mean=mean))
             if img_size is None:
-                self.total_transforms.add(ssd_augmentations.ResizeImage_multi_scale(batch_size=self.batch_size, mean=mean))
+                self.total_transforms.add(ssd_augmentations_LVD_net.ResizeImage_multi_scale(batch_size=self.batch_size, mean=mean))
             else:
-                self.total_transforms.add(ssd_augmentations.ResizeImage_single_scale(new_size=img_size, mean=mean))
+                self.total_transforms.add(ssd_augmentations_LVD_net.ResizeImage_single_scale(new_size=img_size, mean=mean))
         else:
-            self.total_transforms.add(ssd_augmentations.ToAbsoluteCoords())
-            self.total_transforms.add(ssd_augmentations.xywh_to_xyxy())
-            self.total_transforms.add(ssd_augmentations.ResizeImage_single_scale(new_size=img_size, mean=mean))
-        self.total_transforms.add(ssd_augmentations.xyxy_to_xywh())
-        self.total_transforms.add(ssd_augmentations.ToPercentCoords())
-        self.total_transforms.add(ssd_augmentations.ToTensor(self.is_debug))
+            self.total_transforms.add(ssd_augmentations_LVD_net.ToAbsoluteCoords())
+            self.total_transforms.add(ssd_augmentations_LVD_net.xywh_to_xyxy())
+            self.total_transforms.add(ssd_augmentations_LVD_net.ResizeImage_single_scale(new_size=img_size, mean=mean))
+        self.total_transforms.add(ssd_augmentations_LVD_net.xyxy_to_xywh())
+        self.total_transforms.add(ssd_augmentations_LVD_net.ToPercentCoords())
+        self.total_transforms.add(ssd_augmentations_LVD_net.ToTensor(self.is_debug))
 
     def index_2_classes(self, classes):
         index = [i for i in range(len(classes))]

@@ -361,7 +361,7 @@ class ToTensor(object):
 
 
 
-class RandomSample_for_all_scales(object):
+class RandomSample_for_all_scales(object):#详见LFFD论文数据增强方法
     def __init__(self, mean):
         #self.continuous_face_scale=[[10, 15], [15, 20], [20, 40], [40, 70], [70, 110], [110, 250], [250, 400], [400, 560]]
         self.continuous_face_scale=[[15, 45], [45, 75], [75, 135], [135, 260]]
@@ -667,9 +667,9 @@ class SSDAugmentation(object):
             xywh_to_xyxy(),
             #PhotometricDistort(),
             ImageBaseAug(),
-        # Expand(mean),
-        # RandomSampleCrop(),
-            RandomSample_for_all_scales(mean),#LFFD
+        # Expand(mean),            #-----|
+        # RandomSampleCrop(),      #-----|-当选用yolov3系列时取消注释这两行
+            RandomSample_for_all_scales(mean),#当选用LVD系列
             RandomMirror(),
             #xyxy_to_xywh(),
             #ToPercentCoords(),
