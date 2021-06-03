@@ -20,6 +20,8 @@ _coco_evaluater_factory = {
 	"U-DETRAC_shulffnetv2_yolov3": detrac_evaluater,
 	"U-DETRAC_LVnet_fpn_large_weight": detrac_evaluater,
 	"U-DETRAC_LVnet_fpn_largest_weight": detrac_evaluater,
+
+	"ATR-SKY_YOLOV3":detrac_evaluater, #todo:后续需要更改！
 }
 
 def load_coco_evaluater(config_name):

@@ -112,7 +112,7 @@ class YOLOLoss(nn.Module):
 
             layer_n_obj = mask[mask == 1].shape[0]
             if layer_n_obj == 0:
-                loss = torch.tensor(0).to(self.device)
+                loss = torch.tensor(0, dtype=torch.float, requires_grad=True).to(self.device)
                 loss_x = torch.tensor(0)
                 loss_y = torch.tensor(0)
                 loss_w = torch.tensor(0)

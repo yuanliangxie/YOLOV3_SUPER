@@ -167,11 +167,11 @@ if __name__ == "__main__":
     classes_category = params_init.TRAINING_PARAMS["model"]["classes_category"]
     vocdataset = DetracDataset(list_path="../data/detrac/train.txt", ignore_region_path="../data/detrac/train_ignore_region.txt",
                             labels_path='../data/detrac/labels',
-                               img_size=(640, 640), is_training=True, is_debug=True, batch_size=8)
+                               img_size=(640, 640), is_training=False, is_debug=True, batch_size=8)
     index_2_classes = vocdataset.index_2_classes(classes_category)
     dataloader = torch.utils.data.DataLoader(vocdataset,
                                              batch_size=8,
-                                             shuffle=True, num_workers=0, pin_memory=False, collate_fn=vocdataset.collate_fn)
+                                             shuffle=False, num_workers=0, pin_memory=False, collate_fn=vocdataset.collate_fn)
     print(len(vocdataset))
     for step, sample in enumerate(dataloader):
         #print(step)
@@ -208,6 +208,6 @@ if __name__ == "__main__":
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             #cv2.imwrite("step{}_{}.jpg".format(step, i), image)
             cv2.imshow('show', image)
-            cv2.waitKey(2000)
+            cv2.waitKey(30)
         # only one batch
         #break

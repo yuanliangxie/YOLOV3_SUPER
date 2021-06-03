@@ -29,7 +29,7 @@ TRAINING_PARAMS = \
         "type": "sgd",
         "weight_decay": 5e-04,
     },
-    "data_path":"/home/xyl/Pycharmproject/YOLOv3/voc_data",
+    "data_path":"/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/YOLO_SUPER_DATASET/voc_data",
     "batch_size": 8,
     "train_path": "../data/voc/trainval.txt",#../data/coco/vehecal/vehecal_train.txt",
     "train_labels_path": "../data/voc/labels",
