@@ -84,8 +84,9 @@ class ATR_sky_Dataset(Dataset):
 			image, box, label = self.total_transforms(image, box, label)
 
 		label = torch.cat((label, box), 1)
-
-		img_ind = img_path[-10:-4]
+		sub_list = img_path.split('.')[0].split('/')
+		img_ind = sub_list[-2] + '_' + sub_list[-1]
+		#img_ind = img_path[-10:-4]
 		# sample = {'image': image, 'label': torch.cat((label, box),1)}
 		# sample["image_path"] = img_path[-10:-4]
 		origin_size = [ori_h, ori_w]

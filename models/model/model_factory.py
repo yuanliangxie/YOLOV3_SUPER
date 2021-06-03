@@ -14,6 +14,7 @@ from models.model.model_tiny_yolov3 import tiny_yolov3 as tiny_yolov3
 from models.model.model_yolov3_shulffnetv2 import yolov3_shulffnetv2 as yolov3_shulffnetv2
 from models.model.model_LVnet_fpn_large_weight import LVnet as LVnet_with_fpn_large_weight
 from models.model.model_LVnet_fpn_largest_weight import LVnet as LVnet_with_fpn_largest_weight
+from models.model.model_yolov5 import yolov5 as yolov5
 _model_factory = {
 	"yolov3": yolov3,
 	"mobilev2_yolov3": yolov3_mobile,
@@ -31,6 +32,7 @@ _model_factory = {
 	"shulffnetv2_yolov3": yolov3_shulffnetv2,
 	"LVnet_with_fpn_large_weight": LVnet_with_fpn_large_weight,
 	"LVnet_with_fpn_largest_weight": LVnet_with_fpn_largest_weight,
+	"yolov5":yolov5,
 }
 
 def load_model(model_name):
