@@ -135,8 +135,10 @@ class YOLOLoss(nn.Module):
             if self.config["GIOU"]:
                 loss_giou = self.giou_loss.cal_giou_loss(giou_gt_box, pred_boxes, mask).sum()/layer_n_obj
             else:
-                loss_x = (coord_scale * self.bce_loss(x * mask, tx)).sum()/all_n_obj
-                loss_y = (coord_scale * self.bce_loss(y * mask, ty)).sum()/all_n_obj
+                # loss_x = (coord_scale * self.bce_loss(x * mask, tx)).sum()/all_n_obj#可选用
+                # loss_y = (coord_scale * self.bce_loss(y * mask, ty)).sum()/all_n_obj#可选用
+                loss_x = (coord_scale * self.smooth_l1(x * mask, tx)).sum()/all_n_obj
+                loss_y = (coord_scale * self.smooth_l1(y * mask, ty)).sum()/all_n_obj
                 loss_w = (coord_scale* self.smooth_l1(w * mask , tw )).sum()/all_n_obj
                 loss_h = (coord_scale* self.smooth_l1(h * mask , th )).sum()/all_n_obj
 

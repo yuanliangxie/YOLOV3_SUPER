@@ -1,5 +1,6 @@
 from evaluate.evaluate_detrac_coco_api.coco_evaluater import coco_evaluater as detrac_evaluater
 from evaluate.evaluate_coco.coco_evaluater import coco_evaluater as voc_evaluater
+from evaluate.evaluate_ATR_sky_data.coco_evaluater import coco_evaluater as ATR_sky_evaluater
 
 _coco_evaluater_factory = {
 	"VOC":voc_evaluater,
@@ -21,7 +22,8 @@ _coco_evaluater_factory = {
 	"U-DETRAC_LVnet_fpn_large_weight": detrac_evaluater,
 	"U-DETRAC_LVnet_fpn_largest_weight": detrac_evaluater,
 
-	"ATR-SKY_YOLOV3":detrac_evaluater, #todo:后续需要更改！
+	"ATR-SKY_YOLOV3":ATR_sky_evaluater, #todo:后续需要更改！
+	"ATR-SKY_YOLOV5":ATR_sky_evaluater,
 }
 
 def load_coco_evaluater(config_name):

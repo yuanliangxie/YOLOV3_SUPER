@@ -56,6 +56,9 @@ from train.Voc_data_preprocess.params_init_voc_centernet import Eval as Voc_conf
 from train.ATR_data_preprocess.params_init_ATR import TRAINING_PARAMS as ATR_config_train_yolov3
 from train.ATR_data_preprocess.params_init_ATR import Eval as ATR_config_eval_yolov3
 
+from train.ATR_data_preprocess.params_init_ATR_yolov5 import TRAINING_PARAMS as ATR_config_train_yolov5
+from train.ATR_data_preprocess.params_init_ATR_yolov5 import Eval as ATR_config_eval_yolov5
+
 _config_factory = {
 	#VOC
 	"VOC":[Voc_config_train, Voc_config_eval],
@@ -80,6 +83,7 @@ _config_factory = {
 
 	#ATR-SKY
 	"ATR-SKY_YOLOV3":[ATR_config_train_yolov3, ATR_config_eval_yolov3],
+	"ATR-SKY_YOLOV5":[ATR_config_train_yolov5, ATR_config_eval_yolov5],
 }
 
 def get_config(config_char):
