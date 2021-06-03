@@ -52,6 +52,10 @@ from train.Voc_data_preprocess.params_init_voc_poly_yolo import Eval as Voc_conf
 from train.Voc_data_preprocess.params_init_voc_centernet import TRAINING_PARAMS as Voc_config_train_centernet
 from train.Voc_data_preprocess.params_init_voc_centernet import Eval as Voc_config_eval_centernet
 
+#ATR-SKY
+from train.ATR_data_preprocess.params_init_ATR import TRAINING_PARAMS as ATR_config_train_yolov3
+from train.ATR_data_preprocess.params_init_ATR import Eval as ATR_config_eval_yolov3
+
 _config_factory = {
 	#VOC
 	"VOC":[Voc_config_train, Voc_config_eval],
@@ -72,7 +76,10 @@ _config_factory = {
 	"U-DETRAC_mobilev2_yolov3": [Detrac_config_train_mobilev2_yolov3, Detrac_config_eval_mobilev2_yolov3],
 	"U-DETRAC_shulffnetv2_yolov3":[Detrac_config_train_shulffnetv2_yolov3, Detrac_config_eval_shulffnetv2_yolov3],
 	"U-DETRAC_LVnet_fpn_large_weight":[Detrac_config_train_LVnet_fpn_large_weight, Detrac_config_eval_LVnet_fpn_large_weight],
-	"U-DETRAC_LVnet_fpn_largest_weight":[Detrac_config_train_LVnet_fpn_largest_weight, Detrac_config_eval_LVnet_fpn_largest_weight]
+	"U-DETRAC_LVnet_fpn_largest_weight":[Detrac_config_train_LVnet_fpn_largest_weight, Detrac_config_eval_LVnet_fpn_largest_weight],
+
+	#ATR-SKY
+	"ATR-SKY_YOLOV3":[ATR_config_train_yolov3, ATR_config_eval_yolov3],
 }
 
 def get_config(config_char):
