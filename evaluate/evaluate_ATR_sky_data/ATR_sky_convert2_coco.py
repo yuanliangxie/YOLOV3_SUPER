@@ -112,5 +112,5 @@ def convert(anno_dirs, json_file):
 
 
 if __name__ == '__main__':
-	anno_dirs = "/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/sky_challenge_competition/Annotation"
+	anno_dirs = "/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/sky_challenge_competition/Annotation_test"
 	convert(anno_dirs, "ATR_sky_test.json")

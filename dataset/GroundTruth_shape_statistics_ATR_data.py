@@ -4,6 +4,10 @@ import os
 import torch
 from torch.utils.data import Dataset
 from dataset import ssd_augmentations_ATR_data
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+mpl.rcParams["font.sans-serif"] = ["SimHei"]
+mpl.rcParams["axes.unicode_minus"]=False
 
 
 
@@ -124,10 +128,129 @@ class ATR_sky_Dataset(Dataset):
 		sample = {'image': torch.stack(image), 'label': torch.stack(label_new), 'img_ind': img_ind, "origin_size": origin_size}
 		return sample
 
+class Statistic_scale:
+	def __init__(self, continus_assign_scale, size_scale, index="_"):
+		"""
+		:param continus_assign_scale:
+		:param size_scale:
+		:param index: 代表所要保存的图片的特征标识
+		"""
+		self.index = index
+		self.assign_scales = continus_assign_scale
+		self.assign_area_scales = [[assign_scale[0]**2, assign_scale[1]**2] for assign_scale in self.assign_scales]
+		self.size_scale= size_scale
+
+		self.scaled_area_data_x = np.arange(1, len(continus_assign_scale)+1+1)
+		self.scaled_max_length_data_x = np.arange(1, len(continus_assign_scale)+1+1)
+		self.max_length_data_x = np.arange(1, 51)
+		self.statistics_scaled_area_data = np.zeros(len(continus_assign_scale)+1)
+		self.statistics_max_length_data = np.zeros(50)
+		self.statistics_scaled_max_length_data = np.zeros(len(continus_assign_scale)+1)
+		self.boxes_numbers = 0
+		self.collection_unassign_length = []
+
+
+	def statistics_max_length(self, max_length):
+		max_length = int(max_length)
+		if max_length < 1:
+			pass
+		else:
+			if max_length == 640:
+				max_length = max_length-1
+			self.statistics_max_length_data[max_length] += 1
+
+	def statistics_scaled_area(self, area):
+		assign = False
+		for i, assign_area_scale in enumerate(self.assign_area_scales):
+			if assign_area_scale[0] <= area < assign_area_scale[1]:
+				self.statistics_scaled_area_data[i] += 1
+				assign = True
+				break
+		if assign == False:
+			self.statistics_scaled_area_data[i] += 1
+		pass
+
+	def statistics_scaled_max_length(self, max_length):
+		assign = False
+		for i, assign_scale in enumerate(self.assign_scales):
+			if assign_scale[0] <= max_length < assign_scale[1]:
+				self.statistics_scaled_max_length_data[i] += 1
+				assign = True
+				break
+		if assign == False:
+			self.statistics_scaled_max_length_data[-1] += 1
+			self.collection_unassign_length.append(max_length)
+
+	def run(self, max_length, area):
+		self.statistics_scaled_area(area)
+		self.statistics_max_length(max_length)
+		self.statistics_scaled_max_length(max_length)
+
+	def only_run_max_length(self, max_length):
+		self.statistics_max_length(max_length)
+
+	def only_show_max_length(self):
+		plt.figure(1, figsize=[5, 3])
+		ax1 = plt.subplot(1,1,1)
+		plt.sca(ax1)
+		ax1.xaxis.set_major_locator(plt.MultipleLocator(5))
+		plt.bar(self.max_length_data_x, self.statistics_max_length_data, align="center", color="c")
+		plt.xlabel("Distribution of the longest side")
+		plt.ylabel("Amount")
+		plt.tight_layout()
+		plt.savefig("./Distribution_of_the_longest_side"+self.index+".png", dpi=300)
+		plt.show()
+		plt.close()
+
+
+
+
+
+	def show(self):
+		self.show_percent()
+
+		plt.figure(1, figsize=[9, 3])
+		ax1 = plt.subplot(1, 3, 1)
+		ax2 = plt.subplot(1, 3, 2)
+		ax3 = plt.subplot(1, 3, 3)
+
+
+		plt.sca(ax1)
+		ax1.xaxis.set_major_locator(plt.MultipleLocator(128))
+		plt.bar(self.max_length_data_x, self.statistics_max_length_data, align="center", color="c")
+		plt.xlabel("Distribution of the longest side")
+		plt.ylabel("Amount")
+
+
+		plt.sca(ax2)
+		ax2.xaxis.set_major_locator(plt.MultipleLocator(1))
+		plt.bar(self.scaled_area_data_x, self.statistics_scaled_area_data, align="center", color="c")
+		plt.xlabel("Area distribution in multiple ranges")
+		plt.ylabel("Amount")
+
+
+
+		plt.sca(ax3)
+		ax3.xaxis.set_major_locator(plt.MultipleLocator(1))
+		plt.bar(self.scaled_max_length_data_x, self.statistics_scaled_max_length_data, align="center", color="c")
+		plt.xlabel("Long-side distribution in multiple ranges")
+		plt.ylabel("Amount")
+
+
+		plt.tight_layout()
+
+		plt.savefig("./assign_scale_result"+self.index+".png", dpi=300)
+		#plt.show()
+		plt.close()
+
+	def show_percent(self):
+		print(list(self.statistics_scaled_area_data/np.sum(self.statistics_scaled_area_data)))
+
 
 #  use for test dataloader
 if __name__ == "__main__":
 	import sys
+	from tqdm import tqdm
 	import train.ATR_data_preprocess.params_init_ATR as params_init
 	MY_DIRNAME = os.path.dirname(os.path.abspath(__file__))
 	sys.path.insert(0, os.path.join(MY_DIRNAME, '..'))
@@ -135,42 +258,31 @@ if __name__ == "__main__":
 
 	classes_category = params_init.TRAINING_PARAMS["model"]["classes_category"]
 	dataset = ATR_sky_Dataset("../data/ATR_sky/trainval.txt", "../data/ATR_sky/labels",
-							  (640, 640), False, is_debug=False, batch_size=8)
+							  (640, 640), False, is_debug=True, batch_size=8)
 	index_2_classes = dataset.index_2_classes(classes_category)
 	dataloader = torch.utils.data.DataLoader(dataset,
 											 batch_size=8,
 											 shuffle=False, num_workers=0, pin_memory=False, collate_fn=dataset.collate_fn)
 	print(len(dataset))
-	from models.bricks.tricks import mix_up
-	mix_up_method = mix_up(1)
-	for step, sample in enumerate(dataloader):
-		#print(step)
-		images, labels = sample['image'], sample['label']
-		#images, labels = mix_up_method.mixup(images, labels)
-		for i, (image, label) in enumerate(zip(images, labels)):
-			image = image.numpy()*255
-			image = image.astype(np.uint8)
-			image = np.transpose(image, (1, 2, 0))
+
+	size_scale = 640
+	continue_assign_scale = [[1, 20], [20, 100], [100, 260]]
+	statisticser = Statistic_scale(continue_assign_scale, size_scale, index="ATR_data_statistic_result")
+	for step, sample in tqdm(enumerate(dataloader)):
+		for i, (image, label) in enumerate(zip(sample['image'], sample['label'])):
+			image = image.numpy()
 			label = label.numpy()
 			h, w = image.shape[:2]
 			for l in label:
 				if l.sum() == 0:
 					continue
-				x1 = int((l[1] - l[3] / 2) * w)
-				y1 = int((l[2] - l[4] / 2) * h)
-				x2 = int((l[1] + l[3] / 2) * w)
-				y2 = int((l[2] + l[4] / 2) * h)
-				# x1 = int(l[1] * w)
-				# y1 = int(l[2] * h)
-				# x2 = int(l[3] * w)
-				# y2 = int(l[4] * h)
-				image = np.ascontiguousarray(image)
-				image = cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 255), thickness=2)
-				image = cv2.putText(image, index_2_classes[l[0]], (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
+				gt_h = l[4] * h
+				gt_w = l[3] * w
 
-			image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-			#cv2.imwrite("step{}_{}.jpg".format(step, i), image)
-			cv2.imshow('show', image)
-			cv2.waitKey(200)
-		# only one batch
-		#break
+				area = gt_h * gt_w
+				max_length = min(gt_h, gt_w)
+
+				#statisticser.run(max_length, area)
+				statisticser.only_run_max_length(max_length)
+	statisticser.only_show_max_length()
+	print(statisticser.collection_unassign_length)

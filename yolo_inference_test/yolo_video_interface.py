@@ -114,7 +114,8 @@ if __name__ == '__main__':
 	#from yolo_inference_test.poly_yolo_config_voc import TEST as config
 	#from yolo_inference_test.centernet_config_detrac import TEST as config
 	#from yolo_inference_test.yolov3_config_voc import TEST as config
-	#from yolo_inference_test.LFFD_config_detrac import TEST as config
+	#from yolo_inference_test.LFFD_con
+	# fig_detrac import TEST as config
 	#from yolo_inference_test.tiny_yolov3_config_detrac import TEST as config
 	#from yolo_inference_test.yolov3_config_detrac import TEST as config
 	#from yolo_inference_test.LVnet_iou_assign import TEST as config

@@ -3,8 +3,19 @@ import os
 # MY_DIRNAME = os.path.dirname(os.path.abspath(__file__))
 # sys.path.insert(0, os.path.join(MY_DIRNAME, '..'))
 sys.path.append("../../../YOLOV3_SUPER")
-from models.model.model_yolov3_baseline import yolov3
-from evaluate.evaluate_ATR_sky_data.yolov3_config_ATR_sky_test import TEST as config
+
+#yolov3
+#from models.model.model_yolov3_baseline import yolov3 as model
+#from evaluate.evaluate_ATR_sky_data.yolov3_config_ATR_sky_test import TEST as config
+
+#yolov5
+from models.model.model_yolov5 import yolov5 as model
+from evaluate.evaluate_ATR_sky_data.yolov5_config_ATR_sky_test import TEST as config
+
+#centernet
+from models.model.model_centernet_resnet import centernet_18 as model
+from evaluate.evaluate_ATR_sky_data.centernet_config_ATR_sky_test import TEST as config
+
 from evaluate.evaluate_ATR_sky_data.coco_evaluater import coco_evaluater
 from utils.utils_select_device import select_device
 import torch
@@ -26,7 +37,7 @@ class COCOAPI_evaler(object):
 		self.__visiual = visiual
 		self.__classes = config['DATA']["CLASSES"]
 
-		self.__model = yolov3(config)
+		self.__model = model(config)
 
 		# Set data parallel
 		#self.__model = nn.DataParallel(self.__model)

@@ -24,6 +24,8 @@ _coco_evaluater_factory = {
 
 	"ATR-SKY_YOLOV3":ATR_sky_evaluater, #todo:后续需要更改！
 	"ATR-SKY_YOLOV5":ATR_sky_evaluater,
+	"ATR-SKY_Centernet18":ATR_sky_evaluater,
+	"ATR-SKY_Centernet_hourglass":ATR_sky_evaluater,
 }
 
 def load_coco_evaluater(config_name):

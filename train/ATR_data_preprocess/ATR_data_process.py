@@ -10,7 +10,7 @@ import shutil
 from tqdm import tqdm
 
 class txt_data(object):
-	def __init__(self, voc_data_path, classes):
+	def __init__(self, classes):
 		"""
 
 		:param voc_data_path: the dirpath of the vocdata
@@ -31,6 +31,7 @@ class txt_data(object):
 
 		self.ATR_data = '/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/sky_challenge_competition'
 		self.ATR_data_anno= '/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/sky_challenge_competition/Annotation'
+		self.ATR_data_test_anno= '/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/sky_challenge_competition/Annotation_test'
 
 
 
@@ -116,6 +117,17 @@ class txt_data(object):
 					if is_object_path:
 						f.write(os.path.join(self.ATR_data, 'Images', anno_path, xml_file.split('.')[0] + '.bmp' + '\n'))
 
+	def generate_test_txt(self):  #遍历数据集，生成全部图像路径，xml->txt
+		with open(os.path.join(self.dir_path, 'test.txt'), 'w') as f:
+			for anno_path in tqdm(os.listdir(self.ATR_data_test_anno)):
+				xml_files_path = os.path.join(self.ATR_data_test_anno, anno_path)
+				for xml_file in os.listdir(xml_files_path):
+					xml_file_path = os.path.join(xml_files_path, xml_file)
+					txt_path = os.path.join(self.labels_test_path, anno_path+'_'+xml_file.split('.')[0] + '.txt')
+					is_object_path = self._write_anno_txt(xml_file_path, txt_path, is_train=True)
+					if is_object_path:
+						f.write(os.path.join(self.ATR_data, 'Images_test', anno_path, xml_file.split('.')[0] + '.bmp' + '\n'))
+
 			# with open(self.VOC2012_path, 'r') as f_2012:
 			# 	for path in tqdm(f_2012.readlines()):
 			# 		path = path.strip()
@@ -141,10 +153,9 @@ class txt_data(object):
 
 def main():
 	classes_category = params_init.TRAINING_PARAMS["model"]["classes_category"]
-	ATR_data_path = params_init.TRAINING_PARAMS['data_path']
-	generate_txt = txt_data(ATR_data_path, classes_category)
+	generate_txt = txt_data(classes_category)
 	generate_txt.generate_train_txt()
-	#generate_txt.generate_test_txt()
+	generate_txt.generate_test_txt()
 	print('\n')
 	generate_txt.print_class_2_index()
 

@@ -15,6 +15,8 @@ from models.model.model_yolov3_shulffnetv2 import yolov3_shulffnetv2 as yolov3_s
 from models.model.model_LVnet_fpn_large_weight import LVnet as LVnet_with_fpn_large_weight
 from models.model.model_LVnet_fpn_largest_weight import LVnet as LVnet_with_fpn_largest_weight
 from models.model.model_yolov5 import yolov5 as yolov5
+#from models.model.model_centernet_hourglass import centernet_hourglass
+from models.model.model_centernet_hourglass_nstack_1 import centernet_hourglass
 _model_factory = {
 	"yolov3": yolov3,
 	"mobilev2_yolov3": yolov3_mobile,
@@ -33,6 +35,7 @@ _model_factory = {
 	"LVnet_with_fpn_large_weight": LVnet_with_fpn_large_weight,
 	"LVnet_with_fpn_largest_weight": LVnet_with_fpn_largest_weight,
 	"yolov5":yolov5,
+	"centernet_hourglass":centernet_hourglass,
 }
 
 def load_model(model_name):
