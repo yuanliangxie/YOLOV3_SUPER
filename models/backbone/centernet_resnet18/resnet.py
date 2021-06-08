@@ -218,9 +218,10 @@ def resnet152(pretrained=False, **kwargs):
 if __name__=='__main__':
 	#model = torchvision.models.resnet50()
 	print("found ", torch.cuda.device_count(), " GPU(s)")
-	device = torch.device("cuda")
-	model = resnet101(detection=True).to(device)
+	device = torch.device("cpu")
+	model = resnet101(pretrained=False).to(device)
 	print(model)
 
 	input = torch.randn(1, 3, 512, 512).to(device)
 	output = model(input)
+	print('end')

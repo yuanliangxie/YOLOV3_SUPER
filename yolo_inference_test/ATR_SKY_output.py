@@ -1,16 +1,3 @@
-#from models.model.poly_yolo import yolov3 as model
-#from models.model.model_yolov3_baseline import yolov3 as model
-#from models.model.model_centernet_resnet import centernet_18 as model
-#from models.model.model_LFFD import LFFD as model
-#from models.model.model_tiny_yolov3 import tiny_yolov3 as model
-#from models.model.model_LVnet_with_deconv_shalllow_centerloss_iou_assign import LVnet as model
-#from models.model.model_LVnet_oringin_iou_assign_no_fpn import LVnet as model
-#from models.model.model_yolov3_shulffnetv2 import yolov3_shulffnetv2 as model
-#from models.model.model_yolov3_mobilev2 import yolov3_mobilev2 as model
-#from models.model.model_LVnet_fpn_largest_weight import LVnet as model
-#from models.model.model_LVnet_with_pure_centerloss import LVnet as model
-
-
 #from models.model.model_yolov5 import yolov5 as model
 from models.model.model_centernet_resnet import centernet_18 as model
 
@@ -18,6 +5,7 @@ from yolo_inference_test.utils_inference import *
 from yolo_inference_test.visualize import visualize_boxes
 #from time_analyze import print_run_time, func_line_time
 os.environ["CUDA_VISIBLE_DEVICES"]='0'
+
 class yolo_inference_detector(object):
 	def __init__(self, config):
 		self.config = config

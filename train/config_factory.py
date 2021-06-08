@@ -59,6 +59,12 @@ from train.ATR_data_preprocess.params_init_ATR import Eval as ATR_config_eval_yo
 from train.ATR_data_preprocess.params_init_ATR_yolov5 import TRAINING_PARAMS as ATR_config_train_yolov5
 from train.ATR_data_preprocess.params_init_ATR_yolov5 import Eval as ATR_config_eval_yolov5
 
+from train.ATR_data_preprocess.params_init_ATR_centernet_resnet18 import TRAINING_PARAMS as ATR_config_train_Centernet_resnet18
+from train.ATR_data_preprocess.params_init_ATR_centernet_resnet18 import Eval as ATR_config_eval_Centernet_resnet18
+
+from train.ATR_data_preprocess.params_init_ATR_centernet_hourglass import TRAINING_PARAMS as ATR_config_train_Centernet_hourglass
+from train.ATR_data_preprocess.params_init_ATR_centernet_hourglass import Eval as ATR_config_eval_Centernet_hourglass
+
 _config_factory = {
 	#VOC
 	"VOC":[Voc_config_train, Voc_config_eval],
@@ -84,6 +90,8 @@ _config_factory = {
 	#ATR-SKY
 	"ATR-SKY_YOLOV3":[ATR_config_train_yolov3, ATR_config_eval_yolov3],
 	"ATR-SKY_YOLOV5":[ATR_config_train_yolov5, ATR_config_eval_yolov5],
+	"ATR-SKY_Centernet18":[ATR_config_train_Centernet_resnet18, ATR_config_eval_Centernet_resnet18],
+	"ATR-SKY_Centernet_hourglass":[ATR_config_train_Centernet_hourglass, ATR_config_eval_Centernet_hourglass],
 }
 
 def get_config(config_char):

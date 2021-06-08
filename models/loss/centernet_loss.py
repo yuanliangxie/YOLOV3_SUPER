@@ -62,8 +62,10 @@ class centernet_Loss(nn.Module):
 			tcls = tcls.to(self.device)
 			Gaussian_weight = Gaussian_weight.to(self.device)
 
-			loss_x = (coord_scale * self.bce_loss(x * mask, tx)).sum()/n_obj
-			loss_y = (coord_scale * self.bce_loss(y * mask, ty)).sum()/n_obj
+			# loss_x = (coord_scale * self.bce_loss(x * mask, tx)).sum()/n_obj#可选择的替换
+			# loss_y = (coord_scale * self.bce_loss(y * mask, ty)).sum()/n_obj#可选择的替换
+			loss_x = (coord_scale * self.smooth_l1(x * mask, tx)).sum()/n_obj
+			loss_y = (coord_scale * self.smooth_l1(y * mask, ty)).sum()/n_obj
 			loss_w = (coord_scale* self.smooth_l1(w * mask , tw )).sum()/n_obj
 			loss_h = (coord_scale* self.smooth_l1(h * mask , th )).sum()/n_obj
 

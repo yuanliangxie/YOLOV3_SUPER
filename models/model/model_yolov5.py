@@ -11,11 +11,11 @@ from utils.utils_select_device import select_device
 
 
 class yolov5(nn.Module):
-	def __init__(self, config, logger=None, init_weight=True):
+	def __init__(self, config, logger=None, init_weight=True,gd = 1.33,gw =1.25):
 		super().__init__()
-		self.backbone = CSPDarkNet()
-		self.neck = neck.neck()
-		self.head = yolov5_head.yolov5_head(nAnchors=3, nClass=config["model"]["classes"])
+		self.backbone = CSPDarkNet(gd= gd,gw=gw)
+		self.neck = neck.neck(gd=gd,gw=gw)
+		self.head = yolov5_head.yolov5_head(nAnchors=3, nClass=config["model"]["classes"],gw=gw)
 		self.loss = loss.yolo_loss_module(config, strides=[32, 16, 8])
 		if logger == None:
 			self.logger = print_logger()

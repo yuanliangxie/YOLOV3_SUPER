@@ -27,10 +27,10 @@ TRAINING_PARAMS = \
 			"weight_decay": 5e-04,
 		},
 		#"data_path":"/media/xyl/6418a039-786d-4cd8-b0bb-1ed36a649668/Datasets/YOLO_SUPER_DATASET/voc_data",
-		"batch_size": 16,
+		"batch_size": 4,
 		"train_path": "../data/ATR_sky/trainval.txt",#../data/coco/vehecal/vehecal_train.txt",
 		"train_labels_path": "../data/ATR_sky/labels",
-		"epochs": 71,
+		"epochs": 140,
 		"Multi-scale training": True, #要增加多尺度训练！
 		"img_h": 640, #只有在单尺度下，这个尺寸才会生效！
 		"img_w": 640,
@@ -38,12 +38,12 @@ TRAINING_PARAMS = \
 		"working_dir": "/home/xyl/PycharmProjects/YOLOV3_SUPER",              #  replace with your working dir
 
 		#restore_model_weight:
-		"pretrain_snapshot": "",
+		"pretrain_snapshot": "/home/xyl/PycharmProjects/YOLOV3_SUPER/CSPdarknet53/Multi-scale_try_yolov5_baseline_SSDaug_ATR_sky/20210606152623/model_map_0.770.pth",
 		"self_train_weight": True, #加载由此框架训练得到的权重则设置为True,否则设置为False
-		"resume_start_epoch": None,
+		"resume_start_epoch": 70,
 
 		# train_eval:
-		"start_eval": 75,
+		"start_eval": 5,
 		"interval_epoch_eval": 5, #每隔多少个epoch进行验证
 		"epoch_eval_times": 1, #每个epoch验证多少次
 		#train_eval参数的含义为：从"start_eval"第１０个epoch开始进行验证，此时第１０个epoch总共
@@ -70,9 +70,8 @@ Eval = {
 	"NMS_THRESH":0.5,
 	"MULTI_SCALE_TEST":False,
 	"FLIP_TEST":False,
-	"test_path": "../data/detrac/test.txt",#../data/coco/vehecal/vehecal_train.txt",
-	"test_ignore_region": "../data/detrac/test_ignore_region.txt",
-	"test_labels_path": "../data/detrac/labels_test",
+	"test_path": "../data/ATR_sky/test.txt",#../data/coco/vehecal/vehecal_train.txt",
+	"test_labels_path": "../data/ATR_sky/labels_test",
 
 	#不产生结果分析图
 	"generate_analyze_figure": False,
